@@ -24,7 +24,6 @@
     "ejs-mate": "~2.0.0",
 
     "redis": "~0.12.1",
-    "mongodb": "~2.0.14",
     "mongoose": "~3.8.21",
     "connect-redis": "^2.2.0",
 
@@ -36,8 +35,7 @@
     "wechat-api": "^1.7.1",
     "wechat": "^1.2.4",
     "qn": "~1.0.1",
-
-    "mit-settings": "git+https://github.com/leango/mit-settings.git"
+    "mit-settings": "leango/mit-settings"
   },
   "devDependencies": {
       "mocha": "^2.1.0"
