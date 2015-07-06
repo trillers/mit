@@ -312,7 +312,7 @@ var presentize = function(tag, opts){
     var setReady = function(cmd){
         tag.ready = cmd;
         tag.update({ready: tag.ready});
-        if(typeof welcomediv != 'undefined' && welcomediv.parentNode !== null){
+        if(welcomediv && welcomediv.parentNode){
             welcomediv.parentNode.removeChild(welcomediv);
             document.body.style.background = 'white';
             document.body.style.overflow = 'auto';
