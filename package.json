@@ -1,13 +1,13 @@
 {
   "name": "mit",
   "version": "0.1.0-SNAPSHOT",
-  "description": "hxx wechat webapp",
+  "description": "a wechat webapp",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "./node_modules/mocha/bin/mocha index.js"
   },
-  "repository": "https://github.com/leango/mit.git",
+  "repository": "https://github.com/trillers/mit.git",
   "author": "henryleu@126.com",
   "license": "",
   "dependencies": {
@@ -35,7 +35,7 @@
     "wechat-api": "^1.7.1",
     "wechat": "^1.2.4",
     "qn": "~1.0.1",
-    "mit-settings": "leango/mit-settings"
+    "mit-settings": "trillers/mit-settings"
   },
   "devDependencies": {
       "mocha": "^2.1.0"
