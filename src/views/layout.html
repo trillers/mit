@@ -4,14 +4,20 @@
     <meta charset="utf-8">
     <title>{% block title %}My Site{% endblock %}</title>
     {% block head %}
-    <link rel="stylesheet" href="">
     <script>
-        window.__page = JSON.stringify({{__page || "123"}});
-        console.log(__page)
+        window.__page = {{JSON.stringify(__page)}};
+        window.__app = {{JSON.stringify(__app)}};
     </script>
-
-    <script src="/web/spm/spm_modules/seajs/2.3.0/dist/sea.js"></script>
+    {% if __app.settings.env.NODE_ENV === 'development' %}
+    <script  src="/web/spm/spm_modules/seajs/2.3.0/dist/sea.js"></script>
     <script src="/web/spm/spm_modules/seajs-wrap/1.0.2/dist/seajs-wrap.js"></script>
+    <script src="/web/index.js"></script>
+    <link rel="stylesheet" href="/web/css/style.css">
+    {% include "./tags.html" %}
+    {% else %}
+    <script  src="/web/spm/build/spm/0.0.1/index"></script>
+    <link rel="stylesheet" href="/web/css/style.min.css">
+    {% endif %}
     {% endblock %}
 </head>
 <body>
