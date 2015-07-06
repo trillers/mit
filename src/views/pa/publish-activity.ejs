@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>发现</title>
+    <link href="../public/css/style.css" rel="stylesheet">
+    <script src="../public/components/jquery/jquery.min.js"></script>
+    <script src="../public/js/jquery.lazyload.js"></script>
+    <link href="../public/css/common.css" rel="stylesheet" type="text/css" />
+    <script src="../public/js/tips.js"></script>
+    <script src="../public/components/seajs/dist/sea.js"></script>
+    <script src="../web/index.js"></script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+
+        var u = navigator.userAgent, app = navigator.appVersion;
+        if(u.indexOf('Android') > -1 || u.indexOf('Linux') > -1){
+            var link = document.createElement( "link" );
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.href = "/web/css/andriod.css";
+            document.getElementsByTagName( "head" )[0].appendChild( link );
+        }
+        if(!!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+            var link = document.createElement("link");
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.href = "/web/css/apple.css";
+            document.getElementsByTagName("head")[0].appendChild(link);
+        }
+    </script>
+</head>
+<body id="addactbody">
+<div id="wary" >
+    <div class="banner">
+        <img style="width: 100%" src="../public/images/pabannershow.png"/>
+    </div>
+    <form id="actform">
+    <div class="addactcontent">
+        <section>
+            <div class="secleft">活动名称</div>
+            <div class="secright">
+                <div></div>
+                <input type="text" name="name" value="" placeholder=""/>
+            </div>
+        </section>
+        <section>
+            <div class="secleft">活动时间</div>
+            <div class="secright">
+                <div></div>
+                <div id="startTimebtn" class="datediv">
+                    <input type="text" attr="startTime" value="00/00" readonly="readonly"/>
+                    <input id="startTime" name="startTime" style="display: inline-block;margin-top:0px;" type="date"/>
+                </div>
+                <i style="display:block;position:absolute;top:20px;left:48%;width:20px;height:1px;border-top:1px solid #ccc"></i>
+                <div id="endTimebtn" class="datedivright">
+                    <input type="text" attr="endTime" value="00/00" readonly="readonly"/>
+                    <input id="endTime" name="endTime" style="display: inline-block;margin-top:0px" type="date"/>
+                </div>
+
+
+            </div>
+        </section>
+        <section>
+            <div class="secleft">活动地点</div>
+            <div class="secright">
+                <div></div>
+                <input type="text" name="place" value="" placeholder=""/>
+            </div>
+        </section>
+        <section>
+            <div class="secleft">发起人</div>
+            <div class="secright">
+                <div></div>
+                <div style="width:30%;float: left;"><input type="text" name="initiatorName" placeholder="姓名"/></div>
+                <div style="width:70%;float:right;position:relative;"><span class="borderleft"></span></span><input type="text" name="initiatorContact" placeholder="联系方式"/></div>
+            </div>
+        </section>
+        <section>
+            <div class="secleft">报名截止</div>
+            <div class="secright">
+                <div></div>
+                <div class="datediv">
+                    <input id="closingTimebtn" type="text" attr="closingTime" value="00/00" readonly="readonly"/>
+                    <input id="closingTime" name="closingTime" style="display: inline-block;" type="date"/>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div style="margin-top: 10px;margin-bottom: 5px">
+        <div class="midtitle">
+            活动介绍
+        </div>
+    </div>
+    <div style="text-align: center">
+        <textarea class="actintro" name="desc">
+【活动说明】
+【活动日程】
+【费用说明】自行消费
+【集合时间】
+【集合地点】
+【交通方式】
+【报名说明】
+1、直接系统报名，报名名单中显示用户名字即报名成功；
+2、本活动不限名额。/本活动限x人，以报名先后确认名额。
+【温馨提示】
+1、
+2、
+        </textarea>
+    </div>
+    <div style="width: 100%;font-size: 1.1em;background-color: #e7ddc7;margin-top:10px">
+        <div style="width: 92%;margin:0px auto;overflow: hidden;font-size:13px;">
+            <div>
+            <p style="float: left;width:12%;margin-top: 10px">提示:</p>
+            <p style="float: right;width:88%;margin-top: 10px;text-align: justify;font-size:13px;">请确认活动内容后再发布!因为一旦发布并且有用户报名后,活动就不允许取消和修改了。</p>
+            </div>
+            <div style="clear:both"></div>
+            <hr style="background-color: #d5c8ac;border: none"/>
+            <div class="clear"></div>
+            <div class="serv t-c">
+                <p>使用过程中如有任何疑问请咨询客服</p>
+                <p class="m_top10_media p2"><img src="/public/images/1_19.png" /> 客服电话：400-680-9072</p>
+            </div>
+        </div>
+        <!--<div id="btnbox">-->
+            <!--<div id="draftsubmitbtn" style="width:33%;text-align: center;float:left;box-sizing: border-box;border-right:1px solid #333">-->
+                <!--<img style="width: 12px;height:12px;position: relative;top:-2px" src="../public/images/draft.png"/>&nbsp&nbsp保存草稿-->
+            <!--</div>-->
+            <!--<div id="pubsubmitbtn" style="width:67%;text-align: center;float:right">-->
+                <!--<img style="width: 12px;height:12px;position: relative;top:-2px" src="../public/images/pubact.png"/>&nbsp&nbsp立即发布-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="footer_zw"></div>
+        <div class="footer">
+            <p id="draftsubmitbtn" class="p1" style="width:33%;"><img src="/public/images/draft.png" class="vertical" /><span class="vertical"> 保存草稿</span></p>
+            <p id="pubsubmitbtn" class="p3" style="width:65%;"><img src="/public/images/pubact.png" class="vertical" style="width:11px;" /> <span class="vertical">立即发布</span></p>
+        </div>
+        <div class="footer_shadow"></div>
+    </div>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    seajs.use(['util','/public/components/jQuery/jQuery'],function(util,$){
+        (function($){
+            var  actobj={
+                txtareastr:'【活动说明】\n【活动日程】\n【费用说明】自行消费\n【集合时间】\n【集合地点】\n【交通方式】\n【报名说明】\n1、直接系统报名，报名名单中显示用户名字即报名成功；\n2、本活动不限名额。/本活动限x人，以报名先后确认名额。\n【温馨提示】\n1、\n2、\n',
+                initPage:function(){
+                    var newdate = new Date();
+                    $("input[attr='startTime']").val(util.dateFormat(newdate,'MM/dd'));
+                    $("input[attr='endTime']").val(util.dateFormat(newdate,'MM/dd'));
+                    $("input[attr='closingTime']").val(util.dateFormat(newdate,'MM/dd'));
+                    $("#actform").find("input[name='name']").val("");
+                    $("#actform").find("input[name='startTime']").val("");
+                    $("#actform").find("input[name='endTime']").val("");
+                    $("#actform").find("input[name='place']").val("");
+                    $("#actform").find("input[name='initiatorName']").val("");
+                    $("#actform").find("input[name='initiatorContact']").val("");
+                    $("#actform").find("textarea[name='desc']").html(this.txtareastr);
+                },
+                getJsondata :function(){
+                    var jsondata = {
+                        name: $("#actform").find("input[name='name']").val().trim(),
+                        startTime: $("#actform").find("input[name='startTime']").val() || new Date(),
+                        endTime: $("#actform").find("input[name='endTime']").val() || new Date(),
+                        place: $("#actform").find("input[name='place']").val().trim(),
+                        initiatorName: $("#actform").find("input[name='initiatorName']").val().trim(),
+                        initiatorContact: $("#actform").find("input[name='initiatorContact']").val().trim(),
+                        closingTime: $("#actform").find("input[name='closingTime']").val() || new Date(),
+                        pics:["/public/images/pabanner.png"],
+                        desc: $("#actform").find("textarea[name='desc']").val()
+                    }
+                    return jsondata;
+                },
+                validatefield:function(jsondata){
+                    var errorarr = [];
+                    //doFormCheck
+                    if(validator.empty(jsondata.name)){
+                        errorarr.push("活动名称不能为空");
+                    }
+                    if(validator.empty(jsondata.place)){
+                        errorarr.push("活动地点不能为空");
+                    }
+                    if(validator.empty(jsondata.initiatorName)){
+                        errorarr.push("请填写发起人姓名");
+                    }
+                    if(validator.empty(jsondata.initiatorContact)){
+                        errorarr.push("请填写发起人联系方式");
+                    }
+                    return errorarr;
+                },
+                submitform:function(jsondata){
+                    var thisobj = this;
+                    $.ajax({
+                        type:"post",
+                        dataType:"json",
+                        url:"/pa",
+                        data:jsondata,
+                        success:successHandler,
+                        error:errorHandler
+                    });
+                    function successHandler(data){
+                        var oper = data.result.oper;
+                        console.log();
+                        thisobj.initPage();
+                        //发布活动成功
+                        if(jsondata.oper == "Open"){
+                            //弹出新页面
+                            window.location = '/pa?action=success&_id='+data.result._id;
+                        }
+                        //保存草稿成功
+                        if(jsondata.oper == "Draft"){
+                            util.tipssuccess(0,"保存成功");
+                        }
+                    };
+                    function errorHandler(){
+
+                    }
+                }
+            }
+            actobj.initPage();
+            var validator = util.validator();
+            function dateFormat(str){
+                var datearr = str.split("-");
+                return datearr[1]+"/"+datearr[2];
+            }
+
+            $("#startTime").on("change",function(){
+                $("input[attr='startTime']").val(dateFormat($(this).val()));
+            });
+
+            $("#endTime").on("change",function(){
+                $("input[attr='endTime']").val(dateFormat($(this).val()));
+            });
+            $("#closingTime").on("change",function(){
+                $("input[attr='closingTime']").val(dateFormat($(this).val()));
+            });
+            $("#pubsubmitbtn").on('click',function(){
+                var jsondata = actobj.getJsondata();
+                jsondata["oper"] = "Open";
+                var errorarr = actobj.validatefield(jsondata);
+                if(errorarr.length>0){
+                    //errorHandler
+                    util.tipssuccess(1,errorarr[0],1);
+                    return;
+                }
+                actobj.submitform(jsondata);
+            });
+            $("#draftsubmitbtn").on('click',function(){
+                var jsondata = actobj.getJsondata();
+                jsondata["oper"] = "Draft";
+                var errorarr = actobj.validatefield(jsondata);
+                if(errorarr.length>0){
+                    //errorHandler
+                    util.tipssuccess(1,errorarr[0],1);
+                    return;
+                }
+                actobj.submitform(jsondata);
+            });
+            var $btnbox = $("#btnbox");
+            $("#actform").find("input[name]").not("[type='date']").on("focus",function(){
+                $btnbox.css({
+                    position:"absolute",
+                    bottom:"-40px"
+                });
+            }).on("blur",function(){
+                $btnbox.css({
+                    position:"fixed",
+                    bottom:"0px"
+                });
+            });
+            $("#actform").find("textarea").on("focus",function(){
+                $btnbox.css({
+                    position:"absolute",
+                    bottom:"-40px"
+                });
+            }).on("blur",function(){
+                $btnbox.css({
+                    position:"fixed",
+                    bottom:"0px"
+                });
+            });
+            //iphone兼容
+            if(!!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+//                $("#startTimebtn").on('click', function () {
+//                    $("#startTime").click();
+//
+//                });
+//                $("#endTimebtn").on('click', function () {
+//                    $("#endTime").click();
+//
+//                });
+//                $("#closingTimebtn").on('click', function () {
+//                    $("#closingTime").click();
+//                });
+                $("#actform").find("input[type='date']").on("click", function () {
+                    $btnbox.css({
+                        position: "absolute",
+                        bottom: "-40px"
+                    });
+                });
+                $("#actform").find("input[type='date']").on("blur", function () {
+                    $btnbox.css({
+                        position: "fixed",
+                        bottom: "0px"
+                    });
+                });
+            }
+
+//            $("#actform").find("input[name]").is("[type='date']").on("focus",function(){
+//                $btnbox.css({
+//                    position:"absolute",
+//                    bottom:"-40px"
+//                });
+//            }).on("blur",function(){
+//                $btnbox.css({
+//                    position:"fixed",
+//                    bottom:"0px"
+//                });
+//            });
+        })(jQuery)
+    });
+</script>
+</body>

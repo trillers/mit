@@ -1,0 +1,212 @@
+<mine-index>
+    <div if="{!hidden}">
+        <mask-loading show="{mask}"/>
+        <div if={!mask}>
+            <div class="mine-top-bar-placeholder"></div>
+            <div class="mine-top-bar">
+                <div class="mine_nav">
+                    <div class="{mine_bar_checked == 1 ? 'checked' : ''}" alt="1" onclick="{minenav}">参与的活动</div>
+                    <div class="{mine_bar_checked == 2 ? 'checked' : ''}" alt="2" onclick="{minenav}">发布的活动</div>
+                    <div class="{mine_bar_checked == 3 ? 'checked' : ''}" alt="3" onclick="{minenav}">收藏的活动</div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="activity-list" id="attendee" if="{mine_bar_checked == 1}">
+                <activity-item class="activity-item" each={items2} curritem="{this}"/>
+            </div>
+            <div class="activity-list" id="initiator" if="{mine_bar_checked == 2}">
+                <activity-item class="activity-item" each={items} curritem="{this}"/>
+            </div>
+            <div class="activity-list" id="minelike" if="{mine_bar_checked == 3}">
+                <activity-item class="activity-item" each={items3} curritem="{this}"/>
+            </div>
+            <!--底部 -->
+            <div class="footer_placeholder"></div>
+            <div class="footer-index setleft">
+                <div>
+                    <a href="#activity/index"><i><img src="/{env}/images/footer_nav_activity1.png" /><br/>活动</i></a>
+                    <a href="#travel/index"><i><img src="/{env}/images/footer_nav_travel1.png" /><br/>场所</i></a>
+                    <a href="#mine/index"><i class="current"><img src="/{env}/images/footer_nav_mine2.png" /><br/>我的</i></a>
+                </div>
+                <div>
+                    <i onclick="{showattention}">发布活动</i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var self = nest.presentable(this);
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        self.load = 0;
+
+        var collection = this.collection = nest.collectable({}, {
+            url: __app.settings.api.url + "/pa/initiated",
+            filter: this.opts.filter
+        });
+
+        var collection2 = this.collection2 = nest.collectable({}, {
+            url: __app.settings.api.url + "/pa/applied",
+            filter: this.opts.filter
+        });
+
+        var collection3 = this.collection3 = nest.collectable({}, {
+            url: __app.settings.api.url + "/pa/stard",
+            filter: this.opts.filter
+        });
+
+        this.filter = this.opts.filter;
+        collection.on('fetch', function(models, o){
+            console.info('activities is fetched');
+            self.items = models;
+            if (self.load >= 2) {
+                self.update();
+                self.trigger('show', true);
+                self.trigger('ready', true);
+                self.trigger('view-route-to');
+                hookLazyLoad();
+
+            }else{
+                self.load = self.load + 1;
+            }
+        });
+
+        collection2.on('fetch', function(models, o){
+            console.info('activities is fetched 2');
+            self.items2 = models;
+
+            if (self.load >= 2) {
+                self.update();
+                self.trigger('show', true);
+                self.trigger('ready', true);
+                self.trigger('view-route-to');
+                hookLazyLoad();
+            }else {
+                self.load = self.load + 1;
+            }
+            bindNavigator();
+        });
+        collection3.on('fetch', function(models, o){
+            console.info('activities is fetched 3');
+            self.items3 = models;
+            self.mine_bar_checked = 1;
+            if (self.load >= 2) {
+                self.update();
+                self.trigger('show', true);
+                self.trigger('ready', true);
+                self.trigger('view-route-to');
+                hookLazyLoad();
+            }else {
+                self.load = self.load + 1;
+            }
+        });
+
+        var _open = function(filter){
+            this.trigger('ready', false);
+            this.filter = filter || this.filter;
+            self.load = 0;
+            collection.fetch({filter: this.filter});
+            collection2.fetch({filter: this.filter});
+            collection3.fetch({filter: this.filter});
+            $("#wary").css({height:"auto",overflow:"visible"});
+            $("body").css({height:"auto",overflow:"visible"});
+        }.bind(self);
+
+        var _refresh = function(){
+            this.trigger('ready', false);
+            self.load = 0;
+            collection.fetch({filter: this.filter});
+            collection2.fetch({filter: this.filter});
+            collection3.fetch({filter: this.filter});
+        }.bind(self);
+
+        this.on('mount', function(){
+            console.info('tag activities is mounted');
+
+        });
+
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            _open(options);
+
+        });
+
+        this.on('leave', function(){
+            self.mask = true;
+            self.update();
+        });
+
+        this.on('reenter', function(){
+            self.mask = false;
+            self.update();
+        });
+
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('我的');
+            }
+            $(window).scrollTop("0px");
+        });
+
+        
+        this.on('refresh', function(){
+            console.info('tag activities is refreshing');
+            _refresh();
+        });
+
+        refresh(e){
+            _refresh();
+        }
+
+        var hookLazyLoad = function(){
+            //$("img.activity-cover-img").lazyload({threshold: 200, skip_invisible : false, effect: "fadeIn"});
+            setImageHeight();
+        };
+        showattention(e){
+            riot.route("activity/new");
+        }
+        function setImageHeight() {
+            var setHeight = Math.round($("#wary").width() * 360 / 640);
+            $(".img1").css("height", setHeight+"px");
+        }
+        var bindNavigator = function () {
+            $(document).click(function () {
+                if($(".home_gy_set")){
+                    $(".home_gy").removeClass("home_gy_set");
+                    $(".home_gy").addClass("home_gy_set1");
+                }
+            });
+            $(".img_home").click(function (event) {
+                $(".home_gy").removeClass("home_gy_set1");
+                $(".home_gy").addClass("home_gy_set");
+                event.stopPropagation();
+            });
+        };
+        $(window).resize(function () {
+            setImageHeight();
+        });
+
+
+        showFootterNav(e){
+            $(e.target).toggleClass("footer_navs_but_hover");
+            var classNmae = $(e.target).attr("class");
+            if(classNmae.indexOf("footer_navs_but_hover") < 0){
+                $(".footer_navs_wary").slideUp(200);
+            }else{
+                $(".footer_navs_wary").slideDown(200);
+            }
+            e.stopPropagation();
+        }
+
+
+        minenav(e){
+            var showClass = $(e.target).attr("alt");
+            self.mine_bar_checked = showClass;
+            self.update();
+        }
+
+
+
+    </script>
+</mine-index>

@@ -1,0 +1,604 @@
+<activity-list>
+    <div if="{!hidden}">
+    <mask-loading show="{mask}"/>
+    <div if="{!mask}">
+        <activity-filter curritem="{this}"/>
+        <div class="clear">&nbsp</div>
+        <div id="pullDown" class="loading" style="display: none">
+            <span class="pullDownIcon"></span><span class="pullDownLabel">正在刷新列表...</span>
+        </div>
+        <div class="activity-list" id="scroll_body">
+            <activity-item class="activity-item" each={items} curritem="{this}" />
+            <activity-item class="activity-item" each={appended_list} curritem="{this}" />
+        </div>
+        <div id="pullUp">
+            <span class="pullUpIcon"></span><span class="pullUpLabel">上拉加载更多活动...</span>
+        </div>
+        <!--关注 -->
+        <wechat-menu if="{!subscribe}"/>
+        <div id="noResult" class="noResult">
+            <p><img src="/{env}/images/c_02.png" style="width: 35%" /></p>
+            <p class="m_top10">抱歉，没有找到相关活动</p>
+        </div>
+        <!--底部 -->
+        <div class="footer_placeholder"></div>
+        <div class="footer setleft">
+            <div onclick="{returnPage}"></div>
+            <div class="button publish" onclick="{showattention}">发布活动</div>
+        </div>
+        <div class="body_shadow display_none" onclick="{hideBodyShadowAllHandler}"></div>
+        <div class="wechat-concern display_none">
+            <img src="/{env}/images/closebtn2.png" onclick="{hidewechat_concern}"/>
+            <p>关注“快乐种子”后，可以接收活动<br/>提醒和使用其他更多服务！</p>
+            <div if="{!fromButtonClick}">
+                <div onclick="{openWxhref}">关注，支持一下</div>
+                <div onclick="{hidewechat_concern}">残忍拒绝:(</div>
+            </div>
+            <button onclick="{openWxhref}" if="{fromButtonClick}">立即关注</button>
+        </div>
+    </div>
+    </div>
+    <script>
+        this.app = this.opts.app; //keep spa object
+        var self = nest.presentable(this);
+        //define activities
+        var likeActivity = domain.action('likeActivity');
+        var applyActivity = domain.action('applyActivity');
+        var filterCondition,filterOpen=false;
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        self.subscribe = (__page.user.wx_subscribe == 1) ? true : false;
+        self.wxhref = util.getWxhref();
+        self.fromButtonClick = false;
+        self.activity_filter = 0;
+        self.label_screening_select_the_conditions = false;
+        self.date_select_the_conditions = false;
+        self.sort_select_the_conditions = false;
+        var params = {
+            sort: {'priorityRank':-1, 'statusrank':1, 'startTime':1},
+            page: {
+                size: 10,
+                no: 1
+            },
+            conditions: {
+                status: {"$in":['a','re','ac', 'co']},
+                reviewStatus:{"$in":['t', 'd']},
+                'tags.type': {},
+                privateFlag: false
+            }
+        };
+        debugger;
+        __page.tenant && (params.conditions.tenantId = __page.tenant);
+        var collection = this.collection = nest.collectable({}, {
+            url: __app.settings.api.url + "/pa/find",
+            filter: params
+        });
+
+        var scrollBody, noResultEl, pullUpEl, pullUpOffset = 0, oldPosY = 0, newPosY = 0,allowRefresh = false;
+        var stop=true;
+        var sel_type, sel_date, sel_sort;
+        collection.on('fetch', function(models, o){
+            console.info('activities is fetched');
+            self.items = models;
+            stop = (self.items.length % 10 == 0) ? true : false;
+            self.update();
+            self.trigger('ready', true);
+            self.trigger('view-route-to');
+            pullUpEl = document.getElementById("pullUp");
+            noResultEl = $("#noResult");
+            scrollBody = document.getElementById("scroll_body");
+            resetPullUp(models);
+            if(models.length != 0){
+                if(models.length > 3){
+                    $("#pullUp").show();
+                }else{
+                    $("#pullUp").hide();
+                }
+                noResultEl.hide();
+            }else{
+                $("#pullUp").hide();
+                noResultEl.show();
+            }
+            console.log("---------------------");
+            console.log(self["sort_select_the_conditions"]);
+            openCall();
+            hookLazyLoad();
+            setWeixin();
+            showAttentionPrompt();
+            $(window).scrollTop("0px");
+            if(filterCondition && filterOpen){
+                $(".activity-filter .checked").removeClass("checked");
+                $(".set-checked-"+filterCondition).addClass("checked");
+                var values= $(".set-checked-"+filterCondition).parent().attr("value");
+                self.label_screening_select_the_conditions = false;
+                self.date_select_the_conditions = false;
+                self.sort_select_the_conditions = false;
+                self[values] = true;
+                self.update();
+                if(values != "sort_select_the_conditions"){
+                    $(".initial_sort").addClass("checked");
+                }
+                $(".initial_checked").addClass("checked");
+
+            }
+            collection.trigger('fetched');
+        });
+        collection.on('fetched',function(){
+            allowRefresh = true;
+        });
+        collection.on('append', function(models, o){
+            console.info('activities is append');
+            moveToStoreList(self.appended_list);
+            self.appended_list = models;
+            console.log(self.appended_list);
+            if(self.appended_list.length == 0){
+                stop = false;
+            }else {
+                stop = (self.appended_list.length % 10 == 0) ? true : false;
+            }
+            self.update({appended_list: models});
+            resetPullUp(models);
+
+            self.trigger('ready', true);
+            hookLazyLoad();
+
+        });
+
+        var _open = function(filter){
+            this.trigger('ready', false);
+            this.filter = filter || this.filter;
+//            if(typeof this.filter.refresh !== 'undefined'){
+//                return _refresh();
+//            }
+            var fil = filter.filter;
+            if(fil){
+                var arryfilter = new Array();
+                filterOpen = true;
+                arryfilter.push(fil);
+                $(".activity-filter .checked").removeClass("checked");
+                filterCondition = fil;
+                if(fil === "all"){
+                    params.sort = {'priorityRank':-1, 'statusrank':1, 'startTime':1};
+                    params.conditions = {
+                        status: {"$in":['a','re','ac', 'co']},
+                        'tags.type': {},
+                        privateFlag: false
+                    }
+                }else if(fil === "newest" || fil === "popularity"){
+                    params.conditions = {
+                        status: {"$in":['a','re','ac', 'co']},
+                        'tags.type': {},
+                        privateFlag: false
+                    }
+                    params.sort = (fil == 'newest') ? {'crtOn': -1} : {'meta.likes': -1};
+                }else{
+                    params.conditions = {
+                        status: {"$in":['a','re','ac', 'co']},
+                        'tags.type': {"$in":arryfilter},
+                        privateFlag: false
+                    }
+                }
+            }
+            if(collection.fetched() == undefined || (self.items && self.items.length == 0) || fil) {
+                collection.fetch({filter: this.filter});
+            }else{
+                self.update();
+                self.trigger('ready', true);
+                self.trigger('view-route-to');
+            }
+        }.bind(self);
+
+        var _refresh = function(){
+            self.item = [];
+            self.appended_list = [];
+            params.page.size = 10;
+            params.page.no = 1;
+            this.trigger('ready', false);
+            setTimeout(function(){
+                $("#pullDown").hide();
+                collection.fetch({filter: this.filter});
+            },500);
+        }.bind(self);
+
+        var _append = function(){
+            this.trigger('ready', false);
+            collection.append({filter: this.filter});
+        }.bind(self);
+
+        var onLikeActivity = function(data){
+            self.items = self.items.concat(self.appended_list);
+            for(var i=0; i<self.items.length; i++){
+                if(self.items[i]._id == this.inputs[0]){
+                    self.appended_list = [];
+                    self.items[i].meta.likes = data;
+                    self.update();
+                    break;
+                }
+            }
+        }
+        var onApplyActivity = function(data){
+            self.items = self.items.concat(self.appended_list);
+            for(var i=0; i<self.items.length; i++){
+                if(self.items[i]._id == this.inputs[0].id){
+                    self.appended_list = [];
+                    var num = 0;
+                    for(var j = 0; j< data.length; j++){
+                        num = num + data[j].num;
+                    }
+                    self.items[i].meta.apps = num;
+                    self.update();
+                    break;
+                }
+            }
+        }
+        this.on('mount', function(){
+            console.info('tag activities is mounted');
+            likeActivity.onDone(onLikeActivity);
+            applyActivity.onDone(onApplyActivity);
+        });
+        this.on('unmount', function(){
+            console.info('tag activities is unmounted');
+            likeActivity.offDone(onLikeActivity);
+            applyActivity.offDone(onApplyActivity);
+        });
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            setWeixin();
+            _open(options);
+            hookLazyLoad();
+        });
+
+        this.on('leave', function(){
+            self.mask = true;
+            self.update();
+        });
+
+        this.on('reenter', function(){
+            self.mask = false;
+            self.update();
+        });
+
+        this.on('refresh', function(){
+            console.info('tag activities is refreshing');
+            _refresh();
+        });
+
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('活动');
+            }
+            $(window).scrollTop(__page.holder().getTop());
+
+        });
+
+        refresh(e){
+            _refresh();
+        }
+        var setType = function (){
+            var values = __app.enums.ProductActivityStatus.values;
+            var statusName = values[self.status];
+            $(".pa_tyle").html(statusName)
+        }
+        returnPage(e){
+            riot.route('activity/index');
+        }
+        showFootterNav(e){
+             $(e.target).toggleClass("footer_navs_but_hover");
+             var classNmae = $(e.target).attr("class");
+            if(classNmae.indexOf("footer_navs_but_hover") < 0){
+                $(".footer_navs_wary").slideUp(200);
+            }else{
+                $(".footer_navs_wary").slideDown(200);
+            }
+            e.stopPropagation();
+        };
+        clickIndexNav(e){
+            var showinfo = $(e.target).attr("alt") || '';
+            var className = $(e.target).attr("class");
+            var isconditions= $(".select_the_conditions");
+            if(className.indexOf("checked") < 0){
+                self.activity_filter = showinfo;
+                self.update();
+                showBodyShadow();
+            }else{
+                self.activity_filter = 'reset';
+                self.update();
+                hideBodyShadow();
+            }
+        };
+        select_type(e){
+            var value = $(e.target).attr("value");
+            var htmlInfo = $(e.target).text();
+            var parentinfo = $(e.target).parent().attr("alt");
+            $("#"+parentinfo).text(htmlInfo);
+            $("#"+parentinfo).addClass("select_the_conditions");
+            filterOpen = false;
+            //info 选择数据   parentinfo 选择的类型（时间、排序）
+            if(parentinfo == 'sel_date'){
+                $(".ul_sel_date li").removeClass("checked");
+                var createOn;
+                switch (value) {
+                    case '0': //全部
+                        createOn = {};
+                        $("#"+parentinfo).text("时间筛选");
+                        $("#"+parentinfo).removeClass("select_the_conditions");
+                        break;
+                    case '1': //最近三天
+                        createOn = {"$gte": util.getLastDayStartDate(), "$lte": util.getLastDayEndDate()};
+                        break;
+                    case '2': //本周
+                        createOn = {"$gte": util.getWeekStartDate(), "$lte": util.getWeekEndDate()};
+                        break;
+                    case '3': //下周
+                        createOn = {"$gte": util.getNextWeekStartDate(), "$lte": util.getNextWeekEndDate()};
+                        break;
+                    case '4': //本月
+                        createOn = {"$gte": util.getMonthStartDate(), "$lte": util.getMonthEndDate()};
+                        break;
+                    case '5': //下月
+                        createOn = {"$gte": util.getNextMonthStartDate(), "$lte": util.getNextMonthEndDate()};
+                        break;
+                    default:
+                        console.log('no match!!!');
+                        break;
+                }
+                params.conditions.startTime = createOn;
+                _refresh();
+                if(value != 0){
+                    self.date_select_the_conditions = true;
+                }else{
+                    self.date_select_the_conditions = false;
+                }
+                hideBodyShadowAll();
+            }else if(parentinfo == 'sel_sort'){
+                $(".ul_sel_sort li").removeClass("checked");
+                if(value=="acquiesce"){
+                    $("#"+parentinfo).text("排序");
+                    $("#"+parentinfo).removeClass("select_the_conditions");
+                    params.sort = {'priorityRank':-1, 'statusrank':1, 'startTime':1};
+                    self.sort_select_the_conditions = false;
+                }else if(value=="newest"){
+                    $("#"+parentinfo).text("最新");
+                    params.sort = (value == 'newest') ? {'crtOn': -1} : {'meta.apps': -1};
+                    self.sort_select_the_conditions = true;
+                }else{
+                    params.sort = (value == 'newest') ? {'crtOn': -1} : {'meta.likes': -1};
+                    self.sort_select_the_conditions = true;
+                }
+
+                hideBodyShadowAll();
+                _refresh();
+
+            }
+            $(e.target).toggleClass("checked");
+        };
+        typeSelectObj(){
+            var typeInfo = $(".label_screening .checked");
+            filterOpen = false;
+            if(typeInfo.length > 0){
+                var arrObj = [];
+                for(var i=0;i<typeInfo.length;i++){
+                    arrObj.push($(typeInfo[i]).attr("value"));
+                }
+                //arrobj  选择数据;
+                params.conditions = {
+                    status: {"$in":['a','re','ac', 'co']},
+                    'tags.type': {"$in":arrObj},
+                    privateFlag: false
+                }
+                __page.tenant && (params.conditions.tenantId = __page.tenant);
+                _refresh();
+                var selectcondition = function(){
+                    self.label_screening_select_the_conditions = true;
+                    hideBodyShadowAll();
+                    collection.off('fetch', selectcondition);
+                }
+                collection.off('fetch', selectcondition).on('fetch', selectcondition);
+            }
+        };
+        setAllType(e){
+            filterOpen = false;
+            $(".label_screening li").removeClass("checked");
+            params.conditions = {
+                status: {"$in":['a','re','ac', 'co']},
+                'tags.type': {},
+                privateFlag: false
+            }
+            __page.tenant && (params.conditions.tenantId = __page.tenant);
+            self.label_screening_select_the_conditions = false;
+            _refresh();
+            hideBodyShadowAll();
+        };
+        function showBodyShadow(){
+            var winheight = $(window).height();
+            var bodyheight = $("body").height();
+            var setHeight = winheight > bodyheight ? winheight : bodyheight;
+            $(".body_shadow").show().css("height",setHeight+"px").css("z-index","500");
+        };
+        hidewechat_concern(e){
+            hideBodyShadowAll();
+        }
+       function hideBodyShadowAll(){
+            $(".wechat-concern").hide();
+            hideBodyShadow();
+        };
+        hideBodyShadowAllHandler(){
+            hideBodyShadowAll();
+        }
+        openWxhref(){
+//                riot.route(self.wxhref);
+            util.setCookie('attentionUrl', "activity/index", 1);
+            hideBodyShadowAll();
+            window.location = self.wxhref;
+        };
+        function hideBodyShadow(){
+            $(".body_shadow").hide();
+            self.activity_filter = 'reset';
+            self.update();
+        };
+        showattention(){
+            self.fromButtonClick = true;
+            if(self.subscribe){
+                riot.route("activity/new");
+            }else{
+                var wintop = $(window).scrollTop();
+                var winheight = $(window).height();
+                var bodyheight = $("body").height();
+                var apply_waryheight = $(".wechat-concern").height()-100;
+                var setHeight = winheight > bodyheight ? winheight : bodyheight;
+                var settop = wintop+(winheight/2)-(apply_waryheight/2)-100;
+                $(".body_shadow").show().css("height",setHeight+"px").css("z-index","699");
+                $(".wechat-concern").show().css("top",settop+"px");
+            }
+        };
+        function showAttentionPrompt(){
+            if (!self.subscribe) {
+                if (util.getCookie('showAttentionPrompt') == undefined) {
+                    var wintop = $(window).scrollTop();
+                    var winheight = $(window).height();
+                    var bodyheight = $("body").height();
+                    var apply_waryheight = $(".wechat-concern").height() - 100;
+                    var setHeight = winheight > bodyheight ? winheight : bodyheight;
+                    var settop = wintop + (winheight / 2) - (apply_waryheight / 2) - 100;
+                    $(".body_shadow").show().css("height", setHeight + "px").css("z-index", "699");
+                    $(".wechat-concern").show().css("top", settop + "px");
+                    util.setCookie('showAttentionPrompt', 'true', 1);
+                }
+            }
+        }
+        var hookLazyLoad = function(){
+            //$("img.activity-cover-img").lazyload({ threshold : 200 ,effect:"fadeIn"});
+            setImageHeight();
+        };
+
+        var appendLazyLoad = function(){
+            //$(".appendImg").lazyload({ threshold : 200 ,effect:"fadeIn"});
+            setImageHeight();
+        };
+
+        function setImageHeight() {
+            var setHeight = Math.round($("#wary").width() * 360 / 640);
+            $(".img1").css("height", setHeight+"px");
+        }
+
+        function moveToStoreList(list) {
+            if (list != undefined) {
+                list.forEach(function (item) {
+                    self.items.push(item);
+                });
+                console.log('self.items ' + self.items.length);
+            }
+        }
+
+        function resetPullUp(items) {
+            console.log(items);
+            if(items.length == 0){
+                document.getElementById('pullUp').style.display = "none";
+            }else{
+                document.getElementById('pullUp').style.display = "block";
+                pullUpEl.className = '';
+                pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多活动...';
+            }
+        }
+
+
+       var openCall = function(){
+           scrollBody.addEventListener('touchstart', fn, false);
+           scrollBody.addEventListener('touchmove', fn, false);
+           scrollBody.addEventListener('touchend', fn, false);
+           scrollBody.addEventListener('touchcancel', fn, false);
+           function fn(event) {
+               var event = event || window.event;
+               switch (event.type) {
+                   case "touchstart":
+                       console.log('touchstart');
+                       oldPosY = event.targetTouches[0].screenY;
+                       break;
+                   case "touchcancel":
+                   case "touchend":
+                       console.log('touchend');
+                       if (pullUpEl.className.match('flip')) {
+                           pullUpEl.className = 'loading';
+                           pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';
+                           if (stop == true) {
+                               stop = false;
+                               params.page.no++;
+                               _append();
+                           }else{
+                               document.getElementById('pullUp').style.display = "none";
+                           }
+                       }
+                       break;
+                   case "touchmove":
+                       console.log("touchmove");
+                       var touch = event.targetTouches[0];
+                       //判断拖动的dom元素是否正确
+                       var isTargetDom = false;
+                       if($(touch.target)[0].tagName == 'IMG' && $(touch.target).attr("class").indexOf("activity-cover-img")>-1 && touch.pageY > 45){
+                           isTargetDom = true;
+                       }
+                       newPosY = touch.screenY;
+                       if((newPosY - oldPosY) > 0 && isTargetDom && $(window).scrollTop() === 0) {
+                           if( allowRefresh ){
+                               allowRefresh = false;
+                               $("#pullDown").show();
+                               _refresh();
+                           }
+
+                       }
+
+                       var totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+                       __page.holder().saveTop($(window).scrollTop());
+
+
+                       if (($(document).height() - 25 <= totalheight) && ($(document).height() <= totalheight)) {
+                           if (!pullUpEl.className.match('flip')) {
+                               pullUpEl.className = 'flip';
+                               pullUpEl.querySelector('.pullUpLabel').innerHTML = '松开加载更多活动...';
+//                               this.maxScrollY = this.maxScrollY;
+                           }
+                       } else if (($(document).height() - 50 <= totalheight) && ($(document).height() - 25 >= totalheight)) {
+                           if (pullUpEl.className.match('flip')) {
+                               pullUpEl.className = '';
+                               pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多活动...';
+//                               this.maxScrollY = pullUpOffset;
+                           }
+                       }
+                       break;
+               }
+           }
+
+           $(window).resize(function () {
+               setImageHeight();
+           });
+       }
+        var setWeixin = function(){
+                //分享给朋友
+                wx.onMenuShareAppMessage({
+                    title: '快乐种子', // 分享标题
+                    desc: '欢迎关注快乐种子，更多精彩活动等你参加！', // 分享描述
+                    link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                    imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                    type: '', // 分享类型,music、video或link，不填默认为link
+                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                    success: function () {
+                        _czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', '首页', '', 0]);
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+                //分享朋友圈
+                wx.onMenuShareTimeline({
+                    title: '快乐种子', // 分享标题
+                    link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                    imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                    success: function () {
+                        _czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', '首页', '', 1]);
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+        }
+    </script>
+</activity-list>

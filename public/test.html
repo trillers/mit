@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>测试</title>
+    <script>
+        var msgQueue = [];
+        console.info = function(msg){
+            msgQueue.push(msg);
+        };
+
+        function printLogs(){
+            console.log(msgQueue.join('\r\n'));
+            msgQueue.splice(0, msgQueue.length);
+        }
+
+        function printLog(){
+            var i = console.info('hello');
+//            console.info(i);
+        }
+
+        if(window.log){
+            console.log('asdfasfds');
+        }
+    </script>
+</head>
+<body>
+<button onclick="printLogs();">print all logs</button><br>
+<input type="text" id="text"><button onclick="printLog();">log</button><br>
+
+</body>
+</html>

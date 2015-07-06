@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title><%=name%></title>
+    <link href="../web/css/style.css" rel="stylesheet">
+    <!--<script src="../public/components/jquery/jquery.min.js"></script>-->
+    <script src="../web/js/jquery-1.7.2.min.js"></script>
+    <script src="../web/js/jquery.lazyload.js"></script>
+    <script src="../web/js/jssdk.js"></script>
+    <script>
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+        $(function(){
+            $("img").lazyload({ threshold : 200 ,effect:"fadeIn"});
+        });
+    </script>
+</head>
+<body>
+<div class="xcgyimg  border_radius" style="bottom:166px;" id="focus_on"><a href="http://mp.weixin.qq.com/s?__biz=MzA3MjIwNTk4Mg==&mid=203179604&idx=1&sn=6a18b351c8685f70b988ad2097ce182d#rd" > <img src="/public/images/3_10.png" class="border_radius" /></a></div>
+<div id="wary" >
+    <div class="screen">
+        <img src="<%=coverPics[0] %>" class="img1" />
+        <div class="scr tt_setheight_line">
+            <div class="scr_left"><%=name%></div>
+            <div class="scr_right"><img src="/public/images/3_03.png" /> <span class="likesum"><%=meta.likes %></span></div>
+        </div>
+        <div class="shadow tt_setheight"></div>
+    </div>
+
+    <div class="pun t-c set_width2">
+        <%-promotionWords %>
+    </div>
+    <div class="pub_tit t-c m_top10">
+        亮点
+    </div>
+    <ul class="ld_ul1">
+        <%
+            var highlightsArray = highlights.split("\r\n");
+            for(var i=0;i<highlightsArray.length;i++){
+                if(highlightsArray[i]!=""){
+
+        %>
+            <li>• <%=highlightsArray[i]%></li>
+        <%
+            }}
+         %>
+    </ul>
+    <div class="pub_tit t-c m_top10">
+        概览
+    </div>
+    <div class="pun m_top10 set_width1" >
+        <%-summary %>
+    </div>
+    <!--<div class="list_nav">
+       <div class="click_h" alt="introduce" style="width:100%;">介绍</div>
+      <div alt="comment">评论</div>
+    </div>-->
+    <div class="pub_tit t-c m_top10">
+        介绍
+    </div>
+    <div class="introduce nav_info" >
+<%
+    for(var i=0;i<elements.length;i++){
+        var element = elements[i];
+%>
+        <div class="detail_pub m_top10">
+            <p class="FB"><img src="/public/images/3_01.png" class="img_width vertical" /> <span class="vertical" ><%=i+1 %>.<%=element.name %></span></p>
+            <%
+                for(var j=0;j<element.spots.length;j++){
+                    var spotsArray = element.spots[j];
+                    for(var z=0;z<spotsArray.pics.length;z++){
+                        if(spotsArray.pics[z]){
+
+            %>
+                    <img src="/public/images/zw600.jpg" data-original="<%=spotsArray.pics[z]%>" class="border_radius_3px"  />
+            <%
+                    }}
+            %>
+                    <p><%=spotsArray.desc%></p>
+            <%
+                }
+            %>
+        </div>
+<%
+}
+%>
+        <div class="xcgyimg border_radius xcgy_gz" id="showCatalog" ><img src="/public/images/3_09.png"  class="border_radius"/></div>
+
+    </div>
+    <div class="comment display_none nav_info" id="commentId"></div>
+    <div class="detail_pub m_top10 position_rel border_radius_3px">
+        <img src="../public/images/guanzhu.jpg" alt="提示" class="border_radius_3px" />
+        <a href="http://mp.weixin.qq.com/s?__biz=MzA3MjIwNTk4Mg==&mid=203179604&idx=1&sn=6a18b351c8685f70b988ad2097ce182d#rd" class="butA" ></a>
+    </div>
+    <!--导航 -->
+    <div class="home_gy">
+        <img src="/public/images/home.png" class="border_radius img_home"/>
+        <a href="/index#activity/index"><img src="/public/images/home_nav1.png" class="home_nav"/></a>
+        <a href="/tt/collection-default"><img src="/public/images/home_nav2.png" class="home_nav"/></a>
+        <a href="/index#mine/index"><img src="/public/images/home_nav3.png" class="home_nav"/></a>
+        <img src="/public/images/home_close.png" class="home_close"/>
+    </div>
+    <!--底部-->
+    <div class="footer_zw"></div>
+    <div class="footer">
+        <!-- <p class="p1"><img src="/public/images/3_06.png" class="vertical" /> <span class="vertical">喜欢</span></p>
+         <p class="p2"><img src="/public/images/3_07.png" class="vertical" /> <span class="vertical">喊人一起去</span></p>
+         <p class="p3"><img src="/public/images/3_08.png" class="vertical" /> <span class="vertical">评论</span></p>-->
+        <p class="p1" style="width:33%;"><img src="/public/images/3_06.png" class="vertical nolike" /> <img src="/public/images/3_06_h.png" class="vertical yeslike" /> <span class="vertical">喜欢</span></p>
+        <p class="p3" style="width:65%;"><img src="/public/images/3_07.png" class="vertical" style="width:11px;" /> <span class="vertical">分享</span></p>
+    </div>
+    <div class="footer_shadow"></div>
+    <div class="body_shadow display_none"></div>
+    <div class="xcgy_wary display_none">
+        <div class="xcgy_wary_div1">介绍目录</div>
+        <div class="xcgy_wary_div2">
+            <ul>
+ <%
+        for(var i=0;i<elements.length;i++){
+        var element = elements[i];
+        if(elements.length==i+1){
+ %>
+                <li class="li1"><p></p><%=i+1%>.<%=element.name%></li>
+<%
+            break
+        }
+ %>
+                <li><p></p><%=i+1%>.<%=element.name%></li>
+ <%}%>
+            </ul>
+        </div>
+    </div>
+    <div class="comments_wary display_none border_radius">
+        <img src="/public/images/close.png" class="but_close_img" />
+        <div class="comm_cz_sbss" >随便说说</div>
+        <textarea class="textarea border_radius"></textarea>
+        <button class="comm_but border_radius" >提交</button>
+    </div>
+    <div class="together display_none" id="clickXHidden">
+        <!--<div class="together_div1">-->
+            <!--<textarea class="border_radius textarea_welcome" >点击添加旅行宣言和邀请词</textarea>-->
+        <!--</div>-->
+        <img src="/public/images/4_02.png" class="together_img" />
+        <!--<img src="/public/images/3_13.png" class="together_img" style="margin-top:70px" />-->
+    </div>
+</div>
+<input type="hidden" id="travelId" value="<%=_id%>" />
+<script type="text/javascript" src="../public/js/travel.js"></script>
+<script type="text/javascript">
+    var ycXcgy = function(){
+        $(".body_shadow").hide();
+        $(".xcgy_wary").hide();
+        $("body").css("overflow","visible");
+    }
+    var setAffair = function(tops){
+        ycXcgy();
+        $(window).scrollTop(tops-10);
+    }
+    $(function(){
+        $(".img_home").click(function(){
+            $(".home_gy").removeClass("home_gy_set1");
+            $(".home_gy").addClass("home_gy_set");
+        });
+        $(".home_close").click(function(){
+            $(".home_gy").removeClass("home_gy_set");
+            $(".home_gy").addClass("home_gy_set1");
+        });
+    });
+    wx.ready(function(){
+        //分享给朋友
+        wx.onMenuShareAppMessage({
+            title: '<%=name%>', // 分享标题
+            desc: '<%-promotionWords %>', // 分享描述
+            link: __app.settings.api.urlt+"/tt/<%=_id%>", // 分享链接
+            imgUrl: '<%=coverPics[0] %>', // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        //分享朋友圈
+        wx.onMenuShareTimeline({
+            title: '<%=name%>', // 分享标题
+            link: __app.settings.api.url+"/tt/<%=_id%>", // 分享链接
+            imgUrl: '<%=coverPics[0] %>', // 分享图标
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+</script>
+</body>
+</html>

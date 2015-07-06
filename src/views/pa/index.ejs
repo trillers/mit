@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>发现</title>
+    <link rel="stylesheet/less" type="text/css" href="../web/css/index.less" />
+    <script src="../public/components/less/dist/less.js"></script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+    </script>
+</head>
+<body>
+<div id="wary">
+    <div class="ind_topnav_placeholder"></div>
+    <div class="ind_topnav">
+        <div class="nav">
+            <div class="nav_div1" onclick="{clickIndexNav}" alt="label_screening" id="label_screeningId">类型筛选</div>
+            <div class="nav_div2" onclick="{clickIndexNav}" alt="time_screen" id="sel_date">时间筛选</div>
+            <div class="nav_div3" onclick="{clickIndexNav}" alt="sort" id="sel_sort">排序</div>
+            <a href="#activity/search"><img src="../public/images/search_bj.png" /></a>
+        </div>
+        <div class="select_info select_pub time_screen">
+            <ul class="ul_sel_date" alt="sel_date">
+                <li onclick="{select_type}" class="xz" value="0">全部</li>
+                <li onclick="{select_type}" value="1">最近三天</li>
+                <li onclick="{select_type}" value="2">本周</li>
+                <li onclick="{select_type}" value="3">下周</li>
+                <li onclick="{select_type}" value="4">本月</li>
+                <li onclick="{select_type}" value="5">下月</li>
+            </ul>
+        </div>
+        <div class="select_info select_pub sort">
+            <ul class="ul_sel_sort" alt="sel_sort">
+                <li onclick="{select_type}" class="xz" value="acquiesce">默认</li>
+                <li onclick="{select_type}" value="newest">最新</li>
+                <li onclick="{select_type}" value="popularity">人气</li>
+            </ul>
+        </div>
+        <div class="label_screening select_pub">
+            <ul>
+                <li onclick="{select_type}" value="fa">亲子少儿</li>
+                <li onclick="{select_type}" value="of">户外健身</li>
+                <li onclick="{select_type}" value="tn">周边游</li>
+                <li onclick="{select_type}" value="pt">聚会派对</li>
+                <li onclick="{select_type}" value="ex">展览展会</li>
+                <li onclick="{select_type}" value="tb">团队建设</li>
+                <li onclick="{select_type}" value="tr">旅行</li>
+                <li onclick="{select_type}" value="oa">其他活动</li>
+            </ul>
+            <div class="clear"></div>
+            <div class="label_button">
+                <div class="label_button_div">
+                    <button class="confirm_but1 fl" onclick="{setAllType}"><img src="../public/images/but_s1.png" class="vertical" /> <span class="vertical" >全部</span></button>
+                    <button class="confirm_but2 fr" onclick="{typeSelectObj}"><img src="../public/images/but_s2.png" class="vertical"/> <span class="vertical" >筛选</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="activity_list">
+        <div class="screen recommended over_hidden">
+            <div></div>
+            <a href="#"><img class="activity-cover-img img1" data-original="/public/images/def_img_tn.jpg" src="/public/images/def_img_tn.jpg" style="height: 180px; display: inline;"></a>
+            <div class="lv_typewz lv_typewz_a lv_width_a ">报名中</div>
+            <div class="lv_num lv_num_gw">
+                <p class="p1"><img width="15" class="vertical" src="/web/images/item2.png"> <span class="vertical">0</span></p>
+                <p class="p2"><img width="15" src="/web/images/item1.png"> <span class="vertical">1</span></p>
+                <p class="p3"></p>
+                <p class="p4"></p>
+            </div>
+            <div class="scr">
+                <div class="scr_left scr_left_widht100">
+                    <p class="p1">测试</p>
+                    <p class="p2"> <span></span>04/23 周四 测试哦 </p>
+                </div>
+            </div>
+            <div class="shadow"></div>
+        </div>
+        <div class="screen recommended over_hidden">
+            <div></div>
+            <a href="#"><img class="activity-cover-img img1" data-original="/public/images/def_img_tn.jpg" src="/public/images/def_img_tn.jpg" style="height: 180px; display: inline;"></a>
+            <div class="lv_typewz lv_typewz_a lv_width_a ">报名中</div>
+            <div class="lv_num lv_num_gw">
+                <p class="p1"><img width="15" class="vertical" src="/web/images/item2.png"> <span class="vertical">0</span></p>
+                <p class="p2"><img width="15" src="/web/images/item1.png"> <span class="vertical">1</span></p>
+                <p class="p3"></p>
+                <p class="p4"></p>
+            </div>
+            <div class="scr">
+                <div class="scr_left scr_left_widht100">
+                    <p class="p1">错当苏堤</p>
+                    <p class="p2"> <span></span>04/22 周三 说说说 </p>
+                </div>
+            </div>
+            <div class="shadow"></div>
+        </div>
+        <div class="screen recommended over_hidden">
+            <div></div>
+            <a href="#"><img class="activity-cover-img img1" data-original="/public/images/def_img_of.jpg" src="/public/images/def_img_of.jpg" style="height: 180px; display: inline;"></a>
+            <div class="lv_typewz lv_typewz_a lv_width_a ">报名中</div>
+            <div class="lv_num lv_num_gw">
+                <p class="p1"><img width="15" class="vertical" src="/web/images/item2.png"> <span class="vertical">0</span></p>
+                <p class="p2"><img width="15" src="/web/images/item1.png"> <span class="vertical">1</span></p>
+                <p class="p3"></p>
+                <p class="p4"></p>
+            </div>
+            <div class="scr">
+                <div class="scr_left scr_left_widht100">
+                    <p class="p1">测速点</p>
+                    <p class="p2"> <span></span>04/22 周三 说说说 </p>
+                </div>
+            </div>
+            <div class="shadow"></div>
+        </div>
+        <div class="screen recommended over_hidden">
+            <div></div>
+            <a href="#"><img class="activity-cover-img img1" data-original="/public/images/def_img_of.jpg" src="/public/images/def_img_of.jpg" style="height: 180px; display: inline;"></a>
+            <div class="lv_typewz lv_typewz_a lv_width_a ">报名中</div>
+            <div class="lv_num lv_num_gw">
+                <p class="p1"><img width="15" class="vertical" src="/web/images/item2.png"> <span class="vertical">0</span></p>
+                <p class="p2"><img width="15" src="/web/images/item1.png"> <span class="vertical">1</span></p>
+                <p class="p3"></p>
+                <p class="p4"></p>
+            </div>
+            <div class="scr">
+                <div class="scr_left scr_left_widht100">
+                    <p class="p1">测试</p>
+                    <p class="p2"> <span></span>04/22 周三 撒地方 </p>
+                </div>
+            </div>
+            <div class="shadow"></div>
+        </div>
+    </div>
+
+    <!--底部 -->
+    <div class="footer_placeholder"></div>
+    <div class="footer">
+        <a href="#activity/new"><p class="p3 activity" style="width:100%;color:#fff;"><span class="vertical"><b>+</b> 发起活动</span>
+            </p></a>
+        <div class="footer_navs_but" onclick="{showFootterNav}"></div>
+        <div class="footer_navs_wary display_none">
+            <a href="#activity/index" class="nav1">活动</a>
+            <a href="#travel/index"  class="nav2">目的地</a>
+            <a href="#mine/index"  class="nav3">我的</a>
+            <a href="{wxhref}"  class="nav4">关注种子旅行</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>调试页面</title>
+    <script type="text/javascript" src="public/components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="public/components/jquery.cookie/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#signout').click(function(e){
+                $.cookie("token", null, { path: '/' });
+                $.cookie("agent", null, { path: '/' });
+                $.cookie("attentionUrl", null, { path: '/' });
+                $.cookie("showAttentionPrompt", null, { path: '/' });
+            });
+            $('#userinfo').click(function(e){
+                $('#cookie').html(
+                        'token: ' + $.cookie("token") + '<br>'
+                        + 'agent: ' + $.cookie("agent") + '<br>'
+                        + 'connect.sid: ' + $.cookie("connect.sid")
+                );
+
+                var userInfo = {
+                    wx_subscribe: __page.user && __page.user.wx_subscribe
+                };
+                $('#userInPage').text(JSON.stringify(userInfo));
+
+                $.getJSON(__app.settings.api.url + '/user/_' + __page.user.id)
+                        .done(function (data, textStatus, jqXHR) {
+                            var info = {
+                                wx_subscribe: data.result && data.result.wx_subscribe
+                            };
+                            $('#userInStore').text(JSON.stringify(info));
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            $('#userInStore').text(JSON.stringify(errorThrown));
+                        });
+
+            });
+
+        });
+
+
+    </script>
+</head>
+<body>
+    <a id="signout" href="/auth/signout">注销</a>
+    <a id="userinfo" href="#">用户信息</a>
+
+    <br><br>
+    页面用户信息：
+    <div id="userInPage">
+    </div>
+
+    <br><br>
+    存储用户信息：
+    <div id="userInStore">
+    </div>
+
+    <br><br>
+    COOKIE信息
+    <div id="cookie">
+    </div>
+
+</body>
+</html>

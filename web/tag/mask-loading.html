@@ -1,0 +1,29 @@
+<mask-loading>
+    <div>
+        <div class="container" style="height:{winheight}">
+            <div class="mask_loading" >
+                <div></div>
+                <div></div>
+                <p>小种子努力加载中...</p>
+            </div>
+        </div>
+    </div>
+    <style scoped>
+        :scope{
+        }
+        .container{
+            width:100%;
+            height:100%;
+            min-height:567px;
+        }
+    </style>
+    <script>
+        var self = nest.presentable(this);
+        self.env = __app.settings.env.NODE_ENV;
+        this.winheight = window.innerHeight+"px";
+        this.on('mount',function(){
+            //$(window).scrollTop("0px");
+        });
+        this.show = this.opts.show;
+    </script>
+</mask-loading>

@@ -1,0 +1,51 @@
+{
+    "name": "苏州",
+    "coverPics": [
+        "http://ww2.sinaimg.cn/large/495a6d9ejw1eoafn4klh8j21e00s47ju.jpg",
+        "http://ww4.sinaimg.cn/large/495a6d9ejw1ems4hvhmvgj20qo0zkjyk.jpg"
+    ],
+    "promotionWords": "苏州",
+    "highlights": "苏州",
+    "summary": "苏州",
+    "elements": [
+        {
+            "name": "虎丘",
+            "spots": [
+                {
+                    "desc": "剑湖",
+                    "pics": [
+                        "http://ww2.sinaimg.cn/large/495a6d9ejw1eoafn4klh8j21e00s47ju.jpg",
+                        "http://ww4.sinaimg.cn/large/495a6d9ejw1ems4hvhmvgj20qo0zkjyk.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "拙政园",
+            "spots": [
+                {
+                    "desc": "凉亭",
+                    "pics": [
+                        "http://ww2.sinaimg.cn/large/495a6d9ejw1eoafn4klh8j21e00s47ju.jpg",
+                        "http://ww4.sinaimg.cn/large/495a6d9ejw1ems4hvhmvgj20qo0zkjyk.jpg"
+                    ]
+                }
+            ]
+        }
+    ],
+    "comments": [
+        {
+            "comment": "雕梁画栋，巧夺天工啊！"
+        },
+        {
+            "comment": "还不错，人有点多！"
+        }
+    ],
+    "tags": {
+        "region": "江苏"
+    },
+    "meta": {
+        "views": 0,
+        "likes": 0
+    }
+}

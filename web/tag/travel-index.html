@@ -1,0 +1,146 @@
+<travel-index>
+    <div if="{!hidden}">
+        <div class="clear">&nbsp</div>
+        <div class="activity-list">
+            <travel-item each={items} curritem="{this}" class="activity-item travel-item" />
+        </div>
+
+        <wechat-menu if="{!subscribe}"/>
+        <!--底部 -->
+        <div class="footer_placeholder"></div>
+        <div class="footer-index setleft">
+            <div>
+                <a href="#activity/index"><i><img src="/{env}/images/footer_nav_activity1.png" /><br/>活动</i></a>
+                <a href="#travel/index"><i class="current"><img src="/{env}/images/footer_nav_travel2.png" /><br/>场所</i></a>
+                <a href="#mine/index"><i><img src="/{env}/images/footer_nav_mine1.png" /><br/>我的</i></a>
+            </div>
+            <div>
+                <i onclick="{showattention}">发布活动</i>
+            </div>
+        </div>
+    </div>
+    <script>
+        var self = nest.presentable(this);
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        var params = {
+            sort: {'updOn': -1},
+//            page: {
+//                size: 10,
+//                no: 1
+//            },
+            conditions: {
+//                status: {"$in":['o','cl','ca']}
+            }
+        };
+        var collection = this.collection = nest.collectable({}, {
+            url: __app.settings.api.url + "/tt/filter",
+            filter: params
+        });
+
+        collection.on('fetch', function(models, o){
+            console.info('activities is fetched');
+            self.items = models;
+            self.subscribe = (__page.user.wx_subscribe == 1) ? true : false;
+            self.update();
+            self.trigger('ready', true);
+            self.trigger('view-route-to');
+            hookLazyLoad();
+            bindNavigator();
+        });
+
+        var _open = function(filter){
+            this.trigger('ready', false);
+            this.filter = filter || this.filter;
+            collection.fetch({filter: this.filter});
+        }.bind(self);
+
+        var _refresh = function(){
+            this.trigger('ready', false);
+            collection.fetch({filter: this.filter});
+        }.bind(self);
+
+        this.on('mount', function(){
+            console.info('tag activities is mounted');
+        });
+
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            _open(options);
+        });
+
+        this.on('refresh', function(){
+            console.info('tag activities is refreshing');
+            _refresh();
+        });
+
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('场所');
+            }
+            $(window).scrollTop("0px");
+        });
+
+        refresh(e){
+            _refresh();
+        }
+
+        var hookLazyLoad = function(){
+            //$("img.activity-cover-img").lazyload({ threshold : 200 ,effect:"fadeIn"});
+            setImageHeight();
+        };
+
+        function setImageHeight() {
+            var setHeight = Math.round(Math.round($("#wary").width() * 0.95) * 260 / 600) - 3;
+            $(".img1").css("height", setHeight + 5);
+        }
+
+        $(window).resize(function () {
+            setImageHeight();
+        });
+        var bindNavigator = function () {
+            $(document).click(function () {
+                if($(".home_gy_set")){
+                    $(".home_gy").removeClass("home_gy_set");
+                    $(".home_gy").addClass("home_gy_set1");
+                }
+            });
+            $(".img_home").click(function (event) {
+                $(".home_gy").removeClass("home_gy_set1");
+                $(".home_gy").addClass("home_gy_set");
+                event.stopPropagation();
+            });
+        };
+        showattention(e){
+            riot.route("activity/new");
+        }
+        wx.ready(function(){
+            //分享给朋友
+            wx.onMenuShareAppMessage({
+                title: '快乐种子', // 分享标题
+                desc: '欢迎关注快乐种子，更多精彩活动等你参加！', // 分享描述
+                link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+            //分享朋友圈
+            wx.onMenuShareTimeline({
+                title: '快乐种子', // 分享标题
+                link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+    </script>
+</travel-index>

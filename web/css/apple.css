@@ -1,0 +1,32 @@
+#startTime{
+    position: absolute;
+    top:0px;left:0px;
+    width:100%;
+    z-index: 100;
+    opacity: 0;
+}
+#birthday{
+    position: absolute;
+    top:0px;right:0px;
+    width:100%;
+    z-index: 200;
+    height:37px;
+    opacity: 0;
+}
+#endTime{
+    position: absolute;
+    top:0px;left:0px;
+    width:100%;
+    z-index: 100;
+    opacity: 0;
+}
+#closingTime{
+    position: absolute;
+    top:0px;left:0px;
+    width:100%;
+    z-index: 100;
+    opacity: 0;
+}
+#editor{
+    /*height: 300px;*/
+}
