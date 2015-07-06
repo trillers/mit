@@ -3,6 +3,6 @@ module.exports = function(router){
     require('../../app/routes-spa')(router);
 
     router.get('/', function(req, res){
-        res.render('index');
+        res.render('index', {actions:[{name:'shopping'}, {name:'walking'}]});
     });
 };

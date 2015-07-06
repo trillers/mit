@@ -4,7 +4,6 @@ var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
 var fs = require('fs');
-var ejs = require('ejs');
 var path = require('path');
 
 

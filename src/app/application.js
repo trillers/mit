@@ -3,7 +3,7 @@ var logging = require('./logging');
 var logger = logging.logger;
 var express = require('express');
 var app = module.exports = express();
-
+var swig = require('swig');
 
 //configure application fixtures
 app.set('env', 'development' || settings.env.NODE_ENV);//TODO: now it doesn't work if i switch express to production, so use development always now
@@ -12,9 +12,11 @@ app.enable('trust proxy'); //TODO: configure it by settings
 //app.locals(settings.resources);//TODO: configure it later
 app.set('port', process.env.PORT || settings.env.PORT);//TODO: configure it by settings
 app.set('bindip', process.env.BINDIP || settings.env.BINDIP);
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
 app.set('views', __dirname + '/../../src/views');
-app.set('view engine', 'ejs');
-app.engine('ejs', require('ejs-mate'));
+app.set('view cache', false);
+swig.setDefaults({ cache: false });
 app.use(logging.applogger);
 require('../routes')(app);
 

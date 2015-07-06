@@ -5,7 +5,6 @@ var jobService = require('../../jobs/ProductActivityJob');
 var util = require('util');
 var fs = require("fs");
 var path = require('path');
-var ejs = require('ejs');
 var csv = require('fast-csv');
 var encode = require('encoding');
 var logger = require('../../app/logging').logger;
@@ -382,40 +381,6 @@ module.exports = function(router){
 
     });
 
-    //list applications
-    router.get('/_:id/applications', function(req, res) {
-        var thingId = req.params.id;
-        var action = req.query.action;
-        var mailbox = req.query.mailbox;
-        var paName = req.query.name;
-
-        if (action=="mail"){
-            var dwUrl = "http://www.zz365.com.cn/api/pa/applications_" + thingId;
-            var template = fs.readFileSync(path.join(__dirname, '../../views/email-template.ejs'), 'utf-8');
-            var html = ejs.render(template, {name: paName, url: dwUrl});
-
-            var userId = req.session.user.id;
-            var contact = {'contact.email': mailbox};
-            userService.updateContact(userId, contact, function(err){
-                logger.info('update user [id: ' + userId + '] contact ' + err);
-            });
-
-            emailService.send(mailbox, '活动报名清单导出', html, function (err, msg) {
-                if (err) {
-                    res.status(500).json(ApiReturn.i().error('failed to send eamil'));
-                } else {
-                    res.status(200).json(ApiReturn.i().ok(msg));
-                }
-            });
-
-        }
-        else{
-            service.listApplications(thingId, function(err, docs) {
-                //TODO: error handling
-                res.status(200).json(ApiReturn.i().ok(docs));
-            });
-        }
-    });
 
     router.post('/_:id/applications', function(req, res) {
         var thingId = req.params.id;

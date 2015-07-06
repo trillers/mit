@@ -53,8 +53,8 @@
     <div class="radius_bj"></div>
 </div>
 <% if(__app.settings.env.NODE_ENV !== "production"){ %>
-<script src="../public/components/seajs/dist/sea.js"></script>
-<script src="../web/js/app/seajs-wrap.js"></script>
+<script src="/web/spm/spm_modules/seajs/2.3.0/dist/sea.js"></script>
+<script src="/web/spm/spm_modules/seajs-wrap/1.0.2/dist/seajs-wrap.js"></script>
 <% } %>
 <script type="text/javascript">
     window.__app = <%-JSON.stringify(__app)%>;
@@ -77,19 +77,19 @@
         stylelink.href = "/web/css/style.min.css";
     }else{
         scripthook.src = "/web/index.js";
-        stylelink.href = "../web/css/index.css";
+        stylelink.href = "/web/css/index.css";
         stylelink_detali.type = "text/css";
         stylelink_detali.rel = "stylesheet";
-        stylelink_detali.href = "../web/css/detali.css";
+        stylelink_detali.href = "/web/css/detali.css";
         stylelink_new.type = "text/css";
         stylelink_new.rel = "stylesheet";
-        stylelink_new.href = "../web/css/new.css";
+        stylelink_new.href = "/web/css/new.css";
         stylelink_travel.type = "text/css";
         stylelink_travel.rel = "stylesheet";
-        stylelink_travel.href = "../web/css/travel.css";
+        stylelink_travel.href = "/web/css/travel.css";
         stylelink_other.type = "text/css";
         stylelink_other.rel = "stylesheet";
-        stylelink_other.href = "../web/css/other.css";
+        stylelink_other.href = "/web/css/other.css";
         document.getElementsByTagName( "head" )[0].appendChild( stylelink_detali );
         document.getElementsByTagName( "head" )[0].appendChild( stylelink_new );
         document.getElementsByTagName( "head" )[0].appendChild( stylelink_travel );

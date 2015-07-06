@@ -96,7 +96,6 @@ var attachLocals = function (req, res, next) {
     var browser = detectBrowser(req);
     var user = req.session && req.session.user;
     var uid = user ? user.id : null;
-    var tenant = req.query.tenant || null;
     user = user || {};
     req.browser = browser;
     req.user = user;
@@ -104,8 +103,6 @@ var attachLocals = function (req, res, next) {
 
     res.locals.__page.browser = browser;
     res.locals.__page.user = user;
-    res.locals.__page.tenant = tenant;
-    res.locals.__page.appFields = getApplicationFields();
     res.locals.__page.url = getUrl(req);
     res.locals.__page.baseUrl = getBaseUrl(req);
     res.locals.__page.servertime = getServerTime();
