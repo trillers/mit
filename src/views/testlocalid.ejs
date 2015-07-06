@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <!--<meta charset="UTF-8">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>-->
+    <!--<title>快乐种子</title>-->
+    <!--<style>-->
+        <!--body{-->
+            <!--margin:0px;padding: 0px;-->
+        <!--}-->
+    <!--</style>-->
+    <scirpt src="/public/components/jquery/jquery.js"></scirpt>
+    <script src="../../../web/js/app/jssdk.js"></script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+        /*
+         * wechat js config
+         */
+        var jsConfig = __page.jc;
+        if(jsConfig){
+            wx.config(jsConfig);
+            wx.error(function(res){
+                console.log(res);
+            });
+        }
+        else{
+            console.error('no js config found');
+        }
+        <!--window.prdOrNot =( __app.settings.env.NODE_ENV === "production" );-->
+        <!--var scripthook = document.createElement( "script" ),-->
+                <!--seajshook = document.createElement( "script" ),-->
+                <!--link = document.createElement( "link"),-->
+                <!--stylelink = document.createElement( "link");-->
+        <!--link.type = "text/css";-->
+        <!--link.rel = "stylesheet";-->
+        <!--stylelink.type = "text/css";-->
+        <!--stylelink.rel = "stylesheet";-->
+        <!--stylelink.href = "../web/css/style.css";-->
+        <!--document.getElementsByTagName( "head" )[0].appendChild( stylelink );-->
+        <!--document.getElementsByTagName( "head" )[0].appendChild( scripthook );-->
+        <!--if(prdOrNot){-->
+            <!--scripthook.src = "/web/js/app/indexprd.js";-->
+        <!--}else{-->
+            <!--scripthook.src = "/web/index.js";-->
+        <!--}-->
+        <!--document.getElementsByTagName( "head" )[0].appendChild( scripthook );-->
+        <!--var u = navigator.userAgent, app = navigator.appVersion;-->
+        <!--if(u.indexOf("Android") > -1 || u.indexOf("Linux") > -1){-->
+<!--//            link.href = "/web/css/andriod.css";-->
+        <!--}-->
+        <!--if(!!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){-->
+            <!--link.href = "/web/css/apple.css";-->
+        <!--}-->
+        <!--document.getElementsByTagName( "head" )[0].appendChild( link );-->
+    </script>
+</head>
+<body>
+<div id="wary" style="height: 800px;">
+    <input type="button" id="testimg" style="display: block;width:200px;height:100px;"/>
+    <img id="loader" style="width: 100%;background-color: transparent !important;height:150px;"/>
+    <img id="testimg1" src="weixin://resourceid/2cfc6dae9aa0dfe72c117093ba656831"/>
+    <div class="div1"></div>
+</div>
+<script type="text/javascript">
+    window.onload = function(){
+//        setTimeout(function(){
+//            document.getElementById("testimg1").src="/web/images/bmmid.png";
+//        },2000);
+        wx.ready(function(){
+            document.getElementById("testimg").onclick = function(){
+                wx.chooseImage({
+                    success: function (res) {
+                        localid = res.localIds[0];
+                        alert(localid);
+                        document.getElementById("testimg1").src = localid;
+                    }
+                });
+            };
+        })
+    }
+</script>
+</body>
+</html>

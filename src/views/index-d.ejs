@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>发现</title>
+    <link href="../web/css/style.css" rel="stylesheet">
+    <script src="../public/components/seajs/dist/sea.js"></script>
+    <script src="../web/index.js"></script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+    </script>
+    <script type="text/javascript">
+        var u = navigator.userAgent, app = navigator.appVersion;
+        if(u.indexOf('Android') > -1 || u.indexOf('Linux') > -1){
+            var link = document.createElement( "link" );
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.href = "/web/css/andriod.css";
+            document.getElementsByTagName( "head" )[0].appendChild( link );
+        }
+        if(!!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+            var link = document.createElement("link");
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.href = "/web/css/apple.css";
+            document.getElementsByTagName("head")[0].appendChild(link);
+        }
+    </script>
+</head>
+<body>
+
+<div id="wary">
+    <div class="clear">&nbsp</div>
+
+    <%include index-tag.html%>
+
+    <!--底部 -->
+        <!--<div class="footer_zw"></div>-->
+        <!--<div class="footer setleft">-->
+            <!--<a href="/index#activity/new"><p class="p3 activity" style="width:100%;color:#fff;"><span class="vertical"><b>+</b> 发起活动</span>-->
+                <!--</p></a>-->
+        <!--</div>-->
+        <!--<div class="footer_shadow setleft"></div>-->
+</div>
+</body>
+</html>

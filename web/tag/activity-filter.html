@@ -1,0 +1,51 @@
+<activity-filter>
+    <div class="activity-filter_placeholder"></div>
+    <div class="activity-filter">
+        <div onclick="{parent.clickIndexNav}">
+            <div class="{opts.curritem.activity_filter == 1 ? 'checked': ''} {opts.curritem.label_screening_select_the_conditions == true ? 'select_the_conditions':''}"  alt="1" id="label_screeningId">类型筛选</div>
+            <div class="{opts.curritem.activity_filter == 2 ? 'checked': ''} {opts.curritem.date_select_the_conditions == true ? 'select_the_conditions':''}"  alt="2" id="sel_date">时间筛选</div>
+            <div class="{opts.curritem.activity_filter == 3 ? 'checked': ''} {opts.curritem.sort_select_the_conditions == true ? 'select_the_conditions':''}"  alt="3" id="sel_sort">排序</div>
+            <a href="#activity/search"><img src="/{env}/images/search_bj.png" /></a>
+        </div>
+        <div class="label_screening select_pub {opts.curritem.activity_filter == 1 ? 'label_screening_animation': ''} {opts.curritem.activity_filter == 'reset' ? 'animation_reset': ''}">
+            <ul onclick="{parent.select_type}" value="label_screening_select_the_conditions">
+                <li value="ca" class="set-checked-ca">校园活动</li>
+                <li value="fa" class="set-checked-fa">亲子少儿</li>
+                <li value="ch" class="set-checked-ch">讲座</li>
+                <li value="tr" class="set-checked-tr">出游</li>
+                <li value="of" class="set-checked-of">体育户外</li>
+                <li value="pt" class="set-checked-pt">聚会派对</li>
+                <li value="tb" class="set-checked-tb">团队建设</li>
+                <li value="oa" class="set-checked-oa">其他活动</li>
+            </ul>
+            <div class="clear"></div>
+            <div class="label_button">
+                <div class="label_button_div">
+                    <button class="confirm_but1 border_radius fl" onclick="{parent.setAllType}"><img src="/{env}/images/but_s1.png" class="vertical" /> <span class="vertical" >全部</span></button>
+                    <button class="confirm_but2 border_radius fr" onclick="{parent.typeSelectObj}"><img src="/{env}/images/but_s2.png" class="vertical"/> <span class="vertical" >筛选</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="select_info select_pub time_screen {opts.curritem.activity_filter == 2 ? 'time_screen_animation': ''} {opts.curritem.activity_filter == 'reset' ? 'animation_reset': ''}">
+            <ul class="ul_sel_date" alt="sel_date"  onclick="{parent.select_type}">
+                <li class="checked initial_checked" value="0">全部</li>
+                <li value="1">最近三天</li>
+                <li value="2">本周</li>
+                <li value="3">下周</li>
+                <li value="4">本月</li>
+                <li value="5">下月</li>
+            </ul>
+        </div>
+        <div class="select_info select_pub sort {opts.curritem.activity_filter == 3 ? 'sort_animation': ''} {opts.curritem.activity_filter == 'reset' ? 'animation_reset': ''}">
+            <ul class="ul_sel_sort" alt="sel_sort"  onclick="{parent.select_type}" value="sort_select_the_conditions">
+                <li class="checked initial_sort" value="acquiesce">默认（开始时间）</li>
+                <li value="newest" class="set-checked-newest">最新（创建时间）</li>
+                <li value="popularity" class="set-checked-popularity">人气</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        var self = nest.presentable(this);
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+    </script>
+</activity-filter>

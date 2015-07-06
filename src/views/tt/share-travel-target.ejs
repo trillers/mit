@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title><%=name%></title>
+    <link href="../web/css/style.css" rel="stylesheet">
+    <script src="../web/js/zepto.min.js"></script>
+    <script>
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+    </script>
+</head>
+<body>
+<div class="xcgyimg xcgy_gz " id="focus_on"><a href="http://mp.weixin.qq.com/s?__biz=MzA3MjIwNTk4Mg==&mid=203179604&idx=1&sn=6a18b351c8685f70b988ad2097ce182d#rd" > <img src="/public/images/3_10.png" class="border_radius" /></a></div>
+<div class="xcgy xcgy_gz border_radius"></div>
+<div id="wary" >
+    <div class="pub_tit t-c m_top10">
+        邀请函
+    </div>
+    <div class="share_div1">
+        Hi!您的小伙伴<span>雨中蔷薇花</span>想邀请您一起计划一次难忘的旅行，他/她想对您说：
+    </div>
+    <div class="share_div2 border_radius">跟我一起去旅行吧！泸沽湖因形状如曲靖葫芦而得名，素有“高原明珠”之称。</div>
+    <div class="share_nav">
+        <div class="click_h" alt="introduce">看看去哪儿</div>
+        <div alt="comment">谁报名了</div>
+    </div>
+    <div class="screen">
+        <img src="<%=coverPics[0] %>" class="img1" />
+        <div class="scr">
+            <div class="scr_left"><%=name%></div>
+            <div class="scr_right"><img src="/public/images/3_03.png" /> <span class=""><%=meta.likes %></span></div>
+        </div>
+        <div class="shadow"></div>
+    </div>
+
+    <div class="pun t-c m_top10">
+        <%-promotionWords %>
+    </div>
+    <div class="pub_tit t-c m_top10">
+        亮点
+    </div>
+    <div class="pun m_top10 set_width1">
+        <%-highlights %>
+    </div>
+    <div class="pub_tit t-c m_top10">
+        概览
+    </div>
+    <div class="pun m_top10 set_width1" >
+        <%-summary %>
+    </div>
+    <div class="list_nav">
+        <div class="click_h" alt="introduce">介绍</div>
+        <div alt="comment">评论</div>
+    </div>
+    <div class="introduce nav_info" >
+<%
+    for(var i=0;i<elements.length;i++){
+        var element = elements[i];
+%>
+        <div class="detail_pub m_top10">
+            <p><img src="/public/images/3_01.png" class="img_width" /> <%=i+1 %>.<%=element.name %></p>
+            <%
+                element.spots
+            %>
+        </div>
+<%
+}
+%>
+    </div>
+    <div class="comment display_none nav_info">
+<%
+    if(comments){
+        for(var i=0;i<comments.length;i++){
+            var comobj = comments[i];
+%>
+        <div class="com_wary">
+            <div class="com_img fl" >
+                <img src="/public/images/head.png" />
+            </div>
+            <div class="com_tit fl">
+                <p class="p1"><%=comobj.crtBy%></p>
+                <p class="p2_<%=i%>">
+                    <script>
+                        var time = new Date("<%=comobj.updOn.toString() %>") ;
+                        var strTime = time.getFullYear()+"-"+(time.getMonth()+1)+"-"+time.getDay();
+                        $(".com_tit .p2_<%=i%>").append(strTime);
+                    </script>
+                </p>
+            </div>
+            <div class="clear"></div>
+            <div class="com_info"><%-comobj.headline%></div>
+        </div>
+<%}}%>
+    </div>
+    <div class="footer_zw"></div>
+    <div class="footer">
+        <p class="p1"><img src="/public/images/share_s1.png" /> 关注</p>
+        <p class="p2"><img src="/public/images/share_s2.png" /> 报名旅行</p>
+        <p class="p3"><img src="/public/images/share_s3.png" /> 帮忙喊人</p>
+    </div>
+    <div class="footer_shadow"></div>
+    <div class="xcgyimg" id="showCatalog"><img src="/public/images/4_01.png"  class="border_radius"/></div>
+    <div class="xcgy border_radius"></div>
+    <div class="xcgyimg xcgy_gz"><img src="/public/images/3_10.png" class="border_radius" /></div>
+    <div class="xcgy xcgy_gz border_radius"></div>
+    <div class="body_shadow display_none"></div>
+    <div class="xcgy_wary display_none">
+        <div class="xcgy_wary_div1">介绍目录</div>
+        <div class="xcgy_wary_div2">
+            <ul>
+ <%
+        for(var i=0;i<elements.length;i++){
+        var element = elements[i];
+        if(elements.length==i+1){
+ %>
+                <li class="li1"><p></p><%=i+1%>.<%=element.name%></li>
+<%
+            break
+        }
+ %>
+                <li><p></p><%=i+1%>.<%=element.name%></li>
+ <%}%>
+            </ul>
+        </div>
+    </div>
+    <div class="comments_wary display_none border_radius">
+        <img src="/public/images/close.png" class="but_close_img" />
+        <div class="comm_cz_sbss" >随便说说</div>
+        <textarea class="textarea border_radius"></textarea>
+        <button class="comm_but border_radius" >提交</button>
+    </div>
+    <div class="together display_none">
+        <div class="together_div1">
+            <textarea class="border_radius" >点击添加旅行宣言和邀请词</textarea>
+        </div>
+        <img src="/public/images/3_13.png" class="together_img" />
+    </div>
+</div>
+<script type="text/javascript" src="../public/js/travel.js"></script>
+</body>
+</html>

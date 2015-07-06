@@ -1,0 +1,191 @@
+<debug-index>
+    <div class="view" if="{!hidden}">
+        <div>
+            <button onclick="{refresh}">刷新</button>
+            <button onclick="{back}">返回</button>
+            <button onclick="{userInfo}">用户信息</button>
+            <button onclick="{userReset}">重置用户</button>
+            <button onclick="{userResetForChannel}">重置用户渠道信息</button>
+            <a href="/auth/signout">注销</a>
+
+            <!-- 搞不清的代码，work -->
+            <br>
+            <a onclick="triggerClickMe();">
+            click me
+            </a><br>
+            <a id="clickMeLink" href="weixin://profile/gh_ad1cd17862c0" onclick="WeiXinAddContact('<span style=" background-color:#ff0000;"="">
+            click me
+            </a><br>
+
+            <!-- 直接模拟点链接 -->
+            <a id="clickLinkDirectlyLink" href="weixin://profile/gh_ad1cd17862c0" onclick="clickLinkDirectly();">
+                直接点链接
+            </a><br>
+
+            <!-- 模拟点链接, 间接调用方法 -->
+            <a id="followSeedTripLink" href="weixin://profile/gh_ad1cd17862c0" onclick="followSeedTrip">
+                模拟点链接, 间接调用方法
+            </a><br>
+
+            <!-- 模拟点链接, 直接调用方法 -->
+            <a href="weixin://profile/gh_ad1cd17862c0" onclick="triggerFollowMe();">
+                模拟点链接, 直接调用方法
+            </a><br>
+            <a id="followMeLink" href="weixin://profile/gh_ad1cd17862c0" onclick="WeiXinAddContact();">
+                模拟点链接, 直接调用方法
+            </a><br>
+
+
+            <!--<a href="weixin://profile/gh_ad1cd17862c0" onclick="WeiXinAddContact('<span style=" background-color:#ff0000;"="">-->
+            <!--</a>-->
+        </div>
+
+        页面用户信息：
+        <div id="user">
+        </div>
+
+        存储用户信息：
+        <div id="userLoaded">
+        </div>
+
+        COOKIE信息
+        <div id="cookie">
+        </div>
+
+    </div>
+
+    <script>
+        var self = nest.presentable(this);
+        self.env = __app.settings.env.NODE_ENV;
+        console.log("env=" + self.env);
+        var _open = function(){
+            self.trigger('view-route-to');
+        };
+
+        var _refresh = function(){
+            self.update();
+            self.trigger('show', true);
+        };
+
+        this.on('mount', function(){
+            console.info('tag debug is mounted');
+        });
+
+        this.on('open', function(options){
+            console.info('tag debug is opening');
+            _open();
+        });
+
+        this.on('refresh', function(){
+            console.info('tag debug is refreshing');
+            _refresh();
+        });
+
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('调试页面');
+            }
+        });
+
+        refresh(e){
+            _refresh();
+        }
+
+        back(e){
+            self.trigger('view-route-back');
+        }
+
+        userInfo(e){
+            $('#user').html(JSON.stringify(__page.user));
+            $('#cookie').html(
+                'token: ' + $.cookie("token") + '<br>'
+                + 'agent: ' + $.cookie("agent") + '<br>'
+                + 'connect.sid: ' + $.cookie("connect.sid")
+            );
+
+            if(__page.user.id){
+                $.getJSON(__app.settings.api.url + '/user/_' + __page.user.id)
+                        .done(function (data, textStatus, jqXHR) {
+                            $('#userLoaded').text(JSON.stringify(data.result));
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            $('#userLoaded').text(JSON.stringify(errorThrown));
+                        });
+            }
+        }
+
+        userReset(e){
+            $.cookie("token", null, { path: '/' });
+            $.cookie("agent", null, { path: '/' });
+        }
+
+        userResetForChannel(e){
+            $.get(__app.settings.api.url + '/user/resetUserForChannel', function (data){
+               alert(data);
+            });
+        }
+
+        follow(e){
+            WeiXinAddContact('gh_ad1cd17862c0', function(a, b){
+                alert(a);
+                alert(b);
+            });
+        }
+
+        function triggerClickMe(){
+            followMp('clickMeLink');
+        }
+
+        function clickLinkDirectly(){
+            followMp('clickLinkDirectlyLink');
+        }
+
+        function followSeedTrip(){
+            followMp('followSeedTripLink');
+            WeiXinAddContact('gh_ad1cd17862c0', function(a, b){
+                alert(a);
+                alert(b);
+            });
+        }
+
+        function triggerFollowMe(){
+            followMp('followMeLink');
+        }
+
+        function WeiXinAddContact(wxid, cb) {
+            if (typeof WeixinJSBridge == 'undefined') {
+                alert('WeixinJSBridge undefined');
+                return false;
+            }
+            if (typeof WeixinJSBridge.invoke == 'undefined') {
+                alert('WeixinJSBridge.invoke undefined');
+                return false;
+            }
+//            console.error(JSON.stringify(WeixinJSBridge));
+            WeixinJSBridge.invoke('addContact', { webtype: '1', username: wxid },
+                function (d, c) {
+                    // 返回d.err_msg取值，d还有一个属性是err_desc //    add_contact:cancel 用户取消 //  add_contact:fail 关注失败
+                    // add_contact:ok 关注成功   // add_contact:added 已经关注
+                    alert(d.err_code);
+                    alert(d.err_msg);
+                    alert(c);
+//                    WeixinJSBridge.log(d.err_msg);
+                    cb && cb(d.err_msg);
+                });
+        };
+
+        function followMp(linkId){
+            setTimeout(function () {
+                if (document.all) {
+                    document.getElementById(linkId).click();
+                }
+                else {
+                    var e = document.createEvent("MouseEvents");
+                    e.initEvent("click", true, true);
+                    document.getElementById(linkId).dispatchEvent(e);
+                }
+            }, 0);
+        }
+
+    </script>
+</debug-index>

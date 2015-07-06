@@ -1,0 +1,30 @@
+<activity-menu>
+
+    <!--关注 -->
+    <div class="footer_navs_wary display_none">
+        <a href="#activity/index" class="nav1">活动</a>
+        <a href="#travel/index"  class="nav2">场所</a>
+        <a href="#mine/index"  class="nav3">我的</a>
+        <a href="{wxhref}"  class="nav4" if="{!subscribe}">关注快乐种子</a>
+    </div>
+
+    <script>
+        self = this;
+        self.subscribe = (__page.user.wx_subscribe == 1) ? true : false;
+
+        var _env = function () {
+            if (__app.settings.env.NODE_ENV == "production") {
+                return "public";
+            }
+            else {
+                return "web";
+            }
+        }
+
+
+        self.wxhref = util.getWxhref();
+        self.env = _env();
+        console.log("env=" + self.env);
+
+    </script>
+</activity-menu>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>抢红包啦</title>
+    <link href="/web/css/other.css" rel="stylesheet">
+    <script src="/public/components/zepto/zepto.min.js"></script>
+    <script src="/web/js/jssdk.js"></script>
+</head>
+
+<body>
+<div id="wary" >
+    <div class="red-envelope">
+        <div><img src="/web/images/red1.png" /></div>
+        <div><img src="/web/images/red2.png" /></div>
+        <div class="div3">
+            <p>快乐种子送红包啦，快来看看有什么惊喜！</p>
+            <div>领取红包</div>
+        </div>
+        <div class="div4"><img src="/web/images/red3.png" /></div>
+    </div>
+    <div class="body_shadow body_shadow_opacity display_none" ></div>
+    <div class="red-envelope-concern display_none">
+        <p>离成功只差关注</p>
+        <img src="/web/images/red4.png" />
+        <!-- 二维码 -->
+        <% if (typeof ticket === "undefined") {%>
+        <img src="/web/images/dimension.png"/>
+        <% }else {%>
+        <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=<%= ticket%>"/>
+        <% } %>
+    </div>
+    <!--分享-->
+    <div class="share-tip display_none" onclick="body_shadow()">
+        <div><img src="/web/images/share1.png" /></div>
+        <div>
+            <p>分享多多，红包多多</p>
+            <p>有小伙伴领红包，小种子会再送你红包哒，红包拿到手软哦．．．</p>
+        </div>
+        <div><img src="/web/images/share2.png" /></div>
+    </div>
+    <!--分享后 已送上-->
+    <div class="share-tip-later display_none">
+        <img src="/web/images/closes.png" onclick="body_shadow()" />
+        <img src="/web/images/red_later.png" />
+        <div>
+            <img src="/web/images/dimension_max1.png" />
+        </div>
+    </div>
+    <!--派送中 -->
+    <div class="prompt-post">
+        <img src="/web/images/red-z.png">
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+        var jsConfig = __page.jc;
+        if(jsConfig){
+            wx.config(jsConfig);
+            wx.error(function(res){
+                console.log(res);
+            });
+        }
+        else{
+            console.error('no js config found');
+        }
+        <% if(typeof mcuId === "undefined"){ %>
+        var mcuId = "";
+        <% }else{ %>
+        var mcuId = <%-JSON.stringify(mcuid || "")%>;
+        <% } %>
+        <% if(typeof mcuId === "undefined"){ %>
+        var ticket = "";
+        <% }else{ %>
+        var ticket = <%-JSON.stringify(ticket || "")%>;
+        <% } %>
+        alert(__page.user.subscribeCount);
+        var oldUserOrNot = __page.user.subscribeCount >= 1;
+        var subscribedOrNot = (__page.user.wx_subscribe == 1);
+        <% if(typeof source === "undefined"){ %>
+
+        <%}else{%>
+            var source = <%-JSON.stringify(source)%>;
+            if((oldUserOrNot && subscribedOrNot) || (source === "newshare" && oldUserOrNot && subscribedOrNot)){
+                showShareTip();
+            }
+        <% } %>
+
+        var winheight = $(window).height();
+        $(".red-envelope").height(winheight+"px");
+        $(".share-tip").height(winheight+"px");
+
+        $(".div3").on("click",function(){
+            if(oldUserOrNot && subscribedOrNot){
+                showShareTip();
+            }else{
+                $(".red-envelope-concern").show()
+                var concernheight = $(".red-envelope-concern").height()
+                var settop = (winheight/2)-(concernheight/2)-20;
+                $(".body_shadow").show().css("height",winheight+"px");
+                $(".red-envelope-concern").css("top",settop+"px");
+            }
+
+        });
+        $(".body_shadow").off('click').on("click",function(){
+            body_shadow();
+        });
+
+        var link = __page.baseUrl + "/mc/guidesubscribe?";
+        var queryStrObj = {
+            ticket: ticket,
+            mcuid: mcuId,
+            source: 'newshare'
+        };
+        if(!oldUserOrNot){
+            queryStrObj = {
+                source: 'newshare'
+            };
+        }
+        var getQueryString = function(queryStrObj){
+            var params = [];
+            for(var prop in queryStrObj){
+                if(queryStrObj[prop] !== "") params.push(prop + "=" + queryStrObj[prop]);
+            }
+            return params.join('&');
+        }
+        var url = link + getQueryString(queryStrObj);
+
+        wx.ready(function(){
+            var imgurl = "";
+            //分享给朋友
+            wx.onMenuShareAppMessage({
+                title: "快乐种子红包大派送！", // 分享标题
+                desc: "分享红包越拿越多！！", // 分享描述
+                link: url, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                success: function () {
+
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //分享朋友圈
+            wx.onMenuShareTimeline({
+                title: "快乐种子红包大派送！", // 分享标题
+                link: url, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                success: function () {
+                    //freeze
+                    showPromptPost()
+                    if (oldUserOrNot) {
+                        $.ajax({
+                            type: "post",
+                            data: {mcuid: mcuId, strategyname: 'sm'},
+                            url: __page.baseUrl + "/mc/sharemc",
+                            success: function(data){
+                                if(data.result === 'success'){
+                                    //unfreeze
+                                    body_shadow();
+                                    showShareTipLater();
+                                }else if(data.result === 'nomcu') {
+
+                                } else {
+                                    alert("您已参加过");
+                                }
+                            }
+                        });
+                    }else{
+
+                    }
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+    });
+    var body_shadow = function(){
+        $(".body_shadow").hide();
+        $(".red-envelope-concern").hide();
+        $(".share-tip").hide();
+        $(".share-tip-later").hide();
+        $(".prompt-post").hide();
+    }
+    var showShareTip = function(){
+        var winheight = $(window).height();
+        $(".body_shadow").show().css("height",winheight+"px");
+        $(".share-tip").show().css("height",winheight+"px");
+    }
+    var showShareTipLater = function(){
+        var winheight = $(window).height();
+        $(".share-tip-later").show();
+        var concernheight = $(".share-tip-later").height()
+        var settop = (winheight/2)-(concernheight/2)-100;
+        $(".body_shadow").show().css("height",winheight+"px");
+        $(".share-tip-later").css("top",settop+"px");
+    }
+    var showPromptPost = function(){
+        var winheight = $(window).height();
+        $(".prompt-post").show();
+        var concernheight = $(".prompt-post").height()
+        var settop = (winheight/2)-(concernheight/2)-50;
+        $(".body_shadow").show().css("height",winheight+"px");
+        $(".prompt-post").css("top",settop+"px");
+    }
+
+</script>
+</body>
+</html>

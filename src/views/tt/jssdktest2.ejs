@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>发现</title>
+    <link href="../web/css/style.css" rel="stylesheet">
+    <script src="../web/js/zepto.min.js"></script>
+    <script src="../web/js/jssdk.js"></script>
+    <script src=""
+    <script>
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+        oauth = <%-JSON.stringify(url)%>
+    </script>
+</head>
+<body>
+<input id="oauthbtn" type="button" value="授权"/>
+<script type="text/javascript">
+    welcome--<%=accessToken%>
+</script>
+</body>
+</html>

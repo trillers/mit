@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title><%=docs.name%></title>
+    <link href="../public/css/style.css" rel="stylesheet">
+    <script src="../public/js/jquery-1.7.2.min.js"></script>
+    <script src="../public/js/jquery.lazyload.js"></script>
+    <script src="../public/js/tips.js"></script>
+    <script src="../public/components/seajs/dist/sea.js"></script>
+    <script src="../../web/index.js"></script>
+    <script type="text/javascript" >
+        $(function(){
+            $(".list_nav div").click(function(){
+                var showClass = $(this).attr("alt");
+                $(".list_nav div").removeClass("click_h");
+                $(this).addClass("click_h");
+                $(".nav_info").hide();
+                $("."+showClass).show();
+                setBodyHeight();
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        window.__app = <%-JSON.stringify(__app)%>;
+        window.__page = <%-JSON.stringify(__page)%>;
+        console.log(window.__page.user.id);
+
+        $(function(){
+            $("img").lazyload({ threshold : 200 ,effect:"fadeIn"});
+        });
+    </script>
+
+<%
+    function getTimeFormat(timeObj){
+        var times = new Date(timeObj);
+        //times = times.getFullYear()+"-"+(times.getMonth()+1)+"-"+times.getDate();
+        if((times.getMonth()+1) < 10){
+            var time = "0"+(times.getMonth()+1)+"/";
+        } else{
+            time=(times.getMonth()+1)+"/";
+        }
+        if(times.getDate() < 10){
+            time =time+ "0"+times.getDate();
+        } else{
+            time=time+times.getDate();
+        }
+        return time;
+    }
+ %>
+</head>
+<body>
+<div id="wary" >
+    <div class="screen">
+        <img src="<%=docs.pics[0] %>" class="img1 imgsetwidth" />
+        <div class="scr tt_setheight_line">
+            <div class="scr_left scr_left1"><%=docs.name ? docs.name:""%></div>
+        </div>
+        <div class="shadow tt_setheight"></div>
+        <div class="apply_sum"><p class="p1">已报名</p> <span>
+                <% var sum=0;
+                     for(var s=0;s<docs.applications.length;s++){
+                         sum=sum+ docs.applications[s].num;
+                     }
+
+                %>
+                <i><%=sum%></i></span>人
+        </div>
+    </div>
+    <div class="pun m_top10_media set_width1 position_rel">
+        <p class="m_top10_media"><img src="/public/images/1_04.png" class="setimg"/> <span class="vertical"><font class="FB" >活动时间：</font><%=getTimeFormat(docs.startTime)%></span></p>
+        <p class="m_top10_media"><img src="/public/images/1_05.png" class="setimg" /> <span class="vertical"><font class="FB" >活动地点：</font><%=docs.place%></span></p>
+        <p class="m_top10_media"><img src="/public/images/1_06.png" class="setimg"/> <span class="vertical"><font class="FB" >发 起 人 ：</font><%=docs.initiatorName %>     <%=docs.initiatorContact %></span></p>
+        <p class="m_top10_media"><img src="/public/images/1_07.png" class="setimg" /> <span class="vertical"><font class="FB" >报名截止：</font><%=getTimeFormat(docs.closingTime)%></span></p>
+        <p class="pa_tyle pa_tyle_<%-docs.status%>"><%= enums.ProductActivityStatus.values[docs.status]  ? enums.ProductActivityStatus.values[docs.status] : '　　'%></p>
+    </div>
+    <div class="list_nav">
+       <div class="click_h" alt="introduce">介绍</div>
+      <div alt="applications">队友</div>
+    </div>
+    <div class="clear"></div>
+    <div class="introduce nav_info nav_info" >
+        <div class="detail_pub m_top10">
+            <%
+            var highlightsArray = docs.desc.split("\n");
+            for(var i=0;i<highlightsArray.length;i++){
+            if(highlightsArray[i]!=""){
+            %>
+             <p> <%=highlightsArray[i]%></p>
+             <%
+                }
+            }%>
+        </div>
+        <!--div class="detail_pub m_top10">
+            <textarea  style="width:100%;min-height:250px;border:none;overflow:hidden;background:transparent;font-size:13px;color:#666;"  readonly><%=docs.desc%></textarea>
+        </div-->
+    </div>
+    <div class="applications display_none nav_info nofpr" id="applications">
+ <%
+    if(docs.applications.length>0){
+            for(var i=0;i<docs.applications.length;i++){
+            var applic = docs.applications[i];
+            var app_desc = applic.desc?"":"nobz";
+ %>
+            <div class="add_info">
+                <div class="div1 c3cc7d9"><img src="/public/images/pj_s1.png" width="25" /> <%=applic.displayName%></div>
+                <div class="div2">
+                    <table class="<%=app_desc%>">
+                        <tr>
+                            <td class="c3cc7d9 td1"><%=applic.phone%></td>
+                            <td class=" td2"><%=applic.num%>人</td>
+                        </tr>
+                        <tr class="tr1">
+                            <td colspan="2" class="c999"><%=applic.desc?applic.desc:""%></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+ <%}}else{%>
+            <div class="noapply" style="font-size:13px;">
+                没人报名，赶快去抢沙发吧~~~
+            </div>
+        <%}%>
+    </div>
+    <div class="clear"></div>
+    <div class="serv t-c">
+        <p>使用过程中如有任何疑问请咨询客服</p>
+        <p class="m_top10_media p2"><img src="/public/images/1_19.png" /> 客服电话：400-680-9072</p>
+    </div>
+    <!--关注 -->
+    <div class="xcgyimg xcgy_gz setwzcss border_radius" id="focus_on"><a href="http://mp.weixin.qq.com/s?__biz=MzA3MjIwNTk4Mg==&mid=203179604&idx=1&sn=6a18b351c8685f70b988ad2097ce182d#rd" > <img src="/public/images/3_10.png" class="border_radius" /></a></div>
+    <!--导航 -->
+    <div class="home_gy">
+        <img src="/public/images/home.png"  class="border_radius img_home"/>
+        <a href="/pa/" ><img src="/public/images/home_nav1.png"  class="home_nav"/></a>
+        <a href="/tt/collection-default" ><img src="/public/images/home_nav2.png"  class="home_nav"/></a>
+        <a href="/index#mine/index" ><img src="/public/images/home_nav3.png"  class="home_nav"/></a>
+        <img src="/public/images/home_close.png"  class="home_close"/>
+    </div>
+    <!--报名信息 -->
+    <div class="apply_wary  border_radius position_rel display_none">
+        <div class="tit">我要报名</div>
+        <div class="but_closes"><img src="/public/images/closes.png" /></div>
+        <!--刷屏 重新加载信息-->
+        <div class="but_oks"><img src="/public/images/ok.png" /></div>
+        <p class="leit1"><span class="vertical">姓名　</span><input type="text" class="userinfo" name="displayName" id="displayName" placeholder=""/></p>
+        <p class="leit1"><span class="vertical">手机　</span><input type="tel" class="userinfo" name="phone" id="phone" placeholder=""/></p>
+        <div class="leit1">
+            <span class="vertical">人数 </span><input type="text" class="userinfo textw1" name="displayName" id="displayName" placeholder=""/>
+            <div  value="+" class="add" id="add1" >+</div> <input type="text" class="sum_info" value="1" name="num" id="num" readonly /><div value="-" class="minus" id="minus1" >-</div>
+        </div>
+        <input name="applicant" type="hidden" id="applicant" value="" class="userinfo"/>
+        <p class="leit1"><span class="vertical">备注　</span><input type="text" name="desc" id="desc" placeholder="" class="userinfo"/></p>
+    </div>
+    <div class="body_shadow display_none"></div>
+    <!--成功 -->
+    <!--div class="succeed display_none"><img src="/public/images/succeed.png" /></div-->
+    <!--底部 -->
+    <div class="footer_zw clear"></div>
+    <div class="footer">
+        <%
+            if(!((enums.ProductActivityStatus.values[docs.status]) === "审核中" ||
+                    (enums.ProductActivityStatus.values[docs.status]) ==="已结束" ||
+            (enums.ProductActivityStatus.values[docs.status]) === "已取消") ){
+        %>
+
+        <p class="p3" style="width:100%;"><img src="/public/images/1_01.png" class="vertical" style="width:11px;" /> <span class="vertical">立即报名</span></p>
+
+    </div>
+    <div class="footer_shadow"></div>
+    <%}%>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".img_home").click(function(){
+            $(".home_gy").removeClass("home_gy_set1");
+            $(".home_gy").addClass("home_gy_set");
+        });
+        $(".home_close").click(function(){
+            $(".home_gy").removeClass("home_gy_set");
+            $(".home_gy").addClass("home_gy_set1");
+        });
+        //票务预订填写订单数量
+        setFunClick(1);
+
+        $(".footer").on("click",function(){
+            var wintop = $(window).scrollTop();
+            $(".body_shadow").show().css("top",wintop+"px");
+            $(".apply_wary").show().css("top",wintop+20+"px");
+            $("body").css("overflow","hidden");
+        });
+        $(".body_shadow").on("click",function(){
+            hideAll();
+        });
+
+        $(".but_closes").on("click",function(){
+            hideAll();
+        });
+
+        $(".but_oks").on("click",function(){
+            addApplicant();
+        });
+        setBodyHeight();
+    });
+    function setBodyHeight(){
+        var setbodyHeight = $(window).height() > $("body").height() ? $(window).height():$("body").height()
+        $("body").height(setbodyHeight);
+    }
+    function hintSucceed(obj){
+        var wintop = $(window).scrollTop();
+        obj.show().css("top",wintop+20+"px");
+        obj.animate({opacity:'hide'},2000);
+    }
+    function hideAll(){
+        $(".body_shadow").hide();
+        $(".apply_wary").hide();
+        $("body").css("overflow","visible");
+    }
+    function addApplicant() {
+
+        var temp = {
+            "displayName": "",
+            "phone": "",
+            "applicant":"",
+            "num": "",
+            "desc":""
+        };
+
+        document.getElementById("applicant").value = window.__page.user.id;
+
+        temp.displayName = document.getElementById("displayName").value;
+        temp.phone =  document.getElementById("phone").value;
+        temp.applicant =  document.getElementById("applicant").value;
+        temp.num =  document.getElementById("num").value;
+        temp.desc =  document.getElementById("desc").value;
+
+
+        var errorarr = [];
+        seajs.use(['util'], function(util) {
+            var validator = util.validator();
+            if (validator.empty(temp.displayName)) {
+                errorarr.push("请输入姓名！");
+            } else if (validator.empty(temp.phone)) {
+                errorarr.push("请输入电话号码！");
+            } else if (validator.empty(temp.num)) {
+                errorarr.push("请输入报名人数！");
+            }
+            if (errorarr.length > 0) {
+                //errorHandler
+                util.tipssuccess(1, errorarr[errorarr.length-1], 1);
+            }
+        });
+        if (errorarr.length > 0) {
+            errorarr.pop();
+            return false;
+        }
+
+        $.ajax({
+            type: "post",
+            url: "_<%=docs._id%>?action=new",
+            data: temp,
+            dataType: 'json',
+            success: function () {
+                seajs.use(['util'], function(util) {
+                    var errorarr = [];
+                    errorarr.push("报名成功");
+                    location.reload();
+                    util.tipssuccess(0, errorarr[errorarr.length-1], 1);
+                    errorarr.pop();
+                });
+            },
+            error: function () {
+                seajs.use(['util'], function(util) {
+                    var errorarr = [];
+                    errorarr.push("报名失败");
+                    util.tipssuccess(1, errorarr[errorarr.length-1], 1);
+                    errorarr.pop();
+                });
+            }
+        });
+        hideAll();
+        return true;
+
+    }
+    function setFunClick(s){
+        var objName1 = "add"+s;
+        var objName2 = "minus"+s;
+        var objName3 = "num";
+
+        var objName4 = "input_userinfo"+s;
+        var userName = "userName"+s;
+        var identity = "identity"+s;
+
+        $("#"+objName1).click(function(){
+            var sum = Number($("#"+objName3).attr("value"));
+            $("#"+objName3).attr("value",++sum);
+        });
+        $("#"+objName2).click(function(){
+            var sum = Number($("#"+objName3).attr("value"));
+            (sum>1) ?  $("#"+objName3).attr("value",--sum) : $("#"+objName3).attr("value",sum);
+        });
+    }
+</script>
+</body>
+</html>

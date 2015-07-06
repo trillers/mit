@@ -1,0 +1,207 @@
+<add-randomnotes>
+    <div if="{!hidden}" class="add-randomnotes">
+        <textarea name="desc" onfocus="{inputonfocus}" onblur="{inputonblur}" placeholder="写点想说的话吧..."></textarea>
+        <div class="random_img_wary">
+            <ul>
+                <li each="{name, i in localIds}">
+                    <img id="thumbnail" src={name}/>
+                    <div class="delete_img_button" ><span></span></div>
+                    <span onclick="{ parent.removeImg }" class="delete_img_click_area" ></span>
+                </li>
+            </ul>
+            <div id="filePicker" class="random_img_but">+</div>
+        </div>
+        <div class="clear"></div>
+        <div onclick="{shareOrNotToggle}">
+            <div class="{checked:!shareOrNot}" onclick="{ return; }"></div>
+            <span class="vertical"> 分享到朋友圈或者朋友</span>
+        </div>
+        <div class="footer" name="btnbox">
+            <div onclick="{submitdraft}"></div>
+            <div class="button randomnote" onclick="{sendNote}">发送</div>
+        </div>
+    </div>
+    <style scoped>
+        ul li{
+           position:relative;overflow: hidden;float: left;
+        }
+    </style>
+    <script>
+        var self = nest.presentable(this);
+        var localIds = [], serverIds = [];
+        self.localIds = localIds;
+        self.shareOrNot = true;
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        var img_model = this.img_model = nest.modelable({}, {
+            url: __app.settings.api.url + "/img/"
+        });
+        var model = this.model = nest.modelable({}, {
+            url: __app.settings.api.url + "/pa/"
+        });
+        var multiupimgs4rnActivity = domain.action('multiupimgs4rnActivity');
+        var createRnActivity = domain.action('createRnActivity');
+        var desc = this.desc;
+        var detailId = util.getCookie('detailId');
+
+        sendNote(e){
+            if( self.localIds.length <= 0 && desc.value.trim() === '' ){
+                util.tipssuccess(1,"内容为空");
+                return;
+            }
+            //弹出遮罩层
+            util.forbidOperation_cp();
+            util.uploadtips('show', '上传中,请稍后..');
+            syncUpload(localIds);
+        };
+
+        removeImg(e){
+            self.localIds.splice(e.item.i, 1);
+        }
+
+        shareOrNotToggle(e){
+            if(!self.shareOrNot){
+                self.shareOrNot = true;
+                return;
+            }
+            self.shareOrNot = null;
+        }
+
+        var _open = function(filter){
+            this.trigger('ready', false);
+            this.update();
+            this.trigger('ready', true);
+            this.trigger('view-route-to');
+            addwindowcilck();
+        }.bind(self);
+
+        var onDoneCreateRnActivity = function(data){
+            //去掉遮罩
+            util.uploadtips('hide');
+            util.removeforbidOperation_cp();
+            if(self.shareOrNot){
+                riot.route('activity/_' + detailId + '?share=true&guest=true');
+            }else{
+                riot.route('activity/_' + detailId + '?guest=true');
+            }
+        }
+        var onFailCreateRnActivity = function(data){
+            util.uploadtips('hide');
+            util.tipssuccess(1,"失败,请查看您的网络");
+            util.removeforbidOperation_cp();
+        }
+
+        this.on('mount', function(){
+            console.info('tag activities is mounted');
+            createRnActivity.onDone(onDoneCreateRnActivity);
+            createRnActivity.onFail(onFailCreateRnActivity);
+        });
+        this.on('unmount', function(){
+            console.info('tag activities is unmounted');
+            createRnActivity.offDone(onDoneCreateRnActivity);
+            createRnActivity.offFail(onFailCreateRnActivity);
+        });
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('添加随记');
+            }
+            $(window).scrollTop(__page.holder().getTop());
+
+        });
+
+        this.on('open', function(options){
+            _open(options);
+            self.shareOrNot = true;
+            self.desc.value = "";
+            localIds = [];
+            serverIds = [];
+            self.localIds = localIds;
+            self.update();
+            wx.ready(function(){
+                $('#filePicker').off('click').on('click', function () {
+                    wx.chooseImage({
+                        success: function (res) {
+                            self.localIds = self.localIds.concat(res.localIds).slice(0,9);
+                            localIds = self.localIds;
+                            self.update();
+                        }
+                    });
+                });
+            });
+            $(window).scrollTop("0px");
+        });
+
+        submitdraft(e){
+            riot.route('activity/_' + detailId);
+        };
+
+        showFootterNav(e){
+            $(e.target).toggleClass("footer_navs_but_hover");
+            var classNmae = $(e.target).attr("class");
+            if(classNmae.indexOf("footer_navs_but_hover") < 0){
+                $(".footer_navs_wary").slideUp(200);
+            }else{
+                $(".footer_navs_wary").slideDown(200);
+            }
+            e.stopPropagation();
+        };
+
+        var addwindowcilck = function(){
+            $(document).on("click",function(){
+                $(".footer_navs_wary").slideUp();
+                $(".footer_navs_but").removeClass("footer_navs_but_hover");
+            });
+        };
+
+        var syncUpload = function(localIds){
+            if( localIds.length <= 0 ){
+                return addRandomNote();
+            }
+            var localId = localIds.pop();
+            wx.uploadImage({
+                localId: localId,
+                success: function (res) {
+                    var image = {
+                        name:util.getFileName(),
+                        mediaId:res.serverId
+                    }
+                    img_model.set("randomNotePic", image);
+                    img_model.save();
+                    img_model.off('save').on('save', function(res,o){
+                        //根据微信返回的id下载图片然后上传到七牛服务器
+                        var uploadInvocation = multiupimgs4rnActivity.newInvocation({id: detailId, resid: res._id});
+                        uploadInvocation.onDone(function(data){
+                            serverIds.unshift(data); // 保存七牛返回的图片URL
+                            if(localIds.length > 0){
+                                self.update();
+                                syncUpload(localIds);
+                            }else{
+                                addRandomNote(serverIds);
+                            }
+                        }).onFail(function(err){
+                            alert('upload note pic fail');
+                        }).execute();
+                    });
+                }
+            });
+        };
+
+        function addRandomNote(mediaIds) {
+            var randomNote = {
+                "desc": "",
+                "pics": [],
+                "initiator":"",
+                "initiatorName": ""
+            };
+
+            randomNote.desc = desc.value.trim();
+            randomNote.initiator = window.__page.user.id;
+            randomNote.pics = ( typeof mediaIds != 'undefined' ? mediaIds : [] );
+
+            createRnActivity.execute({id: detailId, data: randomNote});
+
+            return true;
+        }
+
+
+    </script>
+</add-randomnotes>

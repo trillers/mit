@@ -1,0 +1,238 @@
+<travel-detail>
+    <div if="{!hidden}" class="travel-detail">
+        <div id="wary">
+            <div class="travel-detail-screen">
+                <img src={picshow} class="img1"/>
+
+                <div class="scr tt_setheight_line">
+                    <div class="scr_left">{item.name}</div>
+                    <div class="scr_right"><img src="/public/images/3_03.png"/> <span
+                            class="likesum">{item.meta.likes}</span></div>
+                </div>
+                <div class="shadow tt_setheight"></div>
+            </div>
+
+            <div class="pun t-c set_width2">
+                {item.promotionWords}
+            </div>
+            <div class="pub_tit t-c m_top10">
+                亮点
+            </div>
+            <ul class="ld_ul1">
+                <li each={ i in highlightsArray }>• {i}</li>
+            </ul>
+            <div class="pub_tit t-c m_top10">
+                概览
+            </div>
+            <div class="pun m_top10 set_width1">
+                {item.summary}
+            </div>
+            <div class="pub_tit t-c m_top10">
+                介绍
+            </div>
+            <div class="introduce nav_info">
+                <div class="detail_pub m_top10" each={element,i in item.elements }>
+                    <p class="FB"><img src="/public/images/3_01.png" class="img_width vertical" /> <span class="vertical" >{i+1}.{element.name}</span></p>
+                    <travel-spot each={element.spots} />
+                </div>
+                <div class="xcgyimg border_radius xcgy_gz" id="showCatalog" onclick="{showcatalogue}">
+                    <img src="/public/images/3_09.png" class="border_radius"/>
+                </div>
+            </div>
+            <div class="comment display_none nav_info" id="commentId"></div>
+            <div class="detail_pub m_top10 position_rel border_radius_3px">
+                <a href="http://mp.weixin.qq.com/s?__biz=MzA3MjIwNTk4Mg==&mid=204371161&idx=1&sn=51f61cc7634389147a7050a5a2e97a6f#rd"
+                   class="butA"><img src="../public/images/guanzhu.jpg" alt="提示" class="border_radius_3px"/>
+                </a>
+            </div>
+            <!--底部-->
+            <div class="footer_placeholder"></div>
+            <div class="footer">
+                <div onclick="{returnPage}"></div>
+                <div class="but1 button travel-detail-live" onclick="{live}"></div>
+                <div class="button but2" onclick="{shareinfo}">分享</div>
+            </div>
+            <div class="footer_shadow"></div>
+            <div class="body_shadow display_none" onclick="{hideShadow}"></div>
+            <div class="xcgy_wary display_none">
+                <div class="xcgy_wary_div1">介绍目录</div>
+                <div class="xcgy_wary_div2">
+                    <ul>
+                        <li each="{element,i in item.elements}"><p></p>{i+1}.{element.name} </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="comments_wary display_none border_radius">
+                <img src="/public/images/close.png" class="but_close_img"/>
+
+                <div class="comm_cz_sbss">随便说说</div>
+                <textarea class="textarea border_radius"></textarea>
+                <button class="comm_but border_radius">提交</button>
+            </div>
+            <div class="together display_none" id="clickXHidden" onclick="{hideShadow}">
+                <img src="/public/images/4_02.png" class="together_img"/>
+            </div>
+            <wechat-menu if="{!subscribe}"/>
+        </div>
+    </div>　
+    <script>
+        var self = nest.presentable(this);
+        self.env = __app.settings.env.NODE_ENV;
+        var model = nest.modelable({}, {
+            url: __app.settings.api.url + "/tt/"
+        });
+        self.footershow = true;
+        model._id = this._id = this.opts._id;
+        model.on('fetch', function (json, options) {
+            console.info('activity is fetched');
+            self.item = json;
+            self.id = json._id;
+            self.name = json.name;
+            self.promotionWords = json.promotionWords;
+            self.highlightsArray = json.highlights.split("\r\n");
+            console.log(json.highlights);
+            self.userId = window.__page.user.id;
+            self.user = JSON.stringify(window.__page.user);
+            self.picshow = util.calcImageUrl(self.item);
+            self.likes = json.meta.likes;
+            self.subscribe = (__page.user.wx_subscribe == 1) ? true : false;
+            self.update({item: json});
+            self.trigger('ready', true);
+            self.trigger('view-route-to');
+            isLike();
+            registerHomeBtn();
+            bindNavigator();
+        });
+
+        var _open = function (id) {
+            this.trigger('ready', false);
+            this._id = id || this._id;
+            model.set('_id', this._id);
+            model.fetch({action: 'open'});
+        }.bind(self);
+
+        var _refresh = function () {
+            this.trigger('ready', false);
+            model.fetch(this._id, {action: 'refresh'});
+        }.bind(self);
+
+        this.on('mount', function () {
+            console.info('tag activity is mounted');
+        });
+
+        this.on('open', function (options) {
+            console.info('tag activity is opening');
+            _open(options);
+        });
+
+        this.on('refresh', function () {
+            console.info('tag activity is refreshing');
+            _refresh();
+        });
+
+        this.on('show', function (cmd) {
+            if (cmd) {
+                __page.holder().setTitle(self.item.name);
+            }
+            $(window).scrollTop("0px");
+        });
+        var isLike = function(){
+            var isNoLike = __page.user.meta.likes[self.id];
+            if(isNoLike){
+                $(".footer .but1").removeClass("travel-detail-live").addClass("travel-detail-live1");
+            }else{
+                $(".footer .but1").removeClass("travel-detail-live1").addClass("travel-detail-live");
+            }
+        }
+        var bindNavigator = function () {
+            $(document).click(function () {
+                if($(".home_gy_set")){
+                    $(".home_gy").removeClass("home_gy_set");
+                    $(".home_gy").addClass("home_gy_set1");
+                }
+            });
+            $(".img_home").click(function (event) {
+                $(".home_gy").removeClass("home_gy_set1");
+                $(".home_gy").addClass("home_gy_set");
+                event.stopPropagation();
+            });
+        };
+        returnPage(e){
+            riot.route('travel/index');
+        }
+
+        live(e){
+            //alert(self.id);
+            $.ajax({
+                type:"GET",
+                url:__app.settings.api.url+"/tt/_"+self.id+"/like",
+                success:function(data){
+                    if(data.status){
+                        //self.update();
+                        if(data.result >self.likes){
+                            __page.user.meta.likes[self.id] ="11111";
+                        }else{
+                            delete __page.user.meta.likes[self.id];
+                        }
+                        model.fetch();
+                    }
+                }
+            });
+        },
+        shareinfo(e){
+            var wintop = $(window).scrollTop();
+            var winheight = $(window).height();
+            var bodyheight = $("body").height();
+            var setHeight = winheight > bodyheight ? winheight : bodyheight;
+            $(".together").show().css("top",wintop+"px");
+            $(".body_shadow").show().css("height",setHeight+"px");
+        }
+        showcatalogue(){
+            var wintop = $(window).scrollTop();
+            var winheight = $(window).height();
+            var bodyheight = $("body").height();
+            var setHeight = winheight > bodyheight ? winheight : bodyheight;
+            $(".body_shadow").show().css("height",setHeight+"px");
+            $(".xcgy_wary").show().css("top",wintop+20+"px");
+        },
+        hideShadow(e){
+            $(".body_shadow").hide();
+            $(".xcgy_wary").hide();
+            $(".comments_wary").hide();
+            $(".together").hide();
+        }
+
+        var registerHomeBtn = function () {
+            wx.ready(function () {
+                //分享给朋友
+                wx.onMenuShareAppMessage({
+                    title: self.name, // 分享标题
+                    desc: self.promotionWords, // 分享描述
+                    link: __page.holder().getBaseUrl() + "/index#travel/_" + self.id, // 分享链接
+                    imgUrl: self.picshow, // 分享图标
+                    type: '', // 分享类型,music、video或link，不填默认为link
+                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+                //分享朋友圈
+                wx.onMenuShareTimeline({
+                    title: self.name, // 分享标题
+                    link: __page.holder().getBaseUrl() + "/index#travel/_" +self.id, // 分享链接
+                    imgUrl: self.picshow, // 分享图标
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+            });
+        };
+
+    </script>
+</travel-detail>

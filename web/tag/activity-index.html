@@ -1,0 +1,280 @@
+<activity-index>
+    <div if="{!hidden}">
+        <mask-loading show="{mask}"/>
+        <div if="{!mask}">
+        <div class="activity-index-filter">
+            <input type="text" placeholder="搜索感兴趣的活动" readonly="readonly" onclick="{resultSearch}"/>
+        </div>
+        <div class="activity-index-scroll">
+            <ul>
+                <li><a href="#activity/_dMxAsS"><img src="/{env}/images/banner.jpg" /></a></li>
+            </ul>
+        </div>
+        <div class="activity-index-type">
+            <div>
+                <div class="fl" value="newest" onclick="{pageResult}">
+                    <img src="/{env}/images/new_act.png" value="newest"/>
+                    最新活动
+                </div>
+                <div class="fr" value="popularity" onclick="{pageResult}">
+                    <img src="/{env}/images/hot_act.png" value="popularity"/>
+                    最热活动
+                </div>
+            </div>
+            <div>
+                <ul onclick="{pageResult}">
+                    <li value="ca"><img src="/{env}/images/type_img_1.png" value="ca"/>校园活动</li>
+                    <li value="fa"><img src="/{env}/images/type_img_2.png" value="fa"/>亲子少儿</li>
+                    <li value="ch"><img src="/{env}/images/type_img_3.png" value="ch"/>讲座</li>
+                    <li value="tr"><img src="/{env}/images/type_img_4.png" value="tr"/>出游</li>
+                    <li value="of"><img src="/{env}/images/type_img_5.png" value="of"/>体育户外</li>
+                    <li value="pt"><img src="/{env}/images/type_img_6.png" value="pt"/>聚会派对</li>
+                    <li value="tb"><img src="/{env}/images/type_img_7.png" value="tb"/>团队建设</li>
+                    <li value="oa"><img src="/{env}/images/type_img_8.png" value="oa"/>其他活动</li>
+                </ul>
+            </div>
+        </div>
+        <div class="activity-index-recommend">
+            <div>
+                <p>精彩推荐</p>
+                <p onclick="{listAll}">全部活动</p>
+            </div>
+            <div class="clear"></div>
+            <div>
+                <activity-recommend-item  each={items} curritem="{this}" />
+            </div>
+            <div onclick="{listAll}"><p>查看全部活动</p></div>
+        </div>
+        <div class="footer_placeholder"></div>
+        <div class="footer-index setleft">
+            <div>
+                <a href="#activity/index"><i class="current"><img src="/{env}/images/footer_nav_activity2.png" /><br/>活动</i></a>
+                <a href="#travel/index"><i><img src="/{env}/images/footer_nav_travel1.png" /><br/>场所</i></a>
+                <a href="#mine/index"><i><img src="/{env}/images/footer_nav_mine1.png" /><br/>我的</i></a>
+            </div>
+            <div>
+                <i onclick="{showattention}">发布活动</i>
+            </div>
+        </div>
+        <div class="body_shadow display_none" onclick="{hideBodyShadowAllHandler}"></div>
+        <div class="wechat-concern display_none">
+            <img src="/{env}/images/closebtn2.png" onclick="{hidewechat_concern}"/>
+            <p>关注“快乐种子”后，可以接收活动<br/>提醒和使用其他更多服务！</p>
+            <div if="{!fromButtonClick}">
+                <div onclick="{openWxhref}">关注，支持一下</div>
+                <div onclick="{hidewechat_concern}">残忍拒绝:(</div>
+            </div>
+            <button onclick="{openWxhref}" if="{fromButtonClick}">立即关注</button>
+        </div>
+        </div>
+    </div>
+    <script>
+        this.app = this.opts.app; //keep spa object
+        var self = nest.presentable(this);
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        self.wxhref = util.getWxhref();
+        self.subscribe = (__page.user.wx_subscribe == 1) ? true : false;
+        var params = {
+            sort: {'priorityRank':-1, 'statusrank':1, 'startTime':1},
+            page: {
+                size: 4,
+                no: 1
+            },
+            conditions: {
+                status: {"$in":['a','re','ac', 'co']},
+                reviewStatus:{"$in":['t', 'd']},
+                'tags.type': {},
+                privateFlag: false
+            }
+        };
+        __page.tenant && (params.conditions.tenantId = __page.tenant);
+        var collection = this.collection = nest.collectable({}, {
+            url: __app.settings.api.url + "/pa/find",
+            filter: params
+        });
+        collection.on('fetch', function(models, o){
+            console.info('activities is fetched');
+            self.items = models;
+            self.update();
+            self.trigger('ready', true);
+            self.trigger('view-route-to');
+            setWeixin();
+            $(window).scrollTop("0px");
+            collection.trigger('fetched');
+            $(".activity-index-scroll").simslider();
+        });
+        collection.on('append', function(models, o){
+            console.info('activities is append');
+            self.trigger('ready', true);
+        });
+
+        var _open = function(filter){
+            this.trigger('ready', false);
+            this.filter = filter || this.filter;
+
+//            if(typeof this.filter.refresh !== 'undefined'){
+//                return _refresh();
+//            }
+
+            if(collection.fetched() == undefined || (self.items && self.items.length == 0)) {
+                collection.fetch({filter: this.filter});
+            }else{
+                self.update();
+                self.trigger('ready', true);
+                self.trigger('view-route-to');
+            }
+            $(window).scrollTop("0px");
+        }.bind(self);
+
+        var _refresh = function(){
+            self.item = [];
+            self.appended_list = [];
+            params.page.size = 10;
+            params.page.no = 1;
+            this.trigger('ready', false);
+            setTimeout(function(){
+                $("#pullDown").hide();
+                collection.fetch({filter: this.filter});
+            },500);
+        }.bind(self);
+
+        var _append = function(){
+            this.trigger('ready', false);
+            collection.append({filter: this.filter});
+        }.bind(self);
+
+        var onLikeActivity = function(data){
+            self.items = self.items.concat(self.appended_list);
+            for(var i=0; i<self.items.length; i++){
+                if(self.items[i]._id == this.inputs[0]){
+                    self.appended_list = [];
+                    self.items[i].meta.likes = data;
+                    self.update();
+                    break;
+                }
+            }
+        }
+        var onApplyActivity = function(data){
+            self.items = self.items.concat(self.appended_list);
+            for(var i=0; i<self.items.length; i++){
+                if(self.items[i]._id == this.inputs[0].id){
+                    self.appended_list = [];
+                    var num = 0;
+                    for(var j = 0; j< data.length; j++){
+                        num = num + data[j].num;
+                    }
+                    self.items[i].meta.apps = num;
+                    self.update();
+                    break;
+                }
+            }
+        }
+        this.on('mount', function(){
+            console.info('tag activities is mounted');
+        });
+        this.on('unmount', function(){
+            console.info('tag activities is unmounted');
+        });
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            setWeixin();
+            _open(options);
+        });
+
+        this.on('leave', function(){
+            self.mask = true;
+            self.update();
+        });
+
+        this.on('reenter', function(){
+            self.mask = false;
+            self.update();
+        });
+
+        this.on('refresh', function(){
+            console.info('tag activities is refreshing');
+            _refresh();
+        });
+
+        this.on('show', function(cmd){
+            if(cmd){
+                __page.holder().setTitle('活动');
+            }
+            $(window).scrollTop(__page.holder().getTop());
+
+        });
+        listAll(e){
+            riot.route("activity/list?filter=all")
+        }
+        pageResult(e){
+            var value = $(e.target).attr("value");
+            riot.route("activity/list?filter="+value);
+        }
+        showattention(){
+            self.fromButtonClick = true;
+            if(self.subscribe){
+                riot.route("activity/new");
+            }else{
+                var wintop = $(window).scrollTop();
+                var winheight = $(window).height();
+                var bodyheight = $("body").height();
+                var apply_waryheight = $(".wechat-concern").height()-100;
+                var setHeight = winheight > bodyheight ? winheight : bodyheight;
+                var settop = wintop+(winheight/2)-(apply_waryheight/2)-100;
+                $(".body_shadow").show().css("height",setHeight+"px").css("z-index","699");
+                $(".wechat-concern").show().css("top",settop+"px");
+            }
+        };
+        hideBodyShadowAllHandler(){
+            hideBodyShadowAll();
+        }
+        hidewechat_concern(e){
+            hideBodyShadowAll();
+        }
+        function hideBodyShadowAll(){
+            $(".wechat-concern").hide();
+            $(".body_shadow").hide();
+        };
+        resultSearch(e){
+            riot.route("activity/search");
+        }
+        refresh(e){
+            _refresh();
+        }
+        openWxhref(){
+//                riot.route(self.wxhref);
+            util.setCookie('attentionUrl', "activity/index", 1);
+            hideBodyShadowAll();
+            window.location = self.wxhref;
+        };
+        var setWeixin = function(){
+                //分享给朋友
+                wx.onMenuShareAppMessage({
+                    title: '快乐种子', // 分享标题
+                    desc: '欢迎关注快乐种子，更多精彩活动等你参加！', // 分享描述
+                    link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                    imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                    type: '', // 分享类型,music、video或link，不填默认为link
+                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                    success: function () {
+                        _czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', '首页', '', 0]);
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+                //分享朋友圈
+                wx.onMenuShareTimeline({
+                    title: '快乐种子', // 分享标题
+                    link: __page.holder().getBaseUrl()+"/index#activity/index", // 分享链接
+                    imgUrl: __page.holder().getBaseUrl()+'/public/images/logo.png', // 分享图标
+                    success: function () {
+                        _czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', '首页', '', 1]);
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+        }
+    </script>
+</activity-index>

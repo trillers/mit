@@ -1,0 +1,90 @@
+<randomnotes-item>
+    <div class="randomnotes-item">
+        <div class="fl" ><img src= "{initiator.headImgUrl || '/public/images/head.png'}" width="24" style="border-radius: 50em"/></div>
+        <div class="fl">
+            <div>
+                <span>{initiator.displayName}：</span>
+                <p onclick="{ shareinfo }"><img  src="/{env}/images/share_but.png" class=""  /> <span class="vertical"> 分享</span></p>
+            </div>
+            <p>{desc}</p>
+            <div class="trave_img_wary">
+                <p each="{ pics }" ><img src="{ parent.parseImg(meta, url) }" onclick="{parent.previewImg}" standard="{meta}"/></p>
+            </div>
+            <p class="p2">{time} <a onclick="{deleteRandomNote}" alt="{_id}" class="delete" if="{initiator._id == window.__page.user.id}">删除</a></p>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <script>
+        var self = this;
+        self.env = (__app.settings.env.NODE_ENV=="production")?"public":"web";
+        var delRnActivity = domain.action('delRnActivity');
+        var parent = this.opts.tag.parent;
+        self.currentRandomNote = self.opts.tag;
+        var _id = this.opts.tag.parent._id;
+        var crtOn = this.opts.tag.crtOn;
+        var date = util.formatDate(crtOn);
+        self.time = date;
+        self.parseImg = function(meta, url){
+            var img = {
+                meta:meta,
+                url:url
+            };
+            return util.parseImgUrl(img);
+        };
+        this.on('mount', function(){
+            delRnActivity.onDone(function(data){
+                parent.randomNotes = data;
+                parent.update();
+            })
+        })
+        previewImg(e){
+            if(self.currentRandomNote && self.currentRandomNote.pics && self.currentRandomNote.desc){
+                util.wedgt.imgPreviewer($("#wary"), self.currentRandomNote.pics, { msg: self.currentRandomNote.desc });
+            }
+            else if(self.currentRandomNote && self.currentRandomNote.pics){
+                util.wedgt.imgPreviewer($("#wary"), self.currentRandomNote.pics, { msg: "" });
+            }
+        }
+        deleteRandomNote(e){
+            var deleteId = $(e.target).attr("alt");
+            delRnActivity.execute({id: _id, deleteId: deleteId});
+            e.stopPropagation();
+        };
+        shareinfo(e){
+            var me = this;
+            var parent = this.parent.parent;
+            var returnUrl, info, sharemsg, sharetimeline;
+            //弹出分享窗口
+            parent.shareinfo_detail();
+            //填充分享内容
+            if(me && me.pics[0] && me.pics[0]){
+                var item = {};
+                item.images = [];
+                item.images[0]={
+                    meta:me.pics[0].meta,
+                    url:me.pics[0].url
+                };
+                returnUrl = 'http://' + util.sharepic(item);
+            }else{
+                returnUrl = "/public/images/pabanner.png";
+            }
+            info = {
+                title: "我在参加\"" + parent.item.name + "\"活动,给小伙伴直播一下~~~~",
+                desc: me.desc || parent.item.name,
+                link: __page.holder().getBaseUrl()+"/index#activity/_" + parent._id + "?guest=" + me._id,
+                imgUrl: returnUrl
+            };
+
+            sharemsg = Object.create(info);
+            sharemsg.success = function(){_czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', parent.item.name + '随记' || '', util.convertToValue(parent.item.tags.type).join(',') || '', 0])};
+            sharetimeline = Object.create(info);
+            sharetimeline.success = function(){_czc.push(['_trackEvent', util.getDc().PA.NAME + '(' + util.getDc().PA.ACTION.SHARE + ')', parent.item.name + '随记' || '', util.convertToValue(parent.item.tags.type).join(',') || '', 0])};
+
+            //分享给朋友
+            wx.onMenuShareAppMessage(sharemsg);
+            //分享朋友圈
+            wx.onMenuShareTimeline(sharetimeline);
+
+        }
+    </script>
+</randomnotes-item>

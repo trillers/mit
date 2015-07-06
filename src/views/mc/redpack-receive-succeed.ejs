@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/> 
+<title>抢红包啦</title>
+    <link href="/web/css/other.css" rel="stylesheet">
+    <script src="/public/components/zepto/zepto.min.js"></script>
+</head>
+
+<body>
+<div id="wary" > 
+     <div class="send-red-envelope"> 
+        <div><img src="/web/images/red-top.png"></div>
+        <div>
+            <img id="sending" src="/web/images/red-z.png"/>
+            <img id="sended" src="/web/images/red-c.png" style="display:none"/>
+        </div>
+     </div>  
+</div> 
+<script type="text/javascript">
+    var mcuId = <%-JSON.stringify(mcuid || "")%>;
+    window.__page = <%-JSON.stringify(__page)%>;
+    (function($){
+        alert("00000");
+        $(".send-red-envelope").height($(window).height()+"px");
+        //begin to send redPack
+        $.ajax({
+            type: "POST",
+            data: {mcuid: mcuId, strategyname: 'fs'},
+            url: __page.baseUrl + "/mc/sendpack",
+            success: function(data){
+                alert(data.result);
+                if(data.result === 'success'){
+                    //send successful
+                    $("#sending").hide();
+                    $("#sended").show();
+                    //close the window
+                    setTimeout(function(){
+                        window.close();
+                    },2000);
+                }else{
+                    alert("网络情况异常");
+                    setTimeout(function(){
+                        window.close();
+                    },3000);
+                }
+            },
+            error: function(msg){
+                alert("网络情况异常");
+            }
+
+        });
+    })(Zepto);
+</script>
+</body>
+</html>
