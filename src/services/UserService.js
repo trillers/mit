@@ -1,10 +1,8 @@
 var User = require('../models/User').model;
 var UserHelper = require('../models/User').helper;
-//var UserState = require('../models/enums').UserState;
+var UserState = require('../framework/model/enums').UserState;
 var UserKv = require('../kvs/User');
 var UserMetaKv = require('../kvs/UserMeta');
-var time = require('../app/time');
-var http = require('http');
 var settings = require('mit-settings');
 var logger = require('../app/logging').logger;
 var u = require('../app/util');
@@ -128,124 +126,6 @@ Service.load = function (id, callback) {
     });
 };
 
-var client = function(message, callback){
-
-    //http://api.map.baidu.com/geocoder/v2/?ak=PwCZ3FQOyXeHDQKRQZvsrL8k&callback=showLocation&location=40.066280,116.340149&output=json
-    logger.debug('inside client call1');
-    var options = {
-        hostname: settings.locationServer.host,
-        port: settings.locationServer.port,
-        path: '/geocoder/v2/?ak=' + settings.locationServer.ak + '&location=' + message.Latitude + ',' + message.Longitude + '&output=json&coordtype=wgs84ll',
-        method: 'GET'
-    };
-    logger.debug('before client call2');
-    var req = http.request(options, function(res){
-        logger.debug('status:'+res.statusCode);
-        //console.log('headers:'+JSON.stringify(res.headers));
-        res.setEncoding('utf8');
-        logger.debug('before client call3');
-        res.on('data', function(chunk){
-            logger.debug('body:'+chunk);
-            if (callback){
-                var body = "";
-                var city = "";
-                var address = "";
-                try {
-                    body = JSON.parse(chunk);
-                    if (body.status==0){
-                        console.log(body.result.addressComponent.city);
-                        city = body.result.addressComponent.city;
-                        address = body.result.formatted_address;
-                    }
-                } catch(e) {}
-
-                callback(null, city, address);
-            }
-        });
-    });
-
-    req.on('error', function(e){
-        logger.debug('problem with req:'+ e.message);
-    });
-    req.end();
-
-
-}
-
-Service.updateLocation = function (message, userid, callback) {
-
-    logger.debug('before client call');
-    client(message, function(err, city, address){
-        logger.debug('inside client call back1');
-        var update = {
-            latestLongitude: message.Longitude,
-            latestLatitude: message.Latitude,
-            latestPrecision: message.Precision,
-            latestLocationCity: city,
-            latestLocationAddress: address,
-            latestLocationTime: time.currentTime()
-        };
-        logger.debug('inside client call back2');
-        if (userid==null){
-            logger.debug('inside client call back3');
-            UserKv.loadIdByOpenidAsync(message.FromUserName)
-                .then(function(id) {
-                    logger.debug('sst userid change to: ' + id);
-                    //return city name
-                    User.findById(id, function (err, doc) {
-                        if (err) {
-                            logger.error('Fail to update user [id=' + id + ']: ' + err);
-                            if (callback) callback(err);
-                            return;
-                        }
-                        if (doc) {
-                            u.extend(doc, update);
-                            doc.increment(); //TODO: do it in pre-save event
-                            doc.save(function (err, result, numberAffected) {
-                                logger.debug('sst result:' + result + ' numberAffected: ' + numberAffected + ' id: ' + id);
-                                cbUtil.handleAffected(callback, err, result, numberAffected);
-                            });
-                        }
-                        else {
-                            logger.warn('Fail to update user [id=' + id + '] because it does not exist');
-                            if (callback) callback(null, null);
-                        }
-                    });
-
-                });
-        }
-        else{
-            //return city name
-            logger.debug('inside client call back4');
-            User.findById(userid, function (err, doc) {
-                logger.debug('inside client call back5');
-                if (err) {
-                    logger.error('Fail to update user [id=' + userid + ']: ' + err);
-                    if (callback) callback(err);
-                    return;
-                }
-                if (doc) {
-                    u.extend(doc, update);
-                    doc.increment(); //TODO: do it in pre-save event
-                    doc.save(function (err, result, numberAffected) {
-                        logger.debug('sst result:' + result + ' numberAffected: ' + numberAffected + ' id: ' + userid);
-                        cbUtil.handleAffected(callback, err, result, numberAffected);
-                    });
-                }
-                else {
-                    logger.warn('Fail to update user [id=' + userid + '] because it does not exist');
-                    if (callback) callback(null, null);
-                }
-            });
-
-        }
-
-    });
-
-
-
-
-}
 
 Service.createAnonymously = function (callback) {
     var userInfo = {

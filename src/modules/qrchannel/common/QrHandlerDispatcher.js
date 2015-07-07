@@ -1,9 +1,6 @@
 var QrChannel = require('../models/QrChannel').model;
-var MarketingCampaignService = require('../../../services/MarketingCampaignService');
-var MarketingCampaignUserService = require('../../../services/MarketingCampaignUserService');
 var u = require('../../../app/util');
 var logger = require('../../../app/logging').logger;
-var MarketingCampaignStrategy = require('../../../models/TypeRegistry').item('MarketingCampaignStrategy');
 var QrHandlerDispatcher = function(){
     this.handlers = {};
     this.defaultHandler = null;
@@ -28,30 +25,30 @@ QrHandlerDispatcher.prototype.genKey = function(forever, type){
 };
 
 QrHandlerDispatcher.prototype.dispatch = function(message, user, res){
-    var reply = "", mc, mcu, user = user;
-    var me = this;
-            if(!message.EventKey){
-                me.defaultHandler && me.defaultHandler(message, user, res, reply, null);
+    var me = this, reply = '';
+    if(!message.EventKey){
+        me.defaultHandler && me.defaultHandler(message, user, res, reply, null);
+    }
+    else{
+        var index = message.EventKey.indexOf("_") + 1;
+        var sceneId = message.EventKey.substring(index);
+        QrChannel.loadBySceneId(sceneId, function(err, qr){
+            if(err){
+                //TODO
+                res.reply(reply);
+                return;
+            }
+            if(qr){
+                var key = me.genKey(qr.forever, qr.type);
+                var handler = me.handlers[key];
+                handler && handler.handle(message, user, res, reply, qr);
             }
             else{
-                var index = message.EventKey.indexOf("_") + 1;
-                var sceneId = message.EventKey.substring(index);
-                QrChannel.loadBySceneId(sceneId, function(err, qr){
-                    if(err){
-                        //TODO
-                        return;
-                    }
-                    if(qr){
-                        var key = me.genKey(qr.forever, qr.type);
-                        var handler = me.handlers[key];
-                        handler && handler.handle(message, user, res, reply, qr);
-                    }
-                    else{
-                        me.nullHandler(message, user, res, reply, null);
-                    }
-                });
+                me.nullHandler(message, user, res, reply, null);
             }
 
+        });
+    }
 };
 
 
