@@ -1,7 +1,7 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
 var UserState = require('../framework/model/enums').UserState;
-var UserRole = require('./models/TypeRegistry').item('UserRole');
+var UserRole = require('./TypeRegistry').item('UserRole');
 var _ = require('underscore');
 
 var schema = DomainBuilder
@@ -15,7 +15,7 @@ var schema = DomainBuilder
         , name: {type: String, default: '匿名'}
         , nicName: {type: String, default: '匿名'}
         , headIconUrl: {type: String}
-        , role: {type: String, enum: UserRole.valueList(), require: true}
+        , role: {type: String, enum: UserRole.valueList(), default: UserRole.Guest.value()}
 
         , wx_openid: {type: String} //weixin openid
         , wx_at: String //weixin access_token

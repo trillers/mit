@@ -6,6 +6,7 @@ registry
     .addChild('Teacher','t', '教师')
     .addChild('Organization','o', '机构')
     .addChild('Student','s', '学生')
+    .addChild('Guest','g', '游客')
 
 
 module.exports = registry;
