@@ -3,10 +3,10 @@ var gulp = require( 'gulp' ),
     concat = require( 'gulp-concat' ),
     uglify = require( 'gulp-uglify' ),
     Promise = require( 'bluebird' ),
-    fs = Promise.promisifyAll(require( 'fs' )),
-    prefix = "module.exports=function(){"+
-        "var riot=require('seedriot');",
-    suffix = "}";
+    fs = Promise.promisifyAll(require('fs')),
+    prefix = "var init=function(){"+
+        "var riot = require('seedriot');",
+    suffix = "alert('loaded complete')};module.exports = init;";
 
 gulp.task('tagstospm', ['buildtags', 'spmcp'], function(cb){
     setTimeout(function(){

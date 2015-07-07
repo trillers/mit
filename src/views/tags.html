@@ -1,46 +1,5 @@
-<navigator></navigator>
-<activity-index></activity-index>
-<activity-list></activity-list>
-<activity-detail></activity-detail>
-<activity-new></activity-new>
-<activity-edit></activity-edit>
-<activity-search></activity-search>
-<activity-createsuccess></activity-createsuccess>
-<debug-index></debug-index>
-<mine-index></mine-index>
-<travel-index></travel-index>
-<travel-detail></travel-detail>
-<activity-menu></activity-menu>
-<add-randomnotes></add-randomnotes>
+<timer></timer>
 
-
-<script src="web/tag/initactivity-menu.html" type="riot/tag"></script>
-<script src="web/tag/wechat-menu.html" type="riot/tag"></script>
-<script src="web/tag/mine-index.html" type="riot/tag"></script>
-<script src="web/tag/navigator.html" type="riot/tag"></script>
-<script src="web/tag/mask-loading.html" type="riot/tag"></script>
-<script src="web/tag/debug-index.html" type="riot/tag"></script>
-<script src="web/tag/activity-new.html" type="riot/tag"></script>
-<script src="web/tag/activity-edit.html" type="riot/tag"></script>
-<script src="web/tag/activity-createsuccess.html" type="riot/tag"></script>
-<script src="web/tag/activity-index.html" type="riot/tag"></script>
-<script src="web/tag/activity-list.html" type="riot/tag"></script>
-<script src="web/tag/activity-filter.html" type="riot/tag"></script>
-<script src="web/tag/activity-item.html" type="riot/tag"></script>
-<script src="web/tag/activity-detail.html" type="riot/tag"></script>
-<script src="web/tag/activity-search.html" type="riot/tag"></script>
-<script src="web/tag/applications-item.html" type="riot/tag"></script>
-<script src="web/tag/applications-item-initiator.html" type="riot/tag"></script>
-<script src="web/tag/applications-item-initiator-sms.html" type="riot/tag"></script>
-<script src="web/tag/introduce-item.html" type="riot/tag"></script>
-<script src="web/tag/communication-index.html" type="riot/tag"></script>
-<script src="web/tag/travel-index.html" type="riot/tag"></script>
-<script src="web/tag/travel-item.html" type="riot/tag"></script>
-<script src="web/tag/travel-detail.html" type="riot/tag"></script>
-<script src="web/tag/travel-spot.html" type="riot/tag"></script>
-<script src="web/tag/activity-menu.html" type="riot/tag"></script>
-<script src="web/tag/add-randomnotes.html" type="riot/tag"></script>
-<script src="web/tag/randomnotes-item.html" type="riot/tag"></script>
-<script src="web/tag/highlights-desc.html" type="riot/tag"></script>
-<script src="web/tag/component-date.html" type="riot/tag"></script>
-<script src="web/tag/activity-recommend-item.html" type="riot/tag"></script>
+{% if __app.settings.env.NODE_ENV === 'development' %}
+<script src="/web/tag/timer.html" type="riot/tag"></script>
+{% endif %}

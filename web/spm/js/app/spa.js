@@ -73,18 +73,15 @@ var proto = {
         this.on('before-view-route-to', app._doBeforeViewRouteTo.bind(app));
         this.on('view-route-to', app._doViewRouteTo.bind(app));
         this.on('view-route-back', app._doViewRouteBack.bind(app));
-        //if(window.prdOrNot){
-        //    window.onload = function(){
-        //        app.trigger('init');
-        //    };
-        //}else{
-        //    riot.compile(function(){
-        //        app.trigger('init');
-        //    });
-        //}
-        riot.compile(function(){
-            app.trigger('init');
-        });
+        if(__app.settings.env.NODE_ENV === 'production'){
+            window.onload = function(){
+                app.trigger('init');
+            };
+        }else{
+            riot.compile(function(){
+                app.trigger('init');
+            });
+        }
     },
 
     route: function(route, handler){

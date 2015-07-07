@@ -13,15 +13,16 @@
     <script src="/web/spm/spm_modules/seajs-wrap/1.0.2/dist/seajs-wrap.js"></script>
     <script src="/web/index.js"></script>
     <link rel="stylesheet" href="/web/css/style.css">
-    {% include "./tags.html" %}
     {% else %}
-    <script  src="/web/spm/build/spm/0.0.1/index"></script>
+    <script src="/web/spm/build/spm/0.0.1/index.js"></script>
     <link rel="stylesheet" href="/web/css/style.min.css">
     {% endif %}
     {% endblock %}
 </head>
 <body>
-{% block content %}{% endblock %}
+{% block content %}
+    {% include "./tags.html" %}
+{% endblock %}
 {% block footer %}{% endblock %}
 </body>
 </html>
