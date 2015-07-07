@@ -8,7 +8,9 @@ var schema = DomainBuilder
     .withLifeFlag()
     .withCreatedOn()
     .withProperties({
-        user: {type: String, ref: 'User', required: true}
+        user: {type: String, ref: 'User', required: true},
+        name: {type: String},
+        phone: {type: String}
     })
     .build();
 

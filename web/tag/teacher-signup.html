@@ -1,0 +1,44 @@
+<teacher-signup>
+    <div>
+        <input type="text" value="{teacher.name}"/>
+        <input type="text" value="{teacher.phone}"/>
+        <input type="button" value="注册" onclick="{signUp}"/>
+    </div>
+
+    <style scoped>
+
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+            TeacherSignUpAction = domain.action('TeacherSignUpAction');
+        self.teacher = {
+            name:'',
+            phone:''
+        };
+        signUp(e){
+            TeacherSignUpAction.execute(self.teacher);
+        }
+        var _open = function(id){
+            this.trigger('view-route-to');
+        }.bind(self);
+        var _refresh = function(){
+
+        }.bind(self);
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            _open(options);
+        });
+        this.on('mount',function(){
+            TeacherSignUpAction.onDone(OnTeacherSignUpAction);
+            console.info('tag activities is mounted');
+        });
+        function OnTeacherSignUpAction(data){
+            riot.route('teacher-index');
+        }
+        this.on('refresh', function(){
+            console.info('tag activity is refreshing');
+            _refresh();
+        });
+    </script>
+</teacher-signup>
