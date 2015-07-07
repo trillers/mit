@@ -4,19 +4,10 @@
 
 {% block head %}
 {% parent %}
-<h3>this is child head</h3>
 {% endblock %}
 
 {% block content %}
 {% parent %}
-<p>This is just an awesome page.</p>
-<p>To do list</p>
-<ul>
-    {% for action in actions %}
-    <li>name</li>
-    <li>{{ action.name }}</li>
-    {% endfor %}
-</ul>
 {% endblock %}
 
-{% block footer %} this is footer {% endblock %}
+{% block footer %}{% endblock %}
