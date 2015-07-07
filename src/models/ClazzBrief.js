@@ -4,7 +4,7 @@ var Clazz = require('./Clazz').schema;
 var _ = require('underscore');
 
 var schema = DomainBuilder
-    .i('UserBiz')
+    .i('ClazzBrief')
     .withBasis()
     .withLifeFlag()
     .withCreatedOn()
