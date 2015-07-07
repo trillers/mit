@@ -26,27 +26,6 @@ var createUser = function (userInfo, callback) {
     });
 };
 var createUserAsync = Promise.promisify(createUser);
-var updateUser = function (id, update, callback) {
-    User.findById(id, function (err, doc) {
-        if (err) {
-            logger.error('Fail to update user [id=' + id + ']: ' + err);
-            if (callback) callback(err);
-            return;
-        }
-        if (doc) {
-            u.extend(doc, update);
-            doc.increment(); //TODO: do it in pre-save event
-            doc.save(function (err, result, numberAffected) {
-                cbUtil.handleAffected(callback, err, result, numberAffected);
-            });
-        }
-        else {
-            logger.warn('Fail to update user [id=' + id + '] because it does not exist');
-            if (callback) callback(null, null);
-        }
-    });
-};
-var updateUserAsync = Promise.promisify(updateUser);
 
 Service.loadById = function(id, callback){
     return UserKv.loadByIdAsync(id)
@@ -294,90 +273,12 @@ Service.deleteByOpenid = function(openid, callback) {
         });
 };
 
-
-
-Service.update = function(id, update, callback){
-    return updateUserAsync(id, update)
-        .then(function(user){
-            if(user){
-                var userJson = user.toObject({virtuals: true});
-                return UserKv.saveByIdAsync(userJson);
-            }
-            else{
-                return null;
-            }
-        })
-        .then(function (user) {
-            if(callback) callback(null, user);
-            return user;
-        })
-        .catch(Error, function(err){
-            //TODO:
-            if(callback) callback(err);
-        });
-};
-
 Service.loadMeta = function (uid, callback) {
     UserMetaKv.getMeta(uid, callback);
 };
 
-var updateUserContact = function(uid, contact, callback){
-    User.findOneAndUpdate({_id: uid}, contact, function(err, doc){
-        if (err) {
-            logger.error('Fail to update userContact [id=' + id + ']: ' + err);
-            if (callback) callback(err);
-            return;
-        }
-        if(callback) callback(null, doc);
-    });
-}
 
-var updateUserContactAsync = Promise.promisify(updateUserContact);
-
-Service.updateContact = function(uid, contact, callback){
-    //return updateUserContactAsync(uid, contact)
-    //    .then(function(user){
-    //        if(user){
-    //            var userJson = user.toObject({virtuals: true});
-    //            return UserKv.saveByIdAsync(userJson);
-    //        }
-    //        else{
-    //            return null;
-    //        }
-    //    })
-    //    .then(function (user) {
-    //        if(callback) callback(null, user);
-    //        return user;
-    //    })
-    //    .catch(Error, function(err){
-    //        //TODO:
-    //        if(callback) callback(err);
-    //    });
-    User.update({_id:uid},contact,function(err,numberAffected,raw){
-        if(err){
-            logger.error('Fail to update user [id=' + uid + '] contact: ' + err);
-            if(callback) callback(err);
-        }else{
-            logger.debug('Success to update user [id=' + uid + '] contact: ' );
-            if(callback) callback(null);
-        }
-    });
-};
-
-Service.loadContact = function(uid, callback){
-    User.findById(uid,'contact').lean(true).exec(function(err, doc){
-        if (err) {
-            logger.error('Fail to load user [id=' + uid + '] contact: ' + err);
-            if(callback) callback(err);
-            return;
-        }
-
-        logger.debug('Succeed to load user [id=' + uid + '] contact');
-        if(callback) callback(null, doc);
-    });
-};
-
-var tempUpdateUser = function(id, update, callback){
+var updateUser = function(id, update, callback){
     User.findByIdAndUpdate(id, update, function (err, result){
         if(err) {
             callback(err);
@@ -387,10 +288,10 @@ var tempUpdateUser = function(id, update, callback){
     })
 }
 
-var tempUpdateUserAsync = Promise.promisify(tempUpdateUser)
+var updateUserAsync = Promise.promisify(updateUser)
 
-Service.tempUpdate = function(id, update, callback){
-    return tempUpdateUserAsync(id, update)
+Service.update = function(id, update, callback){
+    return updateUserAsync(id, update)
         .then(function(user){
             if(user){
                 var userJson = user.toObject({virtuals: true});
