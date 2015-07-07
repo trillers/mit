@@ -16,5 +16,10 @@ module.exports = function(app){
     moduleRouter = express.Router({strict: true});
     require('./user')(moduleRouter);
     subsystemRouter.use('/user', moduleRouter);
+
+    //clazzTeacher
+    moduleRouter = express.Router({strict: true});
+    require('./clazzTeacher')(moduleRouter);
+    subsystemRouter.use('/teacher', moduleRouter);
 ;
 };

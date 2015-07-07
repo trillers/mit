@@ -1,4 +1,4 @@
-var service = require('../../services/UserService');
+var userService = require('../../services/UserService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -10,19 +10,13 @@ module.exports = function(router){
 
     //read
     router.get('/_:id', function(req, res){
-        service.loadById(req.params.id, function(err, doc){
+        userService.loadById(req.params.id, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
         })
     });
 
     //loadUserContact
-    router.get('/_:id/contact', function(req, res){
-        service.loadContact(req.params.id, function(err, doc){
-            //TODO: error handling
-            res.status(200).json(ApiReturn.i().ok(doc));
-        })
-    });
 
     //resetUserForChannel
     router.get('/resetUserForChannel', function(req, res){
@@ -31,7 +25,7 @@ module.exports = function(router){
         var update = {};
         update.subscribeCount = 0;
         update.channelFrom = '';
-        service.resetUser(openidArray, update, function(err, user){
+        userService.resetUser(openidArray, update, function(err, user){
             res.status(200).json(ApiReturn.i().ok(user));
         });
     });

@@ -1,12 +1,12 @@
 var logger = require('../app/logging').logger;
 var u = require('../app/util');
-var Clazz = require('../models/Clazz').model;
+var ClazzStudent = require('../models/ClazzStudent').model;
 var Promise = require('bluebird');
 
 var Service = {};
 
 Service.load = function (id, callback) {
-    Clazz.findById(id).lean(true).exec(function (err, doc) {
+    ClazzStudent.findById(id).lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load class [id=' + id + ']: ' + err);
             if (callback) callback(err);
@@ -19,49 +19,49 @@ Service.load = function (id, callback) {
 };
 
 Service.create = function (json, callback) {
-    var clazz = new Clazz(json);
-    clazz.save(function (err, doc, numberAffected) {
+    var clazzStudent = new ClazzStudent(json);
+    clazzStudent.save(function (err, doc, numberAffected) {
         if (err) {
             if (callback) callback(err);
             return;
         }
         if (numberAffected) {
-            logger.debug('Succeed to create clazz: ' + require('util').inspect(doc) + '\r\n');
+            logger.debug('Succeed to create clazzStudent: ' + require('util').inspect(doc) + '\r\n');
             if (callback) callback(null, doc);
         }
         else {
-            logger.error('Fail to create clazz: ' + require('util').inspect(doc) + '\r\n');
-            if (callback) callback(new Error('Fail to create clazz'));
+            logger.error('Fail to create clazzStudent: ' + require('util').inspect(doc) + '\r\n');
+            if (callback) callback(new Error('Fail to create clazzStudent'));
         }
     });
 };
 
 Service.delete = function (id, callback) {
-    Clazz.findByIdAndRemove(id, function (err, doc) {
+    ClazzStudent.findByIdAndRemove(id, function (err, doc) {
         if (err) {
-            logger.error('Fail to delete clazz [id=' + id + ']: ' + err);
+            logger.error('Fail to delete clazzStudent [id=' + id + ']: ' + err);
             if (callback) callback(err);
             return;
         }
 
-        logger.debug('Succeed to delete clazz [id=' + id + ']');
+        logger.debug('Succeed to delete clazzStudent [id=' + id + ']');
         if (callback) callback(null, doc);
     });
 };
 
 Service.update = function (id, update, callback) {
-    Clazz.findByIdAndUpdate(id, update, {new: true}, function (err, result){
+    ClazzStudent.findByIdAndUpdate(id, update, {new: true}, function (err, result){
         if(err) {
             callback(err);
         } else {
-            logger.debug('Succeed to update clazz [id=' + id + ']');
+            logger.debug('Succeed to update clazzStudent [id=' + id + ']');
             callback(null, result);
         }
     });
 };
 
 Service.find = function (params, callback) {
-    var query = Clazz.find();
+    var query = ClazzStudent.find();
 
     if (params.options) {
         query.setOptions(params.options);
@@ -96,7 +96,7 @@ Service.find = function (params, callback) {
 };
 
 Service.filter = function (params, callback) {
-    var query = Clazz.find();
+    var query = ClazzStudent.find();
 
     if (params.options) {
         query.setOptions(params.options);
@@ -130,4 +130,3 @@ Service.filter = function (params, callback) {
 Service = Promise.promisifyAll(Service);
 
 module.exports = Service;
-
