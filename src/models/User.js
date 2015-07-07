@@ -21,8 +21,6 @@ var schema = DomainBuilder
 
         , wx_subscribe: {type: Number, default: 0}
         , wx_subscribe_time: {type: Date}
-        , channelFrom: {type: String ,default: '1'} // channel scene id, or custom id.
-        , subscribeCount: {type: Number, default: 0} // how many times does the user subscribe on seedtrip wechat
 
         , wx_nickname: String
         , wx_sex: {type: Number, default: 0}
@@ -34,40 +32,6 @@ var schema = DomainBuilder
         , wx_province: {type: String}
         , wx_city: {type: String}
         , wx_privilege: {type: String}
-
-        , latestLatitude: {type: Number}
-        , latestLongitude: {type: Number}
-        , latestPrecision: {type: Number}
-        , latestLocationTime: {type: Date}
-        , latestLocationCity: {type: String, default: ''}
-        , latestLocationAddress: {type: String, default: ''}
-
-        , contact: {
-
-            "displayName": {type: String, required: false} //联系人姓名
-
-            , "phone": {type: String, required: false} //联系电话
-
-            , "gender": {type: String, required: false} //申请人性别
-
-            , "birthday": {type: Date, required: false} //申请人出生日期
-
-            , "IDCard": {type: String, required: false} //申请人身份证号
-
-            , "company": {type: String, required: false} //申请人单位
-
-            , "position": {type: String, required: false} //申请人职位
-
-            , "business": {type: String, required: false} //申请人行业
-
-            , "school": {type: String, required: false} //申请人学校
-
-            , "class": {type: String, required: false} //申请人班级
-
-            , "discipline": {type: String, required: false} //申请人专业
-
-            , "email": {type: String, required: false} //申请人邮箱
-        }
     })
     .build();
 
