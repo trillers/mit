@@ -3,7 +3,7 @@ var express = require('express');
 var service = require('../../services/UserService');
 var wechat = require('wechat');
 var WechatOperationService = require('../../services/WechatOperationService');
-//var QrChannelDispatcher = require('../../modules/qrchannel');
+var QrChannelDispatcher = require('../../modules/qrchannel');
 var UserKv = require('../../kvs/User');
 var productionMode = settings.env.mode == 'production';
 var logger = require('../../app/logging').logger;
@@ -78,46 +78,12 @@ module.exports = function(){
                 WechatOperationService.logAction(message, user);
                 switch (message.Event){
                     case 'subscribe':
-                        //authenticator.clearAuthentication(req, res);
-                        ///*
-                        // * Set user flags to tell middleware to make user re-signin, when load spa page.
-                        // */
-                        //UserKv.setFlagResignin(user.wx_openid, true);
-                        //var userMap = ['oniQet5i2l5zgu4AemSUSzfDQ7HE','oniQet_1wleWcgfOEZDswDxRYSDQ', 'oniQet5LyVZBpbBvlERaUdaj1ZPQ', 'oniQet-PfAlF63MjN46hq74Vww8I', 'oniQet-V-zTnLbMncUQpOgwjPAaI', 'oniQet1nqyhoQEn_F1UaAx9Ao2Ag', 'oniQet4OV-o4tdFTomuBqeVHu2YA', 'oniQetzTZYlDnvk8_hC2LhW0Z_Hk', 'oniQet1SgwdePiLUKBUG-mX8BLLk', 'oniQetyizIGdytiqNlDge6nvQSw0', 'oniQetxwGP6I8C4lbBkwRrTpleiE', 'oniQet-PhD0zE-JTNfE6RBLnx7BE', 'oniQet0xiIuvd3ancjT6ePHmE39s', 'oniQet27QIn0EfRgC8zzDN0H41TE', 'oniQetwaIJM32YAGtQ-bfi48JcPU' ];
-                        ////var userMap = ['oqSpUuLkPbGwAmCX8vJslexU3n2Y', 'oqSpUuPj3KedXmlSo6Icg9EVHh4w', 'oqSpUuHK2Vj9DaL93eYqzLo4e6Ow', 'oqSpUuJR2MjzH3Iy2TEkx5MkJ7hE'];
-                        //var testUser = userMap.indexOf(user.wx_openid) > -1;
-                        //if(!testUser) {
-                        //    var update = {
-                        //        wx_subscribe: 1,
-                        //        wx_subscribe_time: new Date(),
-                        //        $inc: {'subscribeCount': 1}
-                        //    };
-                        //    var welcome = "哇哦~太好了！我们又多了一个新种子，你好哇/::D\n\n这里是喊人一起玩儿的好地方哦！看看身边的朋友都在玩儿什么，赶紧加入吧！你也可以出个点子，叫上朋友一起动起来！\n\n<a href=\"http://www.zz365.com.cn\">点此发布活动或者报名参加！</a>";
-                        //    if(user.subscribeCount == 0 && message.EventKey){
-                        //        var index = message.EventKey.indexOf("_") + 1;
-                        //        var sceneId = message.EventKey.substring(index);
-                        //        update.channelFrom = sceneId;
-                        //
-                        //        ChannelService.followAsync(sceneId)
-                        //            .then(function(){
-                        //               service.tempUpdate(user.id, update, function(err, result){
-                        //                  if(err){
-                        //                      logger.error('user subscribe event error ' + err);
-                        //                  }
-                        //                   res.reply(welcome);
-                        //               });
-                        //            });
-                        //    } else {
-                        //        service.tempUpdate(user.id, update, function(err, result){
-                        //            if(err){
-                        //                logger.error('user subscribe event error ' + err);
-                        //            }
-                        //            res.reply(welcome);
-                        //        });
-                        //    }
-                        //} else {
-                        //    QrChannelDispatcher.dispatch(message, user, res);
-                        //}
+                        authenticator.clearAuthentication(req, res);
+
+                        UserKv.setFlagResignin(user.wx_openid, true);
+
+                        QrChannelDispatcher.dispatch(message, user, res);
+
                         break;
                     case 'unsubscribe':
                         //authenticator.clearAuthentication(req, res);
