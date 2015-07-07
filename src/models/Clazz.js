@@ -1,7 +1,5 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
-var ClazzTeacher = require('./ClazzTeacher').schema;
-var ClazzStudent = require('./ClazzStudent').schema;
 var _ = require('underscore');
 
 var schema = DomainBuilder
@@ -11,8 +9,9 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         name: {type: String, required: true},
-        teachers: [{type: String, ref: ClazzTeacher}],
-        students: [{type: String, ref: ClazzStudent}]
+        teachers: [{type: String, ref: 'ClazzTeacher'}],
+        students: [{type: String, ref: 'ClazzStudent'}],
+        qrChannel:{type: String, ref: 'QrChannel'}
     })
     .build();
 

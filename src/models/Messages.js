@@ -1,6 +1,5 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
-var User = require('./User').schema;
 var _ = require('underscore');
 
 var schema = DomainBuilder
@@ -9,8 +8,8 @@ var schema = DomainBuilder
     .withLifeFlag()
     .withCreatedOn()
     .withProperties({
-        from: {type: String, ref: User, required: true},
-        to: {type: String, ref: User, required: true},
+        from: {type: String, ref: 'User', required: true},
+        to: {type: String, ref: 'User', required: true},
         type: {type: String},
         content: {type: String},
         multiOrNot: {type: String}
