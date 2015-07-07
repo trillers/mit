@@ -34,7 +34,6 @@ var schema = DomainBuilder
         , wx_province: {type: String}
         , wx_city: {type: String}
         , wx_privilege: {type: String}
-
     })
     .build();
 
