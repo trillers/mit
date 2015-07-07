@@ -10,16 +10,15 @@ var Spa = require('./spa');
 var app = new Spa({defaultHash: 'timer'});
 
 
-app.routeView('timer', nest.viewable({
-  name: 'timer',
+app.routeView('teacher/signup', nest.viewable({
+  name: 'teacher/signup',
   mount: function(ctx){
-    var tags = riot.mount('timer');
+    var tags = riot.mount('teacher-signup');
     this.tag = tags[0];
   },
   route: function(ctx){
     this.context = ctx;
     this.parent.currentTrigger('mask');
-    app.history.push('timer');
     this.tag.trigger('open', ctx.req.query);
   }
 }));
