@@ -3,7 +3,7 @@ var DomainBuilder = require('../framework/model/DomainBuilder');
 var _ = require('underscore');
 
 var schema = DomainBuilder
-    .i('UserBiz')
+    .i('Message')
     .withBasis()
     .withLifeFlag()
     .withCreatedOn()
