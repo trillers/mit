@@ -15,7 +15,7 @@ var schema = DomainBuilder
         , name: {type: String, default: '匿名'}
         , nicName: {type: String, default: '匿名'}
         , headIconUrl: {type: String}
-        , role: {type: String, enum: UserRole.valueList(), require: true}
+        , role: {type: String, enum: UserRole.valueList(), default: UserRole.Guest.value()}
 
         , wx_openid: {type: String} //weixin openid
         , wx_at: String //weixin access_token
