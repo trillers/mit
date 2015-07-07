@@ -1,6 +1,6 @@
 
 var assert = require("assert");
-var JobService = require("./ProductActivityJob");
+//var JobService = require("./ProductActivityJob");
 var uService = require('../services/UserService');
 var http = require('http');
 

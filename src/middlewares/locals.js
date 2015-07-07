@@ -1,10 +1,8 @@
 var settings = require('mit-settings');
 var resources = require('mit-settings').resources;
 var UserMeta = require('../kvs/UserMeta');
-var typeRegistry = require('../models/TypeRegistry');
 var workflowRegistry = require('../app/workflow');
 var time = require('../app/time');
-var applicationfield = require('../models/ApplicationFields');
 var _ = require('underscore');
 var env = settings.env.NODE_ENV;
 var debug = env != 'production';
@@ -15,7 +13,6 @@ var __app = {
         app: settings.app,
         env: settings.env
     },
-    enums: typeRegistry.dict(),
     workflows: workflowRegistry.dict(),
     resources: resources
 };
@@ -34,9 +31,6 @@ var getServerTime = function(){
     return time.currentTime();
 }
 
-var getApplicationFields = function(){
-    return applicationfield;
-}
 
 var detectBrowser = function(request){
     var ua = request.headers['user-agent'], browser = {};

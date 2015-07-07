@@ -1,6 +1,6 @@
 var User = require('../models/User').model;
 var UserHelper = require('../models/User').helper;
-var UserState = require('../models/enums').UserState;
+//var UserState = require('../models/enums').UserState;
 var UserKv = require('../kvs/User');
 var UserMetaKv = require('../kvs/UserMeta');
 var time = require('../app/time');

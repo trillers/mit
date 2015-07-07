@@ -16,24 +16,5 @@ module.exports = function(app){
     moduleRouter = express.Router({strict: true});
     require('./user')(moduleRouter);
     subsystemRouter.use('/user', moduleRouter);
-
-    //image
-    moduleRouter = express.Router({strict: true});
-    require('./img')(moduleRouter);
-    subsystemRouter.use('/img', moduleRouter);
-
-    //travel target
-    moduleRouter = express.Router({strict: true});
-    require('./tt')(moduleRouter);
-    subsystemRouter.use('/tt', moduleRouter);
-
-    //product activity
-    moduleRouter = express.Router({strict: true});
-    require('./pa')(moduleRouter);
-    subsystemRouter.use('/pa', moduleRouter);
-
-    //tenant
-    moduleRouter = express.Router({strict: true});
-    require('./tenant')(moduleRouter);
-    subsystemRouter.use('/tenant', moduleRouter);
+;
 };

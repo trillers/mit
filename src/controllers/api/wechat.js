@@ -1,5 +1,4 @@
 var settings = require('mit-settings');
-var service = require('../../services/ProductActivityService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');

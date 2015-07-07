@@ -7,7 +7,6 @@ Date.prototype.format = function(pattern){
     return time.format(this, pattern);
 };
 
-var ProductActivity = require('../models/ProductActivity');
 
 module.exports = function(){
 };
