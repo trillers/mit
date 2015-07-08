@@ -137,6 +137,7 @@ Service.createAnonymously = function (callback) {
                     logger.error('failed to create userBiz');
                 }
             })
+            return userJson;
         })
         .catch(Error, function (err) {
             logger.error('Fail to create user from anonymous: ' + err);

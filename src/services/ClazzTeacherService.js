@@ -33,7 +33,7 @@ Service.loadByUserId = function (userId, callback) {
 
 Service.create = function (json, callback) {
     var clazzTeacher = new ClazzTeacher(json);
-    clazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
+    ClazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
         if (err) {
             logger.error('Fail to create clazzTeacher');
             if (callback) callback(err);

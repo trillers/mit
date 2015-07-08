@@ -1,5 +1,5 @@
 var userService = require('../../services/UserService');
-var userBizService = require('../../services/UserService');
+var userBizService = require('../../services/UserBizService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');

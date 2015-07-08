@@ -51,7 +51,7 @@ Authenticator.prototype = {
                 });
                 return user;
             })
-            .catch(Error, function(e){
+            .catch(Error, function(err){
                 logger.error('Fail to signup or signin anonymously: ' + err);
                 next();
             });

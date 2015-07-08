@@ -128,7 +128,7 @@ Service.filter = function (params, callback) {
 };
 
 Service.loadUserClass = function(userId, callback){
-    UserBiz.find({User: userId}, {Classes: 1}, function(err, result){
+    UserBiz.findOne({User: userId}, {Classes: 1}, function(err, result){
         if(err) {
             logger.error('load user class error: ' + err);
             callback(err);

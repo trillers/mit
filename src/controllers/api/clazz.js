@@ -1,7 +1,7 @@
 var clazzService = require('../../services/ClazzService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
-var userBizService = require('../../services/UserBizServce');
-var clazzBriefService = reqruire('../../services/ClazzBriefService');
+var userBizService = require('../../services/UserBizService');
+var clazzBriefService = require('../../services/ClazzBriefService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -31,10 +31,7 @@ module.exports = function(router){
         clazzTeacherService.loadByUserIdAsync(user)
             .then(function(clazzTeacher){
                 clazz.teachers.push(clazzTeacher._id);
-                return clazzService.createAsync(clazz, function(err, doc){
-                    //TODO: error handling
-                    res.status(200).json(ApiReturn.i().ok(doc));
-                });
+                return clazzService.createAsync(clazz);
             })
             .then(function(clazz){
                 result = clazz;
@@ -45,7 +42,7 @@ module.exports = function(router){
                 return clazzBriefService.createAsync(clazzBrief);
             })
             .then(function(clazzBrief){
-                userBizService.addClass(user, clazzBrief._id, function(err, doc){
+                userBizService.addClazz(user, clazzBrief._id, function(err, doc){
                     //TODO: error handling
                     res.status(200).json(ApiReturn.i().ok(result));
                 });
