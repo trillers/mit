@@ -52,20 +52,18 @@
         showSubMenu(e){
             Object.prototype.findEl = function(type, fn){
                 var me = this;
-                console.log(me);
                 var dom = me.firstChild;
-                console.log(dom);
                 findEl();
                 function findEl(){
-
-//                    if (dom && dom.tagName === type) fn(dom)
-//                    else{
-//                        if (dom.firstChild) {
-//                            dom = dom.firstChild;
-//                            findEl();
-//                        }
-//                        findEl.call(dom.nextSibling, type, fn);
-//                    }
+                    if (dom && dom instanceof Element && dom.tagName === type) fn(dom)
+                    else{
+                        findEl(dom.nextSibling)
+                        if (dom.firstChild) {
+                            dom = dom.firstChild;
+                            findEl();
+                        }
+                        findEl.call(dom.nextSibling, type, fn);
+                    }
                 }
             }
             var root = e.currentTarget;
