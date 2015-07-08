@@ -6,7 +6,7 @@ var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
 var handle = function(message, user, res, replyMsg, qrChannel){
     ClazzService.loadByQrChannelId(qrChannel._id)
         .then(function(clazz){
-            return ClazzService.bindStudent(clazz._id, user);
+            return ClazzService.addStudent(clazz._id, user);
         })
         .then(function(result){
             if(result){

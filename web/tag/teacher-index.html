@@ -1,17 +1,11 @@
 <teacher-index>
     <div if="{!hidden}">
-        <ul class="clazzAccordion">
-            <li onclick="{showSubMenu}">
-                <span>周六补习班</span>
+        <ul class="clazzAccordion" onclick="{showSubMenu}">
+            <li each="{clazzes}" >
+                <span>{name}</span>
                 <ul>
                     <li>张三</li>
                     <li>李四</li>
-                </ul>
-            </li>
-            <li>
-                <span>周日补习班</span>
-                <ul>
-                    <li>王五</li>
                 </ul>
             </li>
         </ul>
@@ -19,7 +13,14 @@
     </div>
     <style scoped>
         .clazzAccordion >li{
-            background:red;
+            border-bottom: 1px solid rgb(72, 92, 174);
+        }
+        .clazzAccordion >li ul{
+            max-height:0px;
+            transition:max-height 0.15s ease;
+            -moz-transition:max-height 0.15s ease; /* Firefox 4 */
+            -webkit-transition:max-height 0.15s ease; /* Safari and Chrome */
+            -o-transition:max-height 0.15s ease; /* Opera */
         }
         .clazzAccordion li >span{
             height:32px;
@@ -30,7 +31,6 @@
         }
         .clazzAccordion ul{
             overflow: hidden;
-            transition: 1s earse;
         }
         .clazzAccordion ul>li{
             padding-left:10px;
@@ -43,45 +43,25 @@
         .clazzAccordion ul>li:nth-child(even){
             background: #EFEFEF;
         }
+        .hidden{
+            max-height:500px !important;
+        }
     </style>
 
     <script>
         var self = nest.presentable(this),
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
+        self.clazzes = {};
 
         showSubMenu(e){
-            Object.prototype.findEl = function (type, fn) {
-                var me = this
-                var dom = me.firstChild;
-
-                findEl(dom);
-
-                function findEl(dom) {
-                    if (dom && dom.nodeType != 3 && dom.tagName === type.toUpperCase()){
-                        return fn(dom)
-                    }
-                    else {
-                        dom.nextSibling && findEl(dom.nextSibling)
-                    }
-                    if (dom.firstChild) {
-                        dom = dom.firstChild;
-                        findEl(dom);
-                    }
-                    dom = dom.nextSibling;
-                }
+            var root = e.target;
+            if (e.target.tagName === "SPAN") {
+                $(root).siblings().toggleClass('hidden');
             }
-            var root = e.currentTarget;
-            root.findEl('ul', function(el){
-                console.log("---------");
-                console.log(el);
-            });
         }
 
-
-
         var _open = function(id){
-
             this.trigger('view-route-to');
         }.bind(self);
         var _refresh = function(){
@@ -96,7 +76,9 @@
             console.info('tag activities is mounted');
         });
         function OnClazzFetchByTeacherAction(data){
-            console.log(data);
+            console.log(data)
+            self.clazzes = data.clazzes;
+            self.update();
         }
         this.on('refresh', function(){
             console.info('tag activity is refreshing');

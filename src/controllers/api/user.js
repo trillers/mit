@@ -20,7 +20,7 @@ module.exports = function(router){
     //loadUserClass
     router.get('/myClazz', function(req, res){
         var userId = req.session.user.id;
-        userBizService.loadUserClass(userId, function(err, doc){
+        userBizService.loadUserClazz(userId, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
         })

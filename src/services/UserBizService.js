@@ -127,8 +127,8 @@ Service.filter = function (params, callback) {
     });
 };
 
-Service.loadUserClass = function(userId, callback){
-    UserBiz.findOne({user: userId}, {classes: 1}).populate('classes').exec(function(err, result){
+Service.loadUserClazz = function(userId, callback){
+    UserBiz.findOne({user: userId}, {_id: 0, clazzes: 1}).populate('clazzes').exec(function(err, result){
         if(err) {
             logger.error('load user class error: ' + err);
             callback(err);
@@ -139,7 +139,7 @@ Service.loadUserClass = function(userId, callback){
 }
 
 Service.addClazz = function(userId, clazzBrief, callback){
-    UserBiz.findOneAndUpdate({user: userId}, {$addToSet: {classes: clazzBrief}}, function(err, doc){
+    UserBiz.findOneAndUpdate({user: userId}, {$addToSet: {clazzes: clazzBrief}}, function(err, doc){
         if(err) {
             logger.error('add class to userBiz error: ' + err);
             callback(err);

@@ -10,7 +10,7 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         user: {type: String, ref: 'User', required: true},
-        classes: [{type: String, ref: 'ClazzBrief'}]
+        clazzes: [{type: String, ref: 'ClazzBrief'}]
     })
     .build();
 
