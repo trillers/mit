@@ -1,4 +1,5 @@
 var userService = require('../../services/UserService');
+var userBizService = require('../../services/UserService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -19,7 +20,7 @@ module.exports = function(router){
     //loadUserClass
     router.get('/myClazz', function(req, res){
         var userId = req.session.user.id;
-        userService.loadUserClass(userId, function(err, doc){
+        userBizService.loadUserClass(userId, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
         })
