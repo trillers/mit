@@ -36,24 +36,26 @@
 
     <script>
         var self = nest.presentable(this),
-                TeacherSignUpAction = domain.action('TeacherSignUpAction');
+            ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
         var _open = function(id){
+
             this.trigger('view-route-to');
         }.bind(self);
         var _refresh = function(){
 
         }.bind(self);
         this.on('open', function(options){
-            console.info('tag activities is opening');
+            ClazzFetchByTeacherAction.execute();
             _open(options);
         });
         this.on('mount',function(){
-            TeacherSignUpAction.onDone(OnTeacherSignUpAction);
+            ClazzFetchByTeacherAction.onDone(OnClazzFetchByTeacherAction);
             console.info('tag activities is mounted');
         });
-        function OnTeacherSignUpAction(data){
-            riot.route('teacher-index');
+        function OnClazzFetchByTeacherAction(data){
+            console.log(data);
+            riot.route('teacher/index');
         }
         this.on('refresh', function(){
             console.info('tag activity is refreshing');

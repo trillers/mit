@@ -7,7 +7,7 @@ var agent = require('./agent').init();
 var util = require('./util');
 
 var Spa = require('./spa');
-var app = new Spa({defaultHash: 'timer'});
+var app = new Spa({defaultHash: 'teacher/index'});
 
 
 app.routeView('teacher/signup', nest.viewable({
