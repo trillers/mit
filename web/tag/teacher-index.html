@@ -1,7 +1,7 @@
 <teacher-index>
     <div if="{!hidden}">
         <ul class="clazzAccordion">
-            <li>
+            <li onclick="{showSubMenu}">
                 <span>周六补习班</span>
                 <ul>
                     <li>张三</li>
@@ -18,13 +18,24 @@
         <footer-bar></footer-bar>
     </div>
     <style scoped>
-        .clazzAccordion li{
+        .clazzAccordion >li{
             background:red;
         }
         .clazzAccordion li >span{
-            width:100%;
+            height:32px;
+            line-height:32px;
             display: block;
+            padding-left:10px;
             background: rgb(110, 136, 240);
+        }
+        .clazzAccordion ul{
+            overflow: hidden;
+            transition: 1s earse;
+        }
+        .clazzAccordion ul>li{
+            padding-left:10px;
+            height:32px;
+            line-height: 32px;
         }
         .clazzAccordion ul>li:nth-child(odd){
             background: #ECECEC;
@@ -38,6 +49,32 @@
         var self = nest.presentable(this),
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
+        showSubMenu(e){
+            Object.prototype.findEl = function(type, fn){
+                var me = this;
+                console.log(me);
+                var dom = me.firstChild;
+                console.log(dom);
+                findEl();
+                function findEl(){
+
+//                    if (dom && dom.tagName === type) fn(dom)
+//                    else{
+//                        if (dom.firstChild) {
+//                            dom = dom.firstChild;
+//                            findEl();
+//                        }
+//                        findEl.call(dom.nextSibling, type, fn);
+//                    }
+                }
+            }
+            var root = e.currentTarget;
+            root.findEl('ul', function(el){
+                console.log(el);
+
+            });
+
+        }
         var _open = function(id){
 
             this.trigger('view-route-to');
@@ -55,7 +92,6 @@
         });
         function OnClazzFetchByTeacherAction(data){
             console.log(data);
-            riot.route('teacher/index');
         }
         this.on('refresh', function(){
             console.info('tag activity is refreshing');
