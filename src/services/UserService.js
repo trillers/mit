@@ -10,6 +10,7 @@ var wechat = require('../app/wechat/api');
 var Service = {};
 var Promise = require('bluebird');
 var cbUtil = require('../framework/callback');
+var userBizService = require('./UserBizService');
 var generateUserToken = function(uid){
     var key = settings.secretKey;
     return require('crypto').createHash('sha1').update(String(uid)).update(key).digest('hex');
@@ -126,6 +127,16 @@ Service.createAnonymously = function (callback) {
         .then(function (userJson) {
             if(callback) callback(null, userJson);
             return userJson;
+        }).then(function(userJson){
+            var userBiz = {
+                user: userJson._id,
+                classes: []
+            }
+            userBizService.create(userBiz, function(err, doc){
+                if(err){
+                    logger.error('failed to create userBiz');
+                }
+            })
         })
         .catch(Error, function (err) {
             logger.error('Fail to create user from anonymous: ' + err);
