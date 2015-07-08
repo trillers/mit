@@ -1,5 +1,6 @@
 var clazzService = require('../../services/ClazzService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
+var userService = require('../../services/UserService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');

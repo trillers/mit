@@ -19,7 +19,7 @@ Service.loadById = function (id, callback) {
 };
 
 Service.loadByUserId = function (userId, callback) {
-    ClazzTeacher.find({user: userId}).lean(true).exec(function (err, doc) {
+    ClazzTeacher.findOne({user: userId}).lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load class by user id [id=' + userId + ']: ' + err);
             if (callback) callback(err);
