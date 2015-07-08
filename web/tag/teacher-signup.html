@@ -1,7 +1,7 @@
 <teacher-signup>
-    <div>
-        <input type="text" value="{teacher.name}"/>
-        <input type="text" value="{teacher.phone}"/>
+    <div if="{!hidden}">
+        <input type="text" name="teacherName"/>
+        <input type="text" name="teacherPhone"/>
         <input type="button" value="注册" onclick="{signUp}"/>
     </div>
 
@@ -12,12 +12,8 @@
     <script>
         var self = nest.presentable(this),
             TeacherSignUpAction = domain.action('TeacherSignUpAction');
-        self.teacher = {
-            name:'',
-            phone:''
-        };
         signUp(e){
-            TeacherSignUpAction.execute(self.teacher);
+            TeacherSignUpAction.execute({name: self.teacherName.value, phone: self.teacherPhone.value});
         }
         var _open = function(id){
             this.trigger('view-route-to');
@@ -34,7 +30,7 @@
             console.info('tag activities is mounted');
         });
         function OnTeacherSignUpAction(data){
-            riot.route('teacher-index');
+            riot.route('teacher/index');
         }
         this.on('refresh', function(){
             console.info('tag activity is refreshing');
