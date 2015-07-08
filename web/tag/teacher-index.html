@@ -62,7 +62,6 @@
         }
 
         var _open = function(id){
-            this.trigger('view-route-to');
         }.bind(self);
         var _refresh = function(){
 
@@ -79,6 +78,7 @@
             console.log(data)
             self.clazzes = data.clazzes;
             self.update();
+            self.trigger('view-route-to');
         }
         this.on('refresh', function(){
             console.info('tag activity is refreshing');
