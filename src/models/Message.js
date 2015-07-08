@@ -18,5 +18,4 @@ var schema = DomainBuilder
 
 module.exports.schema = schema;
 module.exports.model = schema.model(true);
-module.exports.helper = helper;
 

@@ -18,6 +18,19 @@ Service.loadById = function (id, callback) {
     })
 };
 
+Service.loadByUserId = function (userId, callback) {
+    ClazzTeacher.find({user: userId}).lean(true).exec(function (err, doc) {
+        if (err) {
+            logger.error('Fail to load class by user id [id=' + userId + ']: ' + err);
+            if (callback) callback(err);
+            return;
+        }
+
+        logger.debug('Succeed to load by user id  [id=' + userId + ']');
+        if (callback) callback(null, doc);
+    })
+};
+
 Service.create = function (json, callback) {
     var clazzTeacher = new ClazzTeacher(json);
     clazzTeacher.save(function (err, doc, numberAffected) {
