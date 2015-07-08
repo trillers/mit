@@ -23,6 +23,31 @@ app.routeView('teacher/signup', nest.viewable({
   }
 }));
 
+app.routeView('teacher/index', nest.viewable({
+  name: 'teacher/index',
+  mount: function(ctx){
+    var tags = riot.mount('teacher-index');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
+
+app.routeView('clazz/add', nest.viewable({
+  name: 'clazz/add',
+  mount: function(ctx){
+    var tags = riot.mount('clazz-add');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
 
 app.routeView('debug/index', nest.viewable({
   name: 'debug/index',

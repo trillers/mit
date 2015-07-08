@@ -1,0 +1,35 @@
+<clazz-add>
+    <div if="{!hidden}">
+        <input type="text" name="clazzname"/>
+        <input type="button" value="添加班级" onclick="{addClazz}"/>
+    </div>
+
+    <style scoped>
+
+    </style>
+
+    <script>
+        var self = nest.presentable(this);
+        var ClazzAddAction = domain.action("ClazzAddAction");
+
+        addClazz(e){
+            var clazzJson = {
+                name: self.clazzname.value
+            }
+            ClazzAddAction.execute(clazzJson);
+        }
+
+        this.on('mount',function(){
+            ClazzAddAction.onDone(OnClazzAddAction);
+        });
+
+        this.on('open',function(){
+            this.trigger('view-route-to');
+        });
+
+        function OnClazzAddAction(){
+            riot.route('teacher/index');
+        }
+
+    </script>
+</clazz-add>

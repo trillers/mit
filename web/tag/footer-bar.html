@@ -1,0 +1,17 @@
+<footer-bar>
+    <div>
+        <input type="button" value="添加班级" onclick="{addClazz}"/>
+    </div>
+
+    <style scoped>
+
+    </style>
+
+    <script>
+        var self = nest.presentable(this);
+        addClazz(e){
+            riot.route('clazz/add');
+        }
+
+    </script>
+</footer-bar>
