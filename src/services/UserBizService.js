@@ -1,76 +1,67 @@
 var logger = require('../app/logging').logger;
 var u = require('../app/util');
-var ClazzTeacher = require('../models/ClazzTeacher').model;
+var UserBiz = require('../models/UserBiz').model;
 var Promise = require('bluebird');
 
 var Service = {};
 
-Service.loadById = function (id, callback) {
-    ClazzTeacher.findById(id).lean(true).exec(function (err, doc) {
+Service.load = function (id, callback) {
+    UserBiz.findById(id).lean(true).exec(function (err, doc) {
         if (err) {
-            logger.error('Fail to load class [id=' + id + ']: ' + err);
+            logger.error('Fail to load userBiz [id=' + id + ']: ' + err);
             if (callback) callback(err);
             return;
         }
 
-        logger.debug('Succeed to load  [id=' + id + ']');
-        if (callback) callback(null, doc);
-    })
-};
-
-Service.loadByUserId = function (userId, callback) {
-    ClazzTeacher.findOne({user: userId}).lean(true).exec(function (err, doc) {
-        if (err) {
-            logger.error('Fail to load class by user id [id=' + userId + ']: ' + err);
-            if (callback) callback(err);
-            return;
-        }
-
-        logger.debug('Succeed to load by user id  [id=' + userId + ']');
+        logger.debug('Succeed to load  userBiz [id=' + id + ']');
         if (callback) callback(null, doc);
     })
 };
 
 Service.create = function (json, callback) {
-    var clazzTeacher = new ClazzTeacher(json);
-    clazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
+    var userBiz = new UserBiz(json);
+    userBiz.save(function (err, doc, numberAffected) {
         if (err) {
-            logger.error('Fail to create clazzTeacher');
             if (callback) callback(err);
             return;
-        }else {
-            logger.debug('Succeed to create clazzTeacher: ' + require('util').inspect(doc) + '\r\n');
+        }
+        if (numberAffected) {
+            logger.debug('Succeed to create userBiz: ' + require('util').inspect(doc) + '\r\n');
             if (callback) callback(null, doc);
+        }
+        else {
+            logger.error('Fail to create userBiz: ' + require('util').inspect(doc) + '\r\n');
+            if (callback) callback(new Error('Fail to create userBiz'));
         }
     });
 };
 
 Service.delete = function (id, callback) {
-    ClazzTeacher.findByIdAndRemove(id, function (err, doc) {
+    UserBiz.findByIdAndRemove(id, function (err, doc) {
         if (err) {
-            logger.error('Fail to delete clazzTeacher [id=' + id + ']: ' + err);
+            logger.error('Fail to delete userBiz [id=' + id + ']: ' + err);
             if (callback) callback(err);
             return;
         }
 
-        logger.debug('Succeed to delete clazzTeacher [id=' + id + ']');
+        logger.debug('Succeed to delete userBiz [id=' + id + ']');
         if (callback) callback(null, doc);
     });
 };
 
 Service.update = function (id, update, callback) {
-    ClazzTeacher.findByIdAndUpdate(id, update, {new: true}, function (err, result){
+    UserBiz.findByIdAndUpdate(id, update, {new: true}, function (err, result){
         if(err) {
             callback(err);
         } else {
-            logger.debug('Succeed to update clazzTeacher [id=' + id + ']');
+            logger.debug('Succeed to update userBiz [id=' + id + ']');
             callback(null, result);
         }
     });
 };
 
 Service.find = function (params, callback) {
-    var query = ClazzTeacher.find();
+    var query = UserBiz.find();
 
     if (params.options) {
         query.setOptions(params.options);
@@ -105,7 +96,7 @@ Service.find = function (params, callback) {
 };
 
 Service.filter = function (params, callback) {
-    var query = ClazzTeacher.find();
+    var query = UserBiz.find();
 
     if (params.options) {
         query.setOptions(params.options);
@@ -136,6 +127,29 @@ Service.filter = function (params, callback) {
     });
 };
 
+Service.loadUserClass = function(userId, callback){
+    UserBiz.find({User: userId}, {Classes: 1}, function(err, result){
+        if(err) {
+            logger.error('load user class error: ' + err);
+            callback(err);
+        }else{
+            callback(null, result);
+        }
+    });
+}
+
+Service.addClazz = function(userId, clazzBrief, callback){
+    UserBiz.findOneAndUpdate({user: userId}, {$addToSet: {classes: clazzBrief}}, function(err, doc){
+        if(err) {
+            logger.error('add class to userBiz error: ' + err);
+            callback(err);
+        }else{
+            callback(null, doc);
+        }
+    });
+}
+
 Service = Promise.promisifyAll(Service);
 
 module.exports = Service;
+
