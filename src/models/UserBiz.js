@@ -1,6 +1,6 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
-var ClazzBrief = require('./ClazzBrief').schema;
+//var ClazzBrief = require('./ClazzBrief').schema;
 var _ = require('underscore');
 
 var schema = DomainBuilder
@@ -10,7 +10,7 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         user: {type: String, ref: 'User', required: true},
-        classes: [ClazzBrief]
+        classes: [{type: String, ref: 'ClazzBrief'}]
     })
     .build();
 

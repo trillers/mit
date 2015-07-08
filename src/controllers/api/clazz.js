@@ -1,6 +1,7 @@
 var clazzService = require('../../services/ClazzService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
-var userService = require('../../services/UserService');
+var userBizService = require('../../services/UserBizServce');
+var clazzBriefService = reqruire('../../services/ClazzBriefService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -26,13 +27,27 @@ module.exports = function(router){
             students: [],
             qrChannel: 'sh4s'
         }
-
+        var result;
         clazzTeacherService.loadByUserIdAsync(user)
             .then(function(clazzTeacher){
                 clazz.teachers.push(clazzTeacher._id);
-                clazzService.create(clazz, function(err, doc){
+                return clazzService.createAsync(clazz, function(err, doc){
                     //TODO: error handling
                     res.status(200).json(ApiReturn.i().ok(doc));
+                });
+            })
+            .then(function(clazz){
+                result = clazz;
+                var clazzBrief = {
+                    clazz: clazz._id,
+                    name: clazz.name
+                }
+                return clazzBriefService.createAsync(clazzBrief);
+            })
+            .then(function(clazzBrief){
+                userBizService.addClass(user, clazzBrief._id, function(err, doc){
+                    //TODO: error handling
+                    res.status(200).json(ApiReturn.i().ok(result));
                 });
             });
     });
