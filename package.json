@@ -24,7 +24,7 @@
     "lodash": "~3.8.0",
     "log4js": "~0.6.22",
     "method-override": "^2.3.1",
-    "mit-settings": "trillers/mit-settings",
+    "mit-settings": "git+https://henryleu:c148960791ab761064ecfbb07b7fdf582ff008df@github.com/trillers/mit.git",
     "mongoose": "~3.8.21",
     "morgan": "^1.5.1",
     "multer": "^0.1.7",
