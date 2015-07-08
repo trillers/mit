@@ -49,30 +49,37 @@
         var self = nest.presentable(this),
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
+
         showSubMenu(e){
-            Object.prototype.findEl = function(type, fn){
-                var me = this;
+            Object.prototype.findEl = function (type, fn) {
+                var me = this
                 var dom = me.firstChild;
-                findEl();
-                function findEl(){
-                    if (dom && dom instanceof Element && dom.tagName === type) fn(dom)
-                    else{
-                        findEl(dom.nextSibling)
-                        if (dom.firstChild) {
-                            dom = dom.firstChild;
-                            findEl();
-                        }
-                        findEl.call(dom.nextSibling, type, fn);
+
+                findEl(dom);
+
+                function findEl(dom) {
+                    if (dom && dom.nodeType != 3 && dom.tagName === type.toUpperCase()){
+                        return fn(dom)
                     }
+                    else {
+                        dom.nextSibling && findEl(dom.nextSibling)
+                    }
+                    if (dom.firstChild) {
+                        dom = dom.firstChild;
+                        findEl(dom);
+                    }
+                    dom = dom.nextSibling;
                 }
             }
             var root = e.currentTarget;
             root.findEl('ul', function(el){
+                console.log("---------");
                 console.log(el);
-
             });
-
         }
+
+
+
         var _open = function(id){
 
             this.trigger('view-route-to');
