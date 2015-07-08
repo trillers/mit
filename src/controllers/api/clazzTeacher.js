@@ -17,8 +17,6 @@ module.exports = function(router){
     //create
     router.post('/', function(req, res){
         var ct = req.body;
-        console.log('===========');
-        console.log(ct);
         ct.user = req.session.user.id;
         teacherService.create(ct, function(err, doc){
             //TODO: error handling

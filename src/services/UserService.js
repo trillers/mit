@@ -1,5 +1,6 @@
 var User = require('../models/User').model;
 var UserHelper = require('../models/User').helper;
+var UserBiz = require('../models/UserBiz').model;
 var UserState = require('../framework/model/enums').UserState;
 var UserKv = require('../kvs/User');
 var UserMetaKv = require('../kvs/UserMeta');
@@ -319,6 +320,17 @@ Service.resetUser = function(openidArray, update, callback){
        } else {
            callback(null, result);
        }
+    });
+}
+
+Service.loadUserClass = function(userId, callback){
+    UserBiz.find({User: userId}, {Classes: 1}, function(err, result){
+        if(err) {
+            logger.error('load user class error: ' + err);
+            callback(err);
+        }else{
+            callback(null, result);
+        }
     });
 }
 module.exports = Service;
