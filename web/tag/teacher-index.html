@@ -4,7 +4,7 @@
             <li each="{clazzes}" >
                 <span>{name}</span>
                 <ul>
-                    <li>张三</li>
+                    <li cid="123" data-cid="123">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
                     <li>李四</li>
                 </ul>
             </li>
@@ -17,10 +17,10 @@
         }
         .clazzAccordion >li ul{
             max-height:0px;
-            transition:max-height 0.15s ease;
-            -moz-transition:max-height 0.15s ease; /* Firefox 4 */
-            -webkit-transition:max-height 0.15s ease; /* Safari and Chrome */
-            -o-transition:max-height 0.15s ease; /* Opera */
+            transition:max-height 0.3s ease;
+            -moz-transition:max-height 0.3s ease; /* Firefox 4 */
+            -webkit-transition:max-height 0.3s ease; /* Safari and Chrome */
+            -o-transition:max-height 0.3s ease; /* Opera */
         }
         .clazzAccordion li >span{
             height:32px;
@@ -37,14 +37,20 @@
             height:32px;
             line-height: 32px;
         }
+        .clazzAccordion ul>li>input{
+            display: none;
+        }
         .clazzAccordion ul>li:nth-child(odd){
             background: #ECECEC;
         }
         .clazzAccordion ul>li:nth-child(even){
             background: #EFEFEF;
         }
-        .hidden{
+        .showAnimation{
             max-height:500px !important;
+        }
+        .show{
+            display:block !important;
         }
     </style>
 
@@ -53,12 +59,27 @@
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
         self.clazzes = {};
+        self.message = {
 
+        }
+        self.currSendTo = '';
         showSubMenu(e){
-            var root = e.target;
-            if (e.target.tagName === "SPAN") {
-                $(root).siblings().toggleClass('hidden');
-            }
+            var _handlers = {
+                'SPAN': function(target){
+                    return $(target).siblings().toggleClass('hidden');
+                },
+                'LI': function(target){
+                    //popup the msg btn
+                    console.log($(target).attr('cid'));
+                    self.currSendTo = '';
+                },
+                'INPUT': function(target){
+                    //sendTo
+                    alert(1)
+
+                }
+            };
+            _handlers[e.target.tagName](e.target);
         }
 
         var _open = function(id){

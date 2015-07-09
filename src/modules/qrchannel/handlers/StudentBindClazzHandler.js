@@ -3,6 +3,7 @@ var ClazzService = require('../../../services/ClazzService');
 var wechatApi = require('../../../app/wechat/api').api;
 var tutorMediaId = "";
 var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
+
 var handle = function(message, user, res, replyMsg, qrChannel){
     ClazzService.loadByQrChannelId(qrChannel._id)
         .then(function(clazz){
@@ -11,7 +12,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
         .then(function(result){
             if(result){
                 //push qrchannel
-                return pushTutorQnAsync(res);
+                return pushTutorQrAsync(res);
             }else{
                 throw new Error("class Failed to bind Student!");
             }
@@ -38,6 +39,6 @@ function pushTutorQr(user, cb){
     });
 }
 
-var pushTutorQnAsync = Promise.promisify(pushTutorQr);
+var pushTutorQrAsync = Promise.promisify(pushTutorQr);
 
 module.exports = new QrHandler(true, 'SBC', handle);
