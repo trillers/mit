@@ -1,11 +1,10 @@
 <teacher-index>
     <div if="{!hidden}">
         <ul class="clazzAccordion" onclick="{showSubMenu}">
-            <li each="{clazzes}" >
+            <li each="{clazzes}" data-id="{_id}" onclick="{parent.getStudents}">
                 <span>{name}</span>
                 <ul>
-                    <li>张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
-                    <li>李四</li>
+                    <li each="{students}">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
                 </ul>
             </li>
         </ul>
@@ -57,8 +56,9 @@
     <script>
         var self = nest.presentable(this),
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
+            ClazzLoadStudentsAction = domain.action('ClazzLoadStudentsAction');
 
-        self.clazzes = {};
+        self.clazzes = [];
         self.currSendTo = '';
         self.message = {
             sendFrom: '',
@@ -69,6 +69,7 @@
         showSubMenu(e){
             var _handlers = {
                 'SPAN': function(target){
+                    console.log($(target).parent().index())
                     return $(target).siblings().toggleClass('hidden');
                 },
                 'LI': function(target){
@@ -84,6 +85,14 @@
             _handlers[e.target.tagName](e.target);
         }
 
+        getStudents(e){
+            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
+                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
+                    ClazzLoadStudentsAction.execute(self.clazzes[i]._id);
+                }
+            }
+        }
+
         var _open = function(id){
         }.bind(self);
         var _refresh = function(){
@@ -95,6 +104,7 @@
         });
         this.on('mount',function(){
             ClazzFetchByTeacherAction.onDone(OnClazzFetchByTeacherAction);
+            ClazzLoadStudentsAction.onDone(OnClazzLoadStudentsAction);
             console.info('tag activities is mounted');
         });
         function OnClazzFetchByTeacherAction(data){
@@ -102,7 +112,11 @@
             self.clazzes = data.clazzes;
             self.update();
             self.trigger('view-route-to');
-        }
+        };
+        function OnClazzLoadStudentsAction(data){
+            self.clazzes.students = data.students;
+            self.update();
+        };
         this.on('refresh', function(){
             console.info('tag activity is refreshing');
             _refresh();

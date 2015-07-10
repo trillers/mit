@@ -147,6 +147,14 @@ Service.addStudent = function(clazzId, clazzStudentId, userId, cb){
     })
 }
 
+Service.loadStudentsById = function(clazzId, cb){
+    var query = Clazz.findById(clazzId);
+    query.populate('students').lean(true).exec(function(err, doc){
+        if(err) return cb(err);
+        return cb(doc.students);
+    });
+}
+
 Service = Promise.promisifyAll(Service);
 
 module.exports = Service;
