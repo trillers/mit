@@ -1,6 +1,8 @@
-var QrChannel = require('../models/QrChannel').model;
+var QrChannelService = require('../services/QrChannelService');
 var u = require('../../../app/util');
 var logger = require('../../../app/logging').logger;
+
+
 var QrHandlerDispatcher = function(){
     this.handlers = {};
     this.defaultHandler = null;
@@ -32,7 +34,7 @@ QrHandlerDispatcher.prototype.dispatch = function(message, user, res){
     else{
         var index = message.EventKey.indexOf("_") + 1;
         var sceneId = message.EventKey.substring(index);
-        QrChannel.loadBySceneId(sceneId, function(err, qr){
+        QrChannelService.loadBySceneId(sceneId, function(err, qr){
             if(err){
                 //TODO
                 res.reply(reply);

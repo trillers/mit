@@ -1,5 +1,5 @@
 var QrCodeKv = require('../kvs/QrCode');
-var QrChannel = require('../models/QrChannel').model;
+var QrChannelService = require('../services/QrChannelService');
 var wechat = require('../../../app/wechat/api');
 var Promise = require('bluebird');
 var logger = require('../../../app/logging').logger;
@@ -38,11 +38,11 @@ var createTempQRCodeAsync = Promise.promisify(createTempQRCode);
 QrHandler.prototype.create = function(customId, callback){
     var nextSceneFn = this.forever ? QrCodeKv.nextSceneIdAsync : QrCodeKv.nextTempSceneIdAsync;
     var createQrCode = this.forever ? createLimitQRCodeAsync : createTempQRCodeAsync;
-    var qrChannel = new QrChannel({
+    var qrChannel = {
         forever: this.forever,
         type: this.type,
         customId: customId
-    });
+    };
 
     nextSceneFn()
         .then(function (sceneId) {
@@ -55,19 +55,12 @@ QrHandler.prototype.create = function(customId, callback){
             qrChannel.expire = new Date(date.getTime() + 7*24*60*60*1000);
             return qrChannel;
         }).then(function(qrChannel){
-            qrChannel.save(function (err, doc, numberAffected) {
+            QrChannelService.create(qrChannel, function (err, doc) {
                 if (err) {
                     if (callback) callback(err);
                     return;
                 }
-                if (numberAffected) {
-                    logger.debug('Succeed to create qrcode: ' + require('util').inspect(doc) + '\r\n');
-                    if (callback) callback(null, doc);
-                }
-                else {
-                    logger.error('Fail to create qrcode: ' + require('util').inspect(doc) + '\r\n');
-                    if (callback) callback(new Error('Fail to create qrcode'));
-                }
+                if (callback) callback(null, doc);
             });
         });
 };
