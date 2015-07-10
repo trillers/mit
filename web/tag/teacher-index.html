@@ -4,7 +4,7 @@
             <li each="{clazzes}" >
                 <span>{name}</span>
                 <ul>
-                    <li cid="123" data-cid="123">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
+                    <li>张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
                     <li>李四</li>
                 </ul>
             </li>
@@ -46,7 +46,7 @@
         .clazzAccordion ul>li:nth-child(even){
             background: #EFEFEF;
         }
-        .showAnimation{
+        .hidden{
             max-height:500px !important;
         }
         .show{
@@ -59,10 +59,13 @@
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
 
         self.clazzes = {};
-        self.message = {
-
-        }
         self.currSendTo = '';
+        self.message = {
+            sendFrom: '',
+            sendTo: self.currSendTo,
+            content:''
+        }
+
         showSubMenu(e){
             var _handlers = {
                 'SPAN': function(target){
@@ -70,8 +73,7 @@
                 },
                 'LI': function(target){
                     //popup the msg btn
-                    console.log($(target).attr('cid'));
-                    self.currSendTo = '';
+                    self.currSendTo = '123';
                 },
                 'INPUT': function(target){
                     //sendTo
