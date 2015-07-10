@@ -1,5 +1,3 @@
-var domain = require('../domain');
-
-require('./pa');
-
-module.exports = domain.actions();
+require('./teacher');
+require('./clazz');
+module.exports = null;
