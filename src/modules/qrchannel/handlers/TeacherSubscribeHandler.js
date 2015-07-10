@@ -8,7 +8,7 @@ var handle = function(message, user, res, qrChannel){
         wx_subscribe: 1,
         wx_subscribe_time: new Date(),
         $inc: {'subscribeCount': 1},
-        role: 'teacher'
+        role: 't'
     };
 
     UserService.update(user.id, update, function(err, result){

@@ -26,5 +26,10 @@ module.exports = function(app){
     moduleRouter = express.Router({strict: true});
     require('./clazz')(moduleRouter);
     subsystemRouter.use('/clazz', moduleRouter);
+
+    //qr
+    moduleRouter = express.Router({strict: true});
+    require('./qr')(moduleRouter);
+    subsystemRouter.use('/qr', moduleRouter);
 ;
 };

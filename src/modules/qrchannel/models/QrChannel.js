@@ -1,4 +1,5 @@
 var DomainBuilder = require('../../../framework/model/DomainBuilder');
+console.log('11111111111111111');
 var schema = DomainBuilder
     .i('QrChannel')
     .withBasis()
@@ -13,31 +14,29 @@ var schema = DomainBuilder
         views:{type: Number, default: 0}
     }).build();
 
-    schema.static('create', function (qrChannel, callback) {
-        var qrChannel = new QrChannel(qrChannel);
-        qrChannel.save(function(err, doc){
-            if(err){
-                if(callback) callback(err);
-            }
-            else{
-                if(callback) callback(null, doc);
-            }
-        });
-    });
-
-    schema.static('loadBySceneId', function (sceneId, callback) {
-        this.findOneAndUpdate({scene_id: sceneId}, {$inc: {'view': 1}}, function(err, doc){
-            if(err){
-                if(callback) callback(err);
-            }
-            else{
-                if(callback) callback(null, doc);
-            }
-            //TODO: update to increase views by one
-        });
-    });
-
-
+    //schema.static('create', function (qrChannel, callback) {
+    //    var qrChannel = new QrChannel(qrChannel);
+    //    qrChannel.save(function(err, doc){
+    //        if(err){
+    //            if(callback) callback(err);
+    //        }
+    //        else{
+    //            if(callback) callback(null, doc);
+    //        }
+    //    });
+    //});
+    //
+    //schema.static('loadBySceneId', function (sceneId, callback) {
+    //    this.findOneAndUpdate({scene_id: sceneId}, {$inc: {'view': 1}}, function(err, doc){
+    //        if(err){
+    //            if(callback) callback(err);
+    //        }
+    //        else{
+    //            if(callback) callback(null, doc);
+    //        }
+    //        //TODO: update to increase views by one
+    //    });
+    //});
 
 module.exports.schema = schema;
 module.exports.model = schema.model(true);
