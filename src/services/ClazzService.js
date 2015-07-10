@@ -1,6 +1,7 @@
 var logger = require('../app/logging').logger;
 var u = require('../app/util');
 var Clazz = require('../models/Clazz').model;
+var UserBizService = require('./UserBizService');
 var Promise = require('bluebird');
 
 var Service = {};
@@ -126,6 +127,25 @@ Service.filter = function (params, callback) {
         if (callback) callback(null, docs);
     });
 };
+Service.loadByQrChannelId = function (qrChannelId, cb) {
+    Clazz.findOne({ qrChannel: qrChannelId }, function (err, doc) {
+        if (err) {
+            return cb(err, null);
+        }else{
+            if (cb) cb(null, doc);
+        }
+    });
+}
+
+Service.addStudent = function(clazzId, clazzStudentId, userId, cb){
+    Service.update(clazzId, {$addToSet: clazzStudentId}, function(err, doc){
+        if(err) return cb(err);
+        UserBizService.filter({user: userId}, function(err, doc){
+            if(err) return cb(err);
+            return cb(null, doc);
+        })
+    })
+}
 
 Service = Promise.promisifyAll(Service);
 
