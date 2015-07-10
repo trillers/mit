@@ -1,6 +1,7 @@
 <footer-bar>
     <div>
         <input type="button" value="添加班级" onclick="{addClazz}"/>
+        <input type="button" value="群发消息" onclick="{sendMsgs}"/>
     </div>
 
     <style scoped>
@@ -11,6 +12,9 @@
         var self = nest.presentable(this);
         addClazz(e){
             riot.route('clazz/add');
+        }
+        sendMsgs(e){
+            
         }
 
     </script>
