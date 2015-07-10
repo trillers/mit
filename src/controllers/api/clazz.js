@@ -17,6 +17,12 @@ module.exports = function(router){
         });
     });
 
+    router.get('/clazz/students', function(req, res){
+        clazzService.loadStudentsById(req.params.id, function(err, doc){
+            res.status(200).json(ApiReturn.i().ok(doc));
+        });
+    });
+
     //create
     router.post('/', function(req, res){
         var className = req.body.name;
