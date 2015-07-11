@@ -35,20 +35,16 @@ var createTempQRCode = function(sceneId, callback){
 var createLimitQRCodeAsync = Promise.promisify(createLimitQRCode);
 var createTempQRCodeAsync = Promise.promisify(createTempQRCode);
 
-QrHandler.prototype.create = function(customId, callback){
-    var nextSceneFn = this.forever ? QrCodeKv.nextSceneIdAsync : QrCodeKv.nextTempSceneIdAsync;
+QrHandler.prototype.create = function(sceneId, customId, callback){
     var createQrCode = this.forever ? createLimitQRCodeAsync : createTempQRCodeAsync;
     var qrChannel = {
         forever: this.forever,
         type: this.type,
+        scene_id: sceneId,
         customId: customId
     };
 
-    nextSceneFn()
-        .then(function (sceneId) {
-            qrChannel.scene_id = sceneId;
-            return createQrCode(sceneId);
-        })
+     createQrCode(sceneId)
         .then(function (ticket) {
             qrChannel.ticket = ticket;
             var date = new Date();
@@ -65,6 +61,26 @@ QrHandler.prototype.create = function(customId, callback){
         });
 };
 
+QrHandler.prototype.autoCreate = function(customId, callback){
+    var sceneId = this.forever ? QrCodeKv.nextSceneId : QrCodeKv.nextTempSceneId;
+    this.create(sceneId, customId, callback);
+}
+
+QrHandler.prototype.manualCreate = function(sceneId, customId, callback){
+    QrChannelService.loadBySceneId(50, function(err, qr){
+        if(err){
+            logger.err('get teacher code err: ' + err);
+            if(callback) callback(err);
+            return;
+        }
+
+        if(qr){
+            if(callback) callback(null, qr);
+        }else{
+            this.create(sceneId, customId, callback);
+        }
+    })
+};
 
 module.exports = QrHandler;
 

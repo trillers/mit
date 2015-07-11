@@ -1,4 +1,3 @@
-
 var userAgent = getUserAgent();
 var token = getToken();
 var authSetting = {
