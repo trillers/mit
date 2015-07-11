@@ -1,4 +1,4 @@
-var QrCodeService = require('../../modules/qrChannel/services/QrChannelService');
+var QrCodeService = require('../../modules/qrchannel/services/QrChannelService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
