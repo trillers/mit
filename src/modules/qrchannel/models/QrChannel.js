@@ -1,5 +1,5 @@
 var DomainBuilder = require('../../../framework/model/DomainBuilder');
-console.log('11111111111111111');
+console.log('3333433333');
 var schema = DomainBuilder
     .i('QrChannel')
     .withBasis()

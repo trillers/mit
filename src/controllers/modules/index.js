@@ -9,6 +9,7 @@ module.exports = function(app){
 
     app.use('/wechat', require('./wechat')());
 
+
     router = express.Router({strict: false});
     require('./spa')(router);
     app.use('/', router);
