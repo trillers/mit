@@ -2,6 +2,8 @@ var clazzService = require('../../services/ClazzService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
 var userBizService = require('../../services/UserBizService');
 var clazzBriefService = require('../../services/ClazzBriefService');
+var QrChannel = require('../../modules/qrchannel');
+var Promise = require('bluebird');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -31,12 +33,19 @@ module.exports = function(router){
             name: className,
             teachers: [],
             students: [],
-            qrChannel: 'sh4s'
+            qrChannel: ''
         }
         var result;
+        var key = QrChannel.genKey(true, 'TS');
+        var handler = QrChannel.handlers[key];
+        var autoCreateQrCode = Promise.promisify(handler.autoCreate);
         clazzTeacherService.loadByUserIdAsync(user)
             .then(function(clazzTeacher){
                 clazz.teachers.push(clazzTeacher._id);
+                return autoCreateQrCode(null);
+            })
+            .then(function(qr){
+                clazz.qrChannel = qr._id;
                 return clazzService.createAsync(clazz);
             })
             .then(function(clazz){
