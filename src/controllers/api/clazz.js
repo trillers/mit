@@ -38,30 +38,28 @@ module.exports = function(router){
         var result;
         var key = QrChannel.genKey(true, 'TS');
         var handler = QrChannel.handlers[key];
-        var autoCreateQrCode = Promise.promisify(handler.autoCreate);
-        clazzTeacherService.loadByUserIdAsync(user)
-            .then(function(clazzTeacher){
-                clazz.teachers.push(clazzTeacher._id);
-                return autoCreateQrCode(null);
-            })
-            .then(function(qr){
-                clazz.qrChannel = qr._id;
-                return clazzService.createAsync(clazz);
-            })
-            .then(function(clazz){
-                result = clazz;
-                var clazzBrief = {
-                    clazz: clazz._id,
-                    name: clazz.name
-                }
-                return clazzBriefService.createAsync(clazzBrief);
-            })
-            .then(function(clazzBrief){
-                userBizService.addClazz(user, clazzBrief._id, function(err, doc){
-                    //TODO: error handling
-                    res.status(200).json(ApiReturn.i().ok(result));
+        handler.autoCreate(null, function(err, qr){
+            clazz.qrChannel = qr._id;
+            clazzTeacherService.loadByUserIdAsync(user)
+                .then(function(clazzTeacher){
+                    clazz.teachers.push(clazzTeacher._id);
+                    return clazzService.createAsync(clazz);
+                })
+                .then(function(clazz){
+                    result = clazz;
+                    var clazzBrief = {
+                        clazz: clazz._id,
+                        name: clazz.name
+                    }
+                    return clazzBriefService.createAsync(clazzBrief);
+                })
+                .then(function(clazzBrief){
+                    userBizService.addClazz(user, clazzBrief._id, function(err, doc){
+                        //TODO: error handling
+                        res.status(200).json(ApiReturn.i().ok(result));
+                    });
                 });
-            });
+        });
     });
 
     //update
