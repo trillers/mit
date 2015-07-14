@@ -79,6 +79,9 @@ var getDefImg = function(type){
 }
 
 var util = {
+    CONSTANT:{
+        QRURL: 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='
+    },
     getDc:function(){
         return DATA_DICT;
     },

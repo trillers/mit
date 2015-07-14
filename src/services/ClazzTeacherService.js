@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var Service = {};
 
 Service.loadById = function (id, callback) {
-    ClazzTeacher.findById(id).lean(true).exec(function (err, doc) {
+    ClazzTeacher.findById(id).populate('qrChannel').lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load class [id=' + id + ']: ' + err);
             if (callback) callback(err);

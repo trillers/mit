@@ -9,8 +9,11 @@ domain.action('ClazzFetchByTeacherAction').onExecute(function(data){
     apiFactory.get('/user/myClazz').drive(this).send(data);
 });
 
-domain.action('ClazzLoadStudentsAction').onExecute(function(data){
-    apiFactory.get('/clazz/students').drive(this).send(data);
+domain.action('ClazzLoadAction').onExecute(function(data){
+    apiFactory.get('/clazz/_' + data).drive(this).send();
 });
 
+domain.action('ClazzAddStudentAction').onExecute(function(data){
+    apiFactory.post('/clazz/student').drive(this).send(data);
+});
 module.exports = null;

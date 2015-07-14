@@ -13,17 +13,26 @@ module.exports = function(router){
 
     //read
     router.get('/_:id', function(req, res){
-        clazzService.loadById(req.params.id, function(err, doc){
+        clazzService.load(req.params.id, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
         });
     });
 
-    router.get('/clazz/students', function(req, res){
+    router.get('/students', function(req, res){
         clazzService.loadStudentsById(req.params.id, function(err, doc){
             res.status(200).json(ApiReturn.i().ok(doc));
         });
     });
+
+    router.post('/student', function(req, res){
+        console.log(req.body);
+
+        //new user
+        //new userbiz
+        //new clazz student
+        //update clazz
+    })
 
     //create
     router.post('/', function(req, res){

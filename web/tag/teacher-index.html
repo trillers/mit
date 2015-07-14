@@ -1,27 +1,22 @@
 <teacher-index>
     <div if="{!hidden}">
-        <ul class="clazzAccordion" onclick="{showSubMenu}">
-            <li each="{clazzes}" data-id="{_id}" onclick="{parent.getStudents}">
-                <span>{name}</span>
-                <ul>
-                    <li each="{students}">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
-                </ul>
-            </li>
-        </ul>
+        <div class="clazzAccordion" onclick="{showSubMenu}">
+            <clazz-card class="clazzCard" each="{clazzes}" data-id="{clazz}"></clazz-card>
+        </div>
         <footer-bar></footer-bar>
     </div>
     <style scoped>
-        .clazzAccordion >li{
+        .clazzAccordion >.clazzCard{
             border-bottom: 1px solid rgb(72, 92, 174);
         }
-        .clazzAccordion >li ul{
+        .clazzAccordion >.clazzCard ul{
             max-height:0px;
             transition:max-height 0.3s ease;
             -moz-transition:max-height 0.3s ease; /* Firefox 4 */
             -webkit-transition:max-height 0.3s ease; /* Safari and Chrome */
             -o-transition:max-height 0.3s ease; /* Opera */
         }
-        .clazzAccordion li >span{
+        .clazzAccordion .clazzCard >span{
             height:32px;
             line-height:32px;
             display: block;
@@ -51,12 +46,15 @@
         .show{
             display:block !important;
         }
+        .clazzAccordion .qrSection {
+            height:64px;
+            line-height: 64px;
+        }
     </style>
 
     <script>
         var self = nest.presentable(this),
             ClazzFetchByTeacherAction = domain.action('ClazzFetchByTeacherAction');
-            ClazzLoadStudentsAction = domain.action('ClazzLoadStudentsAction');
 
         self.clazzes = [];
         self.currSendTo = '';
@@ -78,21 +76,20 @@
                 },
                 'INPUT': function(target){
                     //sendTo
-                    alert(1)
+
 
                 }
             };
             _handlers[e.target.tagName](e.target);
         }
-
         getStudents(e){
-            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
-                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
-                    ClazzLoadStudentsAction.execute(self.clazzes[i]._id);
-                }
-            }
+            alert("123")
+//            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
+//                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
+//                    ClazzLoadAction.execute(self.clazzes[i]._id);
+//                }
+//            }
         }
-
         var _open = function(id){
         }.bind(self);
         var _refresh = function(){
@@ -104,21 +101,14 @@
         });
         this.on('mount',function(){
             ClazzFetchByTeacherAction.onDone(OnClazzFetchByTeacherAction);
-            ClazzLoadStudentsAction.onDone(OnClazzLoadStudentsAction);
-            console.info('tag activities is mounted');
         });
         function OnClazzFetchByTeacherAction(data){
-            console.log(data)
             self.clazzes = data && data.clazzes || {};
             self.update();
             self.trigger('view-route-to');
         };
-        function OnClazzLoadStudentsAction(data){
-            self.clazzes.students = data.students;
-            self.update();
-        };
+
         this.on('refresh', function(){
-            console.info('tag activity is refreshing');
             _refresh();
         });
     </script>
