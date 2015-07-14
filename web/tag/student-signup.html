@@ -1,0 +1,40 @@
+<student-signup>
+    <div if="{!hidden}">
+        <input type="text" name="studentName"/>
+        <input type="text" name="studentPhone"/>
+        <input type="button" value="注册" onclick="{signUp}"/>
+    </div>
+
+    <style scoped>
+
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+                StudentSignUpAction = domain.action('StudentSignUpAction');
+        signUp(e){
+            StudentSignUpAction.execute({name: self.studentName.value, phone: self.studentPhone.value});
+        }
+        var _open = function(id){
+            this.trigger('view-route-to');
+        }.bind(self);
+        var _refresh = function(){
+
+        }.bind(self);
+        this.on('open', function(options){
+            console.info('tag activities is opening');
+            _open(options);
+        });
+        this.on('mount',function(){
+            StudentSignUpAction.onDone(OnTeacherSignUpAction);
+            console.info('tag activities is mounted');
+        });
+        function OnTeacherSignUpAction(data){
+            riot.route('student/index');
+        }
+        this.on('refresh', function(){
+            console.info('tag activity is refreshing');
+            _refresh();
+        });
+    </script>
+</student-signup>

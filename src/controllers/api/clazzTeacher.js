@@ -24,16 +24,15 @@ module.exports = function(router){
         });
     });
 
-    //update
-    router.put('/_:id', function(req, res){
-        var id = req.params.id;
-        var update = req.body;
-        teacherService.update(id, update, function(err, doc){
+    //updateByUserId
+    router.put('/', function(req, res){
+        var ct = req.body;
+        var userId = req.session.user.id;
+        teacherService.updateByUserId(userId, ct, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
-        })
+        });
     });
-
     //delete
     router.delete('/_:id', function(req, res){
         var id = req.params.id;

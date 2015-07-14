@@ -1,6 +1,8 @@
 var QrHandler = require('../common/QrHandler');
 var ClazzService = require('../../../services/ClazzService');
+var ClazzBriefService = require('../../../services/ClazzBService');
 var UserService = require('../../../services/UserService');
+var UserBizService = require('../../../services/UserBizService');
 var ClazzStudentService = require('../../../services/ClazzStudentService');
 var wechatApi = require('../../../app/wechat/api').api;
 var tutorMediaId = "";
@@ -17,7 +19,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
 
     UserService.update(user.id, update)
         .then(function(){
-            return ClazzStudentService.create(user.id);
+            return ClazzStudentService.createAsync(user.id);
         })
         .then(function(clazzStudent){
             clazzStudentId = clazzStudent._id;
@@ -25,6 +27,16 @@ var handle = function(message, user, res, replyMsg, qrChannel){
         })
         .then(function(clazz){
             return ClazzService.addStudent(clazz._id, clazzStudentId, user.id);
+        })
+        .then(function(clazz){
+            return ClazzBriefService.loadByClazzIdAsync(clazz._id);
+        })
+        .then(function(clazzBrief){
+            var userBiz = {
+                user: user.id,
+                clazzes: [clazzBrief._id]
+            }
+            return UserBizService.createAsync(userBiz);
         })
         .then(function(result){
             if(result){
