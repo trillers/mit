@@ -109,7 +109,7 @@
         });
         function OnClazzFetchByTeacherAction(data){
             console.log(data)
-            self.clazzes = data.clazzes;
+            self.clazzes = data && data.clazzes || {};
             self.update();
             self.trigger('view-route-to');
         };
