@@ -17,7 +17,7 @@ var handle = function(message, user, res, qrChannel){
             return ClazzTeacherService.createAsync({user: user.id});
         })
         .then(function(ClazzTeacher){
-            var replyMsg = '��ӭ��ʦ������˭ѧ';
+            var replyMsg = '欢迎老师注册！';
             res.reply(replyMsg);
         })
         .catch(Error, function(err){
