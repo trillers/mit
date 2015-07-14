@@ -63,8 +63,9 @@ QrHandler.prototype.create = function(sceneId, customId, callback){
 
 QrHandler.prototype.autoCreate = function(customId, callback){
     var sceneIdFn = this.forever ? QrCodeKv.nextSceneId : QrCodeKv.nextTempSceneId;
+    var me = this;
     sceneIdFn(function(err, sceneId){
-        this.create(sceneId, customId, callback);
+        me.create(sceneId, customId, callback);
     });
 }
 

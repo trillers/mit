@@ -1,7 +1,7 @@
 <clazz-card>
     <span onclick="{toggleGetClazzInfo}">{name}</span>
     <div if="{showOrNot}">
-        <div class="qrSection"><b>班级二维码:</b> <img src="{util.CONSTANT.QRURL + qrChannel.ticket}"/></div>
+        <div class="qrSection"><b>班级二维码:</b> <img src="{getQrChannelImg()}"/></div>
         <div class="addStuSection">
             <b>学生姓名:</b>
             <input name="stuName" type="text"/>
@@ -10,7 +10,7 @@
             <input type="button" value="添加学生" onclick="{addStudent}"/>
         </div>
         <ul>
-            <li each="{students}">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
+            <li each="{clazz.students}">姓名: {name}   手机: {phone}</li>
         </ul>
     </div>
     <style scoped>
@@ -24,21 +24,21 @@
                 ClazzLoadAction = domain.action('ClazzLoadAction'),
                 ClazzAddStudentAction = domain.action('ClazzAddStudentAction');
         self.showOrNot = false;
-        self.students = [];
-        self.qrChannel = "";
-        getStudents(e){
-//            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
-//                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
-//                    ClazzLoadAction.execute(self.clazzes[i]._id);
-//                }
-//            }
-        }
-
+        self.clazz = {
+            students: [],
+            qrChannel: {}
+        };
+        self.clazzBriefId = this.opts['data-clazzbriefid'];
+        self.getQrChannelImg = function(){
+            return this.clazz && this.clazz.qrChannel && this.clazz.qrChannel.ticket && (util.CONSTANT.QRURL + this.clazz.qrChannel.ticket) || ""
+        }.bind(self);
         function ClazzLoadActionInvocation(data){
             var invocation = ClazzLoadAction.newInvocation(data.clazzId);
             invocation.onDone(function(doc){
-                self.students = doc.students;
-                self.qrChannel = doc.qrChannel
+                self.clazz = {
+                    students: doc.students,
+                    qrChannel: doc.qrChannel
+                }
                 self.showOrNot = true;
                 self.update();
             }).execute();
@@ -51,20 +51,24 @@
             ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
         }
         addStudent(e){
-            console.log(self.stuPhone)
-            ClazzAddStudentAction.execute({
-                clazzid: $(e.currentTarget).parent().parent().attr('data-id'),
+            var invocation = ClazzAddStudentAction.newInvocation({
+                clazzId: e.currentTarget.parentNode.parentNode.parentNode.getAttribute('data-id'),
                 name: self.stuName.value,
-                phone: self.stuPhone.value
+                phone: self.stuPhone.value,
+                clazzBriefId: self.clazzBriefId
             });
+            invocation.onDone(function(doc){
+                self.clazz = {
+                    students: doc.students,
+                    qrChannel: doc.qrChannel
+                }
+                self.update();
+            }).execute();
             e.stopPropagation();
         }
 
         this.on('mount',function(){
-            ClazzAddStudentAction.onDone(OnClazzAddStudentAction);
+
         });
-        function OnClazzAddStudentAction(data){
-            console.log(data)
-        }
     </script>
 </clazz-card>

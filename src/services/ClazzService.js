@@ -51,14 +51,18 @@ Service.delete = function (id, callback) {
 };
 
 Service.update = function (id, update, callback) {
-    Clazz.findByIdAndUpdate(id, update, {new: true}, function (err, result){
-        if(err) {
-            callback(err);
-        } else {
-            logger.debug('Succeed to update clazz [id=' + id + ']');
-            callback(null, result);
-        }
-    });
+    Clazz.findByIdAndUpdate(id, update, {new: true})
+        .populate('qrChannel')
+        .populate('students')
+        .sort({'students.crtOn': -1})
+        .exec(function (err, result){
+            if(err) {
+                callback(err);
+            } else {
+                logger.debug('Succeed to update clazz [id=' + id + ']');
+                callback(null, result);
+            }
+        })
 };
 
 Service.find = function (params, callback) {
