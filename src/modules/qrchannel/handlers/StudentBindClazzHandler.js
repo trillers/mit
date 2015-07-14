@@ -28,7 +28,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
         })
         .then(function(result){
             if(result){
-                return pushTutorQrAsync(res);
+                return pushTutorQrAsync(result);
             }else{
                 throw new Error("class Failed to bind Student!");
             }

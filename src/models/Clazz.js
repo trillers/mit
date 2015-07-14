@@ -1,5 +1,8 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
+var ClazzStudent = require('./ClazzStudent').schema;
+var ClazzTeacher = require('./ClazzTeacher').schema;
+var QrChannel = require('../modules/qrchannel/models/QrChannel').schema;
 var _ = require('underscore');
 
 var schema = DomainBuilder

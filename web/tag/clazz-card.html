@@ -1,0 +1,110 @@
+<clazz-card>
+    <span onclick="{toggleGetClazzInfo}">{name}</span>
+    <div if="{showOrNot}">
+        <div class="qrSection"><b>班级二维码:</b> <img src="{util.CONSTANT.QRURL + qrchannel.ticket}"/></div>
+        <div class="addStuSection">
+            <b>学生姓名:</b>
+            <input name="stuName" type="text"/>
+            <b>学生电话:</b>
+            <input name="stuPhone" type="text"/>
+            <input type="button" value="添加学生" onclick="{addStudent}"/>
+        </div>
+        <ul>
+            <li each="{students}">张三<input type="button" value="send" class="{show: parent.currSendTo === name}"/></li>
+        </ul>
+    </div>
+    <style scoped>
+        .clazzAccordion >li{
+            border-bottom: 1px solid rgb(72, 92, 174);
+        }
+        .clazzAccordion >li ul{
+            max-height:0px;
+            transition:max-height 0.3s ease;
+            -moz-transition:max-height 0.3s ease; /* Firefox 4 */
+            -webkit-transition:max-height 0.3s ease; /* Safari and Chrome */
+            -o-transition:max-height 0.3s ease; /* Opera */
+        }
+        .clazzAccordion li >span{
+            height:32px;
+            line-height:32px;
+            display: block;
+            padding-left:10px;
+            background: rgb(110, 136, 240);
+        }
+        .clazzAccordion ul{
+            overflow: hidden;
+        }
+        .clazzAccordion ul>li{
+            padding-left:10px;
+            height:32px;
+            line-height: 32px;
+        }
+        .clazzAccordion ul>li>input{
+            display: none;
+        }
+        .clazzAccordion ul>li:nth-child(odd){
+            background: #ECECEC;
+        }
+        .clazzAccordion ul>li:nth-child(even){
+            background: #EFEFEF;
+        }
+        .hidden{
+            max-height:500px !important;
+        }
+        .show{
+            display:block !important;
+        }
+        .clazzAccordion .qrSection {
+            height:64px;
+            line-height: 64px;
+        }
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+                ClazzLoadAction = domain.action('ClazzLoadAction'),
+                ClazzAddStudentAction = domain.action('ClazzAddStudentAction');
+        self.showOrNot = false;
+        self.students = [];
+
+        getStudents(e){
+//            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
+//                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
+//                    ClazzLoadAction.execute(self.clazzes[i]._id);
+//                }
+//            }
+        }
+
+        function ClazzLoadActionInvocation(data){
+            var invocation = ClazzLoadAction.newInvocation(data.clazzId);
+            invocation.onDone(function(doc){
+                self.students = doc.students;
+                console.log(doc);
+                self.showOrNot = true
+            }).execute();
+        }
+        toggleGetClazzInfo(e){
+            if(self.showOrNot === true){
+                self.showOrNot = false;
+                return false;
+            }
+            ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
+        }
+        addStudent(e){
+            console.log(self.stuPhone)
+            ClazzAddStudentAction.execute({
+                clazzid: $(e.currentTarget).parent().parent().attr('data-id'),
+                name: self.stuName.value,
+                phone: self.stuPhone.value
+            });
+            e.stopPropagation();
+        }
+
+        this.on('mount',function(){
+            ClazzAddStudentAction.onDone(OnClazzAddStudentAction);
+        });
+        function OnClazzAddStudentAction(data){
+            console.log(data)
+        }
+    </script>
+</clazz-card>
