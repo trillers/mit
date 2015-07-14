@@ -23,6 +23,15 @@ var createUser = function (userInfo, callback) {
     user.token = generateUserToken(uid); //TODO: use token generator
     user.save(function (err, result, affected) {
         //TODO: logging
+        var userBiz = {
+            user: result._id,
+            classes: []
+        }
+        userBizService.create(userBiz, function(err, doc){
+            if(err){
+                logger.error('failed to create userBiz');
+            }
+        })
         cbUtil.handleAffected(callback, err, result, affected);
     });
 };
@@ -334,4 +343,5 @@ Service.resetUser = function(openidArray, update, callback){
     });
 }
 
+Service = Promise.promisifyAll(Service);
 module.exports = Service;
