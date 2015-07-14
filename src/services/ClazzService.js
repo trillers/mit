@@ -140,10 +140,7 @@ Service.loadByQrChannelId = function (qrChannelId, cb) {
 Service.addStudent = function(clazzId, clazzStudentId, userId, cb){
     Service.update(clazzId, {$addToSet: clazzStudentId}, function(err, doc){
         if(err) return cb(err);
-        UserBizService.filter({user: userId}, function(err, doc){
-            if(err) return cb(err);
-            return cb(null, doc);
-        })
+        cb(null, doc);
     })
 }
 

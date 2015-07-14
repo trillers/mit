@@ -33,7 +33,7 @@ Service.loadByUserId = function (userId, callback) {
 
 Service.create = function (json, callback) {
     var clazzTeacher = new ClazzTeacher(json);
-    ClazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
+    clazzTeacher.save(function(err, doc){
         if (err) {
             logger.error('Fail to create clazzTeacher');
             if (callback) callback(err);
@@ -55,6 +55,17 @@ Service.delete = function (id, callback) {
 
         logger.debug('Succeed to delete clazzTeacher [id=' + id + ']');
         if (callback) callback(null, doc);
+    });
+};
+
+Service.updateByUserId = function (userId, update, callback) {
+    ClazzTeacher.update({user: userId}, update, {new: true}, function (err, result){
+        if(err) {
+            callback(err);
+        } else {
+            logger.debug('Succeed to update by userId clazzTeacher [id=' + id + ']');
+            callback(null, result);
+        }
     });
 };
 

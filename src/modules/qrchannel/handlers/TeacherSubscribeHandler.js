@@ -1,5 +1,6 @@
 var QrHandler = require('../common/QrHandler');
 var UserService = require('../../../services/UserService');
+var ClazzTeaherService = require('../../../services/ClazzTeacherService')
 var logger = require('../../../app/logging').logger;
 
 var handle = function(message, user, res, qrChannel){
@@ -11,13 +12,17 @@ var handle = function(message, user, res, qrChannel){
         role: 't'
     };
 
-    UserService.update(user.id, update, function(err, result){
-        if(err){
-            logger.error('user subscribe event error ' + err);
-        }
-        var replyMsg = '»¶Ó­ÀÏÊ¦À´µ½¸úË­Ñ§';
-        res.reply(replyMsg);
-    });
+    UserService.updateAsync(user.id, update)
+        .then(function(result){
+            return ClazzTeaherService.createAsync({user: user.id});
+        })
+        .then(function(ClazzTeacher){
+            var replyMsg = 'ï¿½ï¿½Ó­ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë­Ñ§';
+            res.reply(replyMsg);
+        })
+        .catch(Error, function(err){
+            logger.error(err);
+        });
 };
 
 var handler = new QrHandler(true, 'TS', handle); //TS teacher subscribe handler

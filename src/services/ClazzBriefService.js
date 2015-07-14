@@ -18,6 +18,19 @@ Service.load = function (id, callback) {
     })
 };
 
+Service.loadByClazzId = function (id, callback) {
+    ClazzBrief.find({clazz: id}).lean(true).exec(function (err, doc) {
+        if (err) {
+            logger.error('Fail to load classBrief [id=' + id + ']: ' + err);
+            if (callback) callback(err);
+            return;
+        }
+
+        logger.debug('Succeed to load classBrief  [id=' + id + ']');
+        if (callback) callback(null, doc);
+    })
+};
+
 Service.create = function (json, callback) {
     var clazzBrief = new ClazzBrief(json);
     clazzBrief.save(function (err, doc, numberAffected) {

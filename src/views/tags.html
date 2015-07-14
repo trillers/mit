@@ -1,10 +1,14 @@
 <teacher-signup></teacher-signup>
 <teacher-index></teacher-index>
 <clazz-add></clazz-add>
+<studet-signup></studet-signup>
+<student-index></student-index>
 {% if __app.settings.env.NODE_ENV === 'development' %}
 <script src="/web/tag/teacher-signup.html" type="riot/tag"></script>
 <script src="/web/tag/teacher-index.html" type="riot/tag"></script>
 <script src="/web/tag/clazz-add.html" type="riot/tag"></script>
+<script src="/web/tag/student-signup.html" type="riot/tag"></script>
+<script src="/web/tag/student-index.html" type="riot/tag"></script>
 
 <script src="/web/tag/footer-bar.html" type="riot/tag"></script>
 {% endif %}

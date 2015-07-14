@@ -49,6 +49,17 @@ Service.delete = function (id, callback) {
     });
 };
 
+Service.updateByUserId = function (userId, update, callback) {
+    ClazzStudent.update({user: userId}, update, {new: true}, function (err, result){
+        if(err) {
+            callback(err);
+        } else {
+            logger.debug('Succeed to update by userId clazzTeacher [id=' + id + ']');
+            callback(null, result);
+        }
+    });
+};
+
 Service.update = function (id, update, callback) {
     ClazzStudent.findByIdAndUpdate(id, update, {new: true}, function (err, result){
         if(err) {
