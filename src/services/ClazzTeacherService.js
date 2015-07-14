@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var Service = {};
 
 Service.loadById = function (id, callback) {
-    ClazzTeacher.findById(id).populate('qrChannel').lean(true).exec(function (err, doc) {
+    ClazzTeacher.findById(id).lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load class [id=' + id + ']: ' + err);
             if (callback) callback(err);
@@ -33,7 +33,17 @@ Service.loadByUserId = function (userId, callback) {
 
 Service.create = function (json, callback) {
     var clazzTeacher = new ClazzTeacher(json);
-    ClazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
+    //ClazzTeacher.findOneAndUpdate({user: clazzTeacher.user}, clazzTeacher, {new: true, upsert: true}, function (err, doc) {
+    //    if (err) {
+    //        logger.error('Fail to create clazzTeacher');
+    //        if (callback) callback(err);
+    //        return;
+    //    }else {
+    //        logger.debug('Succeed to create clazzTeacher: ' + require('util').inspect(doc) + '\r\n');
+    //        if (callback) callback(null, doc);
+    //    }
+    //});
+    clazzTeacher.save(function(err, doc){
         if (err) {
             logger.error('Fail to create clazzTeacher');
             if (callback) callback(err);
