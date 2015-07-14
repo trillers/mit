@@ -67,6 +67,7 @@ QrHandler.prototype.autoCreate = function(customId, callback){
 }
 
 QrHandler.prototype.manualCreate = function(sceneId, customId, callback){
+    var me = this;
     QrChannelService.loadBySceneId(50, function(err, qr){
         if(err){
             logger.err('get teacher code err: ' + err);
@@ -77,7 +78,7 @@ QrHandler.prototype.manualCreate = function(sceneId, customId, callback){
         if(qr){
             if(callback) callback(null, qr);
         }else{
-            this.create(sceneId, customId, callback);
+            me.create(sceneId, customId, callback);
         }
     })
 };
