@@ -1,6 +1,6 @@
 var QrHandler = require('../common/QrHandler');
 var UserService = require('../../../services/UserService');
-var ClazzTeaherService = require('../../../services/ClazzTeacherService')
+var ClazzTeacherService = require('../../../services/ClazzTeacherService')
 var logger = require('../../../app/logging').logger;
 
 var handle = function(message, user, res, qrChannel){
@@ -14,7 +14,7 @@ var handle = function(message, user, res, qrChannel){
 
     UserService.updateAsync(user.id, update)
         .then(function(result){
-            return ClazzTeaherService.createAsync({user: user.id});
+            return ClazzTeacherService.createAsync({user: user.id});
         })
         .then(function(ClazzTeacher){
             var replyMsg = '��ӭ��ʦ������˭ѧ';

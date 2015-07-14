@@ -334,4 +334,5 @@ Service.resetUser = function(openidArray, update, callback){
     });
 }
 
+Service = Promise.promisifyAll(Service);
 module.exports = Service;
