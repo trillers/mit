@@ -65,7 +65,7 @@ Service.updateByCondition = function (condition, update, callback) {
         if(err) {
             callback(err);
         } else {
-            logger.debug('Succeed to update userBiz [id=' + id + ']');
+            logger.debug('Succeed to update userBiz [id=' + doc._id + ']');
             callback(null, doc);
         }
     });
