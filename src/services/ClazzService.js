@@ -7,7 +7,13 @@ var Promise = require('bluebird');
 var Service = {};
 
 Service.load = function (id, callback) {
-    Clazz.findById(id).populate('qrChannel').populate('students').lean(true).exec(function (err, doc) {
+    Clazz.findById(id)
+        .populate('qrChannel')
+        .populate({
+            path: 'students',
+            options: {sort: {'crtOn': -1}}
+        })
+        .lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load class [id=' + id + ']: ' + err);
             if (callback) callback(err);
@@ -53,8 +59,10 @@ Service.delete = function (id, callback) {
 Service.update = function (id, update, callback) {
     Clazz.findByIdAndUpdate(id, update, {new: true})
         .populate('qrChannel')
-        .populate('students')
-        .sort({'students.crtOn': -1})
+        .populate({
+            path: 'students',
+            options: {sort: {'crtOn': -1}}
+        })
         .exec(function (err, result){
             if(err) {
                 callback(err);
