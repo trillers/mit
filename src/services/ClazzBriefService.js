@@ -19,7 +19,7 @@ Service.load = function (id, callback) {
 };
 
 Service.loadByClazzId = function (id, callback) {
-    ClazzBrief.find({clazz: id}).lean(true).exec(function (err, doc) {
+    ClazzBrief.findOne({clazz: id}).lean(true).exec(function (err, doc) {
         if (err) {
             logger.error('Fail to load classBrief [id=' + id + ']: ' + err);
             if (callback) callback(err);
