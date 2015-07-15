@@ -25,11 +25,13 @@ var handle = function(message, user, res, qrChannel){
         })
         .then(function(clazzStudent){
             console.log("22222222222222222222")
+            console.log(qrChannel);
             clazzStudentId = clazzStudent._id;
             return ClazzService.loadByQrChannelIdAsync(qrChannel._id);
         })
         .then(function(clazz){
-            console.log("333333333333")
+            console.log("-------------------------------")
+            console.log(clazz)
             return ClazzService.addStudentAsync(clazz._id, clazzStudentId, user.id);
         })
         .then(function(clazz){
