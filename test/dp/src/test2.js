@@ -1,10 +1,7 @@
 var assert = require("assert");
 var fs = require("fs");
 function cbTaker(cb){
-    return fs.readFileSync('./data.txt');
-    //setTimeout(function(){
-    //    cb()
-    //}, 100);
+    cb()
 }
 function zalgoContainer(cbTaker, cb){
     var sync = true;
@@ -22,6 +19,11 @@ function zalgoContainer(cbTaker, cb){
         }
     }
 }
+
 zalgoContainer(cbTaker, function(data){
-    console.log(data)
-})
+    console.log("99999999")
+});
+console.log("111111111")
+console.log("222222222")
+setTimeout(function(){console.log("33333333")}, 200)
+console.log("44444444444")

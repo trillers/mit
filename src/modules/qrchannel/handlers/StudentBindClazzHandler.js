@@ -20,8 +20,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
 
     UserService.update(user.id, update)
         .then(function(){
-            console.log("11111111111111111")
-            return ClazzStudentService.createAsync(user.id);
+            return ClazzStudentService.createAsync({user: user.id});
         })
         .then(function(clazzStudent){
             console.log("22222222222222222222")
