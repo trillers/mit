@@ -136,17 +136,6 @@ Service.createAnonymously = function (callback) {
         .then(function (userJson) {
             if(callback) callback(null, userJson);
             return userJson;
-        }).then(function(userJson){
-            var userBiz = {
-                user: userJson._id,
-                classes: []
-            }
-            userBizService.create(userBiz, function(err, doc){
-                if(err){
-                    logger.error('failed to create userBiz');
-                }
-            })
-            return userJson;
         })
         .catch(Error, function (err) {
             logger.error('Fail to create user from anonymous: ' + err);
