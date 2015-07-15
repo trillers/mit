@@ -9852,7 +9852,7 @@
 
 	})( window );
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)(module)))
 
 /***/ },
 /* 3 */
@@ -9939,6 +9939,9 @@
 	}
 
 	var util = {
+	    CONSTANT:{
+	        QRURL: 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='
+	    },
 	    getDc:function(){
 	        return DATA_DICT;
 	    },
@@ -11174,6 +11177,20 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var h2 = __webpack_require__(25);
+	var domain = h2.domain();
+
+	domain.restApi({
+	    baseUrl: __app.settings.api.url
+	});
+
+	module.exports = domain;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var util = {};
 
 	util.extend = function(obj, source) {
@@ -11199,26 +11216,12 @@
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var h2 = __webpack_require__(24);
-	var domain = h2.domain();
-
-	domain.restApi({
-	    baseUrl: __app.settings.api.url
-	});
-
-	module.exports = domain;
-
-
-/***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var h2 = {};
 
-	var util = __webpack_require__(4);
+	var util = __webpack_require__(5);
 
 	var _wrong_biz_code = 500;
 
@@ -11319,7 +11322,7 @@
 	 * SPA definition which is the single entry of our mobile site
 	 */
 	var jquery = __webpack_require__(2);
-	jquery = __webpack_require__(25);
+	jquery = __webpack_require__(26);
 	util = __webpack_require__(3);
 	var page = __webpack_require__(13);
 	///*
@@ -11331,7 +11334,7 @@
 	__webpack_require__(8);
 	__webpack_require__(11);
 	//console.log(wx);
-	domain = __webpack_require__(19);
+	domain = __webpack_require__(20);
 
 	/*
 	* wechat js config
@@ -13570,15 +13573,18 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var init=function(){var riot = __webpack_require__(1);riot.tag("clazz-add",'<div if="{!hidden}"> <input type="text" name="clazzname"> <input type="button" value="添加班级" onclick="{addClazz}"> </div>',function(){function t(){riot.route("teacher/index")}var n=nest.presentable(this),i=domain.action("ClazzAddAction");this.addClazz=function(){var t={name:n.clazzname.value};i.execute(t)}.bind(this),this.on("mount",function(){i.onDone(t)}),this.on("open",function(){this.trigger("view-route-to")})});
-	riot.tag("footer-bar",'<div> <input type="button" value="添加班级" onclick="{addClazz}"> </div>',function(){nest.presentable(this);this.addClazz=function(){riot.route("clazz/add")}.bind(this)});
-	riot.tag("teacher-index",'<div if="{!hidden}"> <ul class="clazzAccordion" onclick="{showSubMenu}"> <li each="{clazzes}" > <span>{name}</span> <ul> <li>张三<input type="button" value="send" class="{show: parent.currSendTo === name}"></li> <li>李四</li> </ul> </li> </ul> <footer-bar></footer-bar> </div>','teacher-index .clazzAccordion >li, [riot-tag="teacher-index"] .clazzAccordion >li{ border-bottom: 1px solid rgb(72, 92, 174); } teacher-index .clazzAccordion >li ul, [riot-tag="teacher-index"] .clazzAccordion >li ul{ max-height:0px; transition:max-height 0.3s ease; -moz-transition:max-height 0.3s ease; -webkit-transition:max-height 0.3s ease; -o-transition:max-height 0.3s ease; } teacher-index .clazzAccordion li >span, [riot-tag="teacher-index"] .clazzAccordion li >span{ height:32px; line-height:32px; display: block; padding-left:10px; background: rgb(110, 136, 240); } teacher-index .clazzAccordion ul, [riot-tag="teacher-index"] .clazzAccordion ul{ overflow: hidden; } teacher-index .clazzAccordion ul>li, [riot-tag="teacher-index"] .clazzAccordion ul>li{ padding-left:10px; height:32px; line-height: 32px; } teacher-index .clazzAccordion ul>li>input, [riot-tag="teacher-index"] .clazzAccordion ul>li>input{ display: none; } teacher-index .clazzAccordion ul>li:nth-child(odd), [riot-tag="teacher-index"] .clazzAccordion ul>li:nth-child(odd){ background: #ECECEC; } teacher-index .clazzAccordion ul>li:nth-child(even), [riot-tag="teacher-index"] .clazzAccordion ul>li:nth-child(even){ background: #EFEFEF; } teacher-index .hidden, [riot-tag="teacher-index"] .hidden{ max-height:500px !important; } teacher-index .show, [riot-tag="teacher-index"] .show{ display:block !important; }',function(){function e(e){console.log(e),i.clazzes=e.clazzes,i.update(),i.trigger("view-route-to")}var i=nest.presentable(this),n=domain.action("ClazzFetchByTeacherAction");i.clazzes={},i.currSendTo="",i.message={sendFrom:"",sendTo:i.currSendTo,content:""},this.showSubMenu=function(e){var n={SPAN:function(e){return $(e).siblings().toggleClass("hidden")},LI:function(){i.currSendTo="121"},INPUT:function(){alert(1)}};n[e.target.tagName](e.target)}.bind(this);var t=function(){}.bind(i),o=function(){}.bind(i);this.on("open",function(e){n.execute(),t(e)}),this.on("mount",function(){n.onDone(e),console.info("tag activities is mounted")}),this.on("refresh",function(){console.info("tag activity is refreshing"),o()})});
-	riot.tag("teacher-signup",'<div if="{!hidden}"> <input type="text" name="teacherName"> <input type="text" name="teacherPhone"> <input type="button" value="注册" onclick="{signUp}"> </div>',function(){function n(){riot.route("teacher/index")}var e=nest.presentable(this),t=domain.action("TeacherSignUpAction");this.signUp=function(){t.execute({name:e.teacherName.value,phone:e.teacherPhone.value})}.bind(this);var i=function(){this.trigger("view-route-to")}.bind(e),o=function(){}.bind(e);this.on("open",function(n){console.info("tag activities is opening"),i(n)}),this.on("mount",function(){t.onDone(n),console.info("tag activities is mounted")}),this.on("refresh",function(){console.info("tag activity is refreshing"),o()})});alert('loaded complete')};module.exports = init;
+	riot.tag("clazz-card",'<span onclick="{toggleGetClazzInfo}">{name}</span> <div if="{showOrNot}"> <div class="qrSection"><b>班级二维码:</b> <img riot-src="{getQrChannelImg()}"></div> <div class="addStuSection"> <b>学生姓名:</b> <input name="stuName" type="text"> <b>学生电话:</b> <input name="stuPhone" type="text"> <input type="button" value="添加学生" onclick="{addStudent}"> </div> <ul> <li each="{clazz.students}">姓名: {name} 手机: {phone}</li> </ul> </div>','clazz-card .clazzAccordion .clazzCard img, [riot-tag="clazz-card"] .clazzAccordion .clazzCard img{ line-height: 32px; }',function(){function t(t){var e=a.newInvocation(t.clazzId);e.onDone(function(t){n.clazz={students:t.students,qrChannel:t.qrChannel},n.showOrNot=!0,n.update()}).execute()}var n=nest.presentable(this),a=domain.action("ClazzLoadAction"),e=domain.action("ClazzAddStudentAction");n.showOrNot=!1,n.clazz={students:[],qrChannel:{}},n.clazzBriefId=this.opts["data-clazzbriefid"],n.getQrChannelImg=function(){return this.clazz&&this.clazz.qrChannel&&this.clazz.qrChannel.ticket&&util.CONSTANT.QRURL+this.clazz.qrChannel.ticket||""}.bind(n),this.toggleGetClazzInfo=function(a){return n.showOrNot===!0?(n.showOrNot=!1,!1):(t({clazzId:a.target.parentNode.getAttribute("data-id")}),void 0)}.bind(this),this.addStudent=function(t){var a=e.newInvocation({clazzId:t.currentTarget.parentNode.parentNode.parentNode.getAttribute("data-id"),name:n.stuName.value,phone:n.stuPhone.value,clazzBriefId:n.clazzBriefId});a.onDone(function(t){n.clazz={students:t.students,qrChannel:t.qrChannel},n.update()}).execute(),t.stopPropagation()}.bind(this),this.on("mount",function(){})});
+	riot.tag("footer-bar",'<div> <input type="button" value="添加班级" onclick="{addClazz}"> <input type="button" value="群发消息" onclick="{sendMsgs}"> </div>',function(){nest.presentable(this);this.addClazz=function(){riot.route("clazz/add")}.bind(this),this.sendMsgs=function(){}.bind(this)});
+	riot.tag("student-index","",function(){});
+	riot.tag("student-signup",'<div if="{!hidden}"> <input type="text" name="studentName"> <input type="text" name="studentPhone"> <input type="button" value="注册" onclick="{signUp}"> </div>',function(){function n(){riot.route("student/index")}var t=nest.presentable(this),i=domain.action("StudentSignUpAction");this.signUp=function(){i.execute({name:t.studentName.value,phone:t.studentPhone.value})}.bind(this);var e=function(){this.trigger("view-route-to")}.bind(t),o=function(){}.bind(t);this.on("open",function(n){console.info("tag activities is opening"),e(n)}),this.on("mount",function(){i.onDone(n),console.info("tag activities is mounted")}),this.on("refresh",function(){console.info("tag activity is refreshing"),o()})});
+	riot.tag("teacher-index",'<div if="{!hidden}"> <div class="clazzAccordion"> <clazz-card class="clazzCard" each="{clazzes}" data-clazzbriefid="{_id}" data-id="{clazz}"></clazz-card> </div> <footer-bar></footer-bar> </div>','teacher-index .clazzAccordion >.clazzCard, [riot-tag="teacher-index"] .clazzAccordion >.clazzCard{ border-bottom: 1px solid rgb(72, 92, 174); } teacher-index .clazzAccordion .clazzCard >span, [riot-tag="teacher-index"] .clazzAccordion .clazzCard >span{ height:32px; line-height:32px; display: block; padding-left:10px; background: rgb(110, 136, 240); } teacher-index .clazzAccordion .clazzCard img, [riot-tag="teacher-index"] .clazzAccordion .clazzCard img{ display: inline-block; width:48px; height:48px; } teacher-index .clazzAccordion ul, [riot-tag="teacher-index"] .clazzAccordion ul{ overflow: hidden; } teacher-index .clazzAccordion ul>li, [riot-tag="teacher-index"] .clazzAccordion ul>li{ padding-left:10px; height:32px; line-height: 32px; } teacher-index .clazzAccordion ul>li>input, [riot-tag="teacher-index"] .clazzAccordion ul>li>input{ display: none; } teacher-index .clazzAccordion ul>li:nth-child(odd), [riot-tag="teacher-index"] .clazzAccordion ul>li:nth-child(odd){ background: #ECECEC; } teacher-index .clazzAccordion ul>li:nth-child(even), [riot-tag="teacher-index"] .clazzAccordion ul>li:nth-child(even){ background: #EFEFEF; } teacher-index .show, [riot-tag="teacher-index"] .show{ display:block !important; } teacher-index .clazzAccordion .qrSection, [riot-tag="teacher-index"] .clazzAccordion .qrSection{ height:64px; line-height: 64px; }',function(){function c(c){e.clazzes=c&&c.clazzes||{},e.update(),e.trigger("view-route-to")}var e=nest.presentable(this),i=domain.action("ClazzFetchByTeacherAction");e.clazzes=[],e.currSendTo="",e.message={sendFrom:"",sendTo:e.currSendTo,content:""};var a=function(){}.bind(e),n=function(){}.bind(e);this.on("open",function(c){i.execute(),a(c)}),this.on("mount",function(){i.onDone(c)}),this.on("refresh",function(){n()})});
+	riot.tag("teacher-signup",'<div if="{!hidden}"> <label>教师姓名:</label><input type="text" name="teacherName"> <br> <label>手机号码:</label><input type="text" name="teacherPhone"> <br> <input type="button" value="注册" onclick="{signUp}"> </div>',function(){function e(){riot.route("teacher/index")}var n=nest.presentable(this),t=domain.action("TeacherSignUpAction");this.signUp=function(){t.execute({name:n.teacherName.value,phone:n.teacherPhone.value})}.bind(this);var i=function(){this.trigger("view-route-to")}.bind(n),o=function(){}.bind(n);this.on("open",function(e){console.info("tag activities is opening"),i(e)}),this.on("mount",function(){t.onDone(e),console.info("tag activities is mounted")}),this.on("refresh",function(){console.info("tag activity is refreshing"),o()})});alert('loaded complete')};module.exports = init;
 
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var domain = __webpack_require__(5);
+	var domain = __webpack_require__(4);
 	var apiFactory = domain.restApi();
 
 	domain.action('ClazzAddAction').onExecute(function(data){
@@ -13589,22 +13595,46 @@
 	    apiFactory.get('/user/myClazz').drive(this).send(data);
 	});
 
+	domain.action('ClazzLoadAction').onExecute(function(data){
+	    apiFactory.get('/clazz/_' + data).drive(this).send();
+	});
 
+	domain.action('ClazzAddStudentAction').onExecute(function(data){
+	    apiFactory.post('/clazz/student').drive(this).send(data);
+	});
 	module.exports = null;
 
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(18);
+	__webpack_require__(19);
 	__webpack_require__(16);
+	__webpack_require__(18);
 	module.exports = null;
 
 /***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var domain = __webpack_require__(5);
+	var domain = __webpack_require__(4);
+	var apiFactory = domain.restApi();
+
+	domain.action('StudentSignUpAction').onExecute(function(data){
+	    apiFactory.post('/teacher').drive(this).send(data);
+	});
+
+	domain.action('StudentAddAction').onExecute(function(data){
+	    apiFactory.post('/clazz/stu').drive(this).send(data);
+	});
+
+	module.exports = null;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var domain = __webpack_require__(4);
 	var apiFactory = domain.restApi();
 
 	domain.action('TeacherSignUpAction').onExecute(function(data){
@@ -13617,21 +13647,21 @@
 	module.exports = null;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var domain = __webpack_require__(5);
+	var domain = __webpack_require__(4);
 	var actions = __webpack_require__(17);
 
 	module.exports = domain;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var h2 = {};
 
-	var util = __webpack_require__(4);
+	var util = __webpack_require__(5);
 
 	var observableFn = __webpack_require__(1).observable;
 
@@ -13828,12 +13858,12 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var h2 = { version: 'WIP', settings: {} };
 
-	var util = __webpack_require__(4);
+	var util = __webpack_require__(5);
 
 	var ApiErrorFactory = __webpack_require__(6).ApiErrorFactory;
 
@@ -13950,7 +13980,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var h2 = {};
@@ -13959,23 +13989,23 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var h2 = { version: 'WIP', settings: {} };
 
-	var util = __webpack_require__(4);
+	var util = __webpack_require__(5);
 
 	var error = __webpack_require__(6);
 	util.extend(h2, error);
 
-	var rest = __webpack_require__(21);
+	var rest = __webpack_require__(22);
 	util.extend(h2, rest);
 
-	var ws = __webpack_require__(22);
+	var ws = __webpack_require__(23);
 	util.extend(h2, ws);
 
-	var action = __webpack_require__(20);
+	var action = __webpack_require__(21);
 	util.extend(h2, action);
 
 	/**
@@ -14039,15 +14069,15 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var h2 = __webpack_require__(23);
+	var h2 = __webpack_require__(24);
 
 	module.exports = h2;
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -14149,7 +14179,7 @@
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));//end define
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
