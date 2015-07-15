@@ -20,19 +20,24 @@ var handle = function(message, user, res, replyMsg, qrChannel){
 
     UserService.update(user.id, update)
         .then(function(){
+            console.log("11111111111111111")
             return ClazzStudentService.createAsync(user.id);
         })
         .then(function(clazzStudent){
+            console.log("22222222222222222222")
             clazzStudentId = clazzStudent._id;
             return ClazzService.loadByQrChannelId(qrChannel._id);
         })
         .then(function(clazz){
+            console.log("333333333333")
             return ClazzService.addStudent(clazz._id, clazzStudentId, user.id);
         })
         .then(function(clazz){
+            console.log("44444444444444")
             return ClazzBriefService.loadByClazzIdAsync(clazz._id);
         })
         .then(function(clazzBrief){
+            console.log("555555555555555")
             var userBiz = {
                 user: user.id,
                 clazzes: [clazzBrief._id]
@@ -40,6 +45,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
             return UserBizService.createAsync(userBiz);
         })
         .then(function(result){
+            console.log("666666666666")
             if(result){
                 return pushTutorQrAsync(result);
             }else{
@@ -47,6 +53,7 @@ var handle = function(message, user, res, replyMsg, qrChannel){
             }
         })
         .then(function(result){
+            console.log("7777777777777")
             if(result){
                 res.reply(_replyMsg);
             }else{
