@@ -9,7 +9,7 @@ var Promise = require('bluebird');
 var tutorMediaId = "";
 var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
 
-var handle = function(message, user, res, replyMsg, qrChannel){
+var handle = function(message, user, res, qrChannel){
     var update = {
             wx_subscribe: 1,
             wx_subscribe_time: new Date(),
