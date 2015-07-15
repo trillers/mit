@@ -69,6 +69,9 @@ var handle = function(message, user, res, qrChannel){
 };
 
 function pushTutorQr(user, cb){
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~");
+    console.log(user);
+    console.log(user.wx_openid)
     wechatApi.sendImage(user.wx_openid, tutorMediaId, function(err, result){
         if(err){
             cb(err, null);
