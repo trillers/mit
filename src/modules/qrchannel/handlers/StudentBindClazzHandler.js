@@ -8,6 +8,7 @@ var wechatApi = require('../../../app/wechat/api').api;
 var Promise = require('bluebird');
 var tutorMediaId = "";
 var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
+var pushTutorQrAsync = Promise.promisify(pushTutorQr);
 
 var handle = function(message, user, res, qrChannel){
     var update = {
@@ -25,11 +26,11 @@ var handle = function(message, user, res, qrChannel){
         .then(function(clazzStudent){
             console.log("22222222222222222222")
             clazzStudentId = clazzStudent._id;
-            return ClazzService.loadByQrChannelId(qrChannel._id);
+            return ClazzService.loadByQrChannelIdAsync(qrChannel._id);
         })
         .then(function(clazz){
             console.log("333333333333")
-            return ClazzService.addStudent(clazz._id, clazzStudentId, user.id);
+            return ClazzService.addStudentAsync(clazz._id, clazzStudentId, user.id);
         })
         .then(function(clazz){
             console.log("44444444444444")
@@ -73,7 +74,5 @@ function pushTutorQr(user, cb){
         }
     });
 }
-
-var pushTutorQrAsync = Promise.promisify(pushTutorQr);
 
 module.exports = new QrHandler(true, 'SBC', handle);
