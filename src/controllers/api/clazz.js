@@ -1,5 +1,7 @@
 var clazzService = require('../../services/ClazzService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
+var clazzStudentService = require('../../services/ClazzStudentService');
+var userService = require('../../services/UserService')
 var userBizService = require('../../services/UserBizService');
 var clazzBriefService = require('../../services/ClazzBriefService');
 var QrChannel = require('../../modules/qrchannel');
@@ -26,12 +28,37 @@ module.exports = function(router){
     });
 
     router.post('/student', function(req, res){
-        console.log(req.body);
-
+        var stuName = req.body.name,
+            stuPhone = req.body.phone,
+            clazzBriefId = req.body.clazzBriefId,
+            clazzId = req.body.clazzId,
+            userStu;
         //new user
-        //new userbiz
-        //new clazz student
-        //update clazz
+        userService.createAnonymously()
+            .then(function(user){
+                userStu = user;
+                var json = {
+                    user: userStu._id,
+                    clazzes: [clazzBriefId]
+                }
+                return userBizService.createAsync(json);
+            })
+            .then(function(userBiz){
+                var json = {
+                    user: userStu._id,
+                    name: stuName,
+                    phone: stuPhone
+                }
+                return clazzStudentService.createAsync(json);
+            })
+            .then(function(doc){
+                //update clazz
+
+                return clazzService.updateAsync(clazzId, {$addToSet: {'students': doc._id}});
+            })
+            .then(function(doc){
+                res.status(200).json(ApiReturn.i().ok(doc));
+            })
     })
 
     //create

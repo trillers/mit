@@ -1,7 +1,7 @@
 <teacher-index>
     <div if="{!hidden}">
-        <div class="clazzAccordion" onclick="{showSubMenu}">
-            <clazz-card class="clazzCard" each="{clazzes}" data-id="{clazz}"></clazz-card>
+        <div class="clazzAccordion">
+            <clazz-card class="clazzCard" each="{clazzes}" data-clazzbriefid="{_id}" data-id="{clazz}"></clazz-card>
         </div>
         <footer-bar></footer-bar>
     </div>
@@ -9,13 +9,13 @@
         .clazzAccordion >.clazzCard{
             border-bottom: 1px solid rgb(72, 92, 174);
         }
-        .clazzAccordion >.clazzCard ul{
-            max-height:0px;
-            transition:max-height 0.3s ease;
-            -moz-transition:max-height 0.3s ease; /* Firefox 4 */
-            -webkit-transition:max-height 0.3s ease; /* Safari and Chrome */
-            -o-transition:max-height 0.3s ease; /* Opera */
-        }
+        /*.clazzAccordion >.clazzCard ul{*/
+            /*max-height:0px;*/
+            /*transition:max-height 0.3s ease;*/
+            /*-moz-transition:max-height 0.3s ease; /!* Firefox 4 *!/*/
+            /*-webkit-transition:max-height 0.3s ease; /!* Safari and Chrome *!/*/
+            /*-o-transition:max-height 0.3s ease; /!* Opera *!/*/
+        /*}*/
         .clazzAccordion .clazzCard >span{
             height:32px;
             line-height:32px;
@@ -45,9 +45,9 @@
         .clazzAccordion ul>li:nth-child(even){
             background: #EFEFEF;
         }
-        .hidden{
-            max-height:500px !important;
-        }
+        /*.hidden{*/
+            /*max-height:500px !important;*/
+        /*}*/
         .show{
             display:block !important;
         }
@@ -67,33 +67,6 @@
             sendFrom: '',
             sendTo: self.currSendTo,
             content:''
-        }
-
-        showSubMenu(e){
-            var _handlers = {
-                'SPAN': function(target){
-                    console.log($(target).parent().index())
-                    return $(target).siblings().toggleClass('hidden');
-                },
-                'LI': function(target){
-                    //popup the msg btn
-                    self.currSendTo = '121';
-                },
-                'INPUT': function(target){
-                    //sendTo
-
-
-                }
-            };
-            _handlers[e.target.tagName](e.target);
-        }
-        getStudents(e){
-            alert("123")
-//            for (var i = 0, len = self['clazzes'].length; i < len; i++) {
-//                if (self.clazzes[i]._id = e.target.getAttribute('data-id')) {
-//                    ClazzLoadAction.execute(self.clazzes[i]._id);
-//                }
-//            }
         }
         var _open = function(id){
         }.bind(self);
