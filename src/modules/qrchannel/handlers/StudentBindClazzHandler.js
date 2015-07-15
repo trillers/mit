@@ -1,10 +1,11 @@
 var QrHandler = require('../common/QrHandler');
 var ClazzService = require('../../../services/ClazzService');
-var ClazzBriefService = require('../../../services/ClazzBService');
+var ClazzBriefService = require('../../../services/ClazzBriefService');
 var UserService = require('../../../services/UserService');
 var UserBizService = require('../../../services/UserBizService');
 var ClazzStudentService = require('../../../services/ClazzStudentService');
 var wechatApi = require('../../../app/wechat/api').api;
+var Promise = require('bluebird');
 var tutorMediaId = "";
 var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
 
