@@ -60,6 +60,17 @@ Service.update = function (id, update, callback) {
     });
 };
 
+Service.updateByCondition = function (condition, update, callback) {
+    UserBiz.findOneAndUpdate(condition, update, {new: true}, function (err, doc){
+        if(err) {
+            callback(err);
+        } else {
+            logger.debug('Succeed to update userBiz [id=' + id + ']');
+            callback(null, doc);
+        }
+    });
+};
+
 Service.find = function (params, callback) {
     var query = UserBiz.find();
 

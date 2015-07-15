@@ -35,16 +35,17 @@ var handle = function(message, user, res, qrChannel){
             return ClazzService.addStudentAsync(clazz._id, clazzStudentId, user.id);
         })
         .then(function(clazz){
-            console.log("44444444444444")
+            console.log("44444444444444");
+            console.log(clazz)
             return ClazzBriefService.loadByClazzIdAsync(clazz._id);
         })
         .then(function(clazzBrief){
-            console.log("555555555555555")
+            console.log("555555555555555");
+            console.log(clazzBrief)
             var userBiz = {
-                user: user.id,
-                clazzes: [clazzBrief._id]
+                $addToSet: {clazzes: clazzBrief._id}
             }
-            return UserBizService.createAsync(userBiz);
+            return UserBizService.updateByConditionAsync({user: user.id}, userBiz);
         })
         .then(function(result){
             console.log("666666666666")
