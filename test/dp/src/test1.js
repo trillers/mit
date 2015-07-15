@@ -1,5 +1,6 @@
 var fs = require('fs');
 var cache = {};
+var i = 0
 function inconsistentRead(filename, callback) {
     if(cache[filename]) {
         //invoked synchronously
@@ -7,6 +8,7 @@ function inconsistentRead(filename, callback) {
     } else {
         //asynchronous function
         fs.readFile(filename, 'utf8', function(err, data) {
+            console.log("===========")
             cache[filename] = data;
             callback(data);
         });
