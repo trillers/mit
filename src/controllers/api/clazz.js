@@ -72,7 +72,7 @@ module.exports = function(router){
             qrChannel: ''
         }
         var result;
-        var key = QrChannel.genKey(true, 'TS');
+        var key = QrChannel.genKey(true, 'SBC');
         var handler = QrChannel.handlers[key];
         handler.autoCreate(null, function(err, qr){
             clazz.qrChannel = qr._id;
