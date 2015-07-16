@@ -8,7 +8,6 @@ var wechatApi = require('../../../app/wechat/api').api;
 var Promise = require('bluebird');
 var tutorMediaId = "9Qx2NY4keMALv37HdZ-XfJjCsNWy1w5l3Kmar0zJc2DBtBb1fFRa_nRUv57RFv4P";
 var _replyMsg = "识别上面的二维码,可以添加您的小助手哦~";
-var pushTutorQrAsync = Promise.promisify(pushTutorQr);
 
 var handle = function(message, user, res, qrChannel){
     var update = {
@@ -50,7 +49,8 @@ var handle = function(message, user, res, qrChannel){
         .then(function(userBiz){
             console.log("666666666666")
             if(userBiz){
-                return pushTutorQrAsync(user);
+                //return pushTutorQrAsync(user);
+                return wechatApi.sendImageAsync(user.wx_openid, tutorMediaId);
             }else{
                 throw new Error("class Failed to bind Student!");
             }
@@ -67,18 +67,5 @@ var handle = function(message, user, res, qrChannel){
             console.log(err);
         });
 };
-
-function pushTutorQr(user, cb){
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~");
-    console.log(user);
-    console.log(user.wx_openid)
-    wechatApi.sendImage(user.wx_openid, tutorMediaId, function(err, result){
-        if(err){
-            cb(err, null);
-        }else{
-            cb(null, result);
-        }
-    });
-}
 
 module.exports = new QrHandler(true, 'SBC', handle);
