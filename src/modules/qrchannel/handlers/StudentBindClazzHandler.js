@@ -21,7 +21,7 @@ var handle = function(message, user, res, qrChannel){
     UserService.update(user.id, update)
         .then(function(){
             res.reply(_replyMsg);
-            return ClazzStudentService.createAsync({user: user.id});
+            return ClazzStudentService.createAsync({user: user.id, headUrl: user.wx_headimgurl, name: user.wx_nickname});
         })
         .then(function(clazzStudent){
             clazzStudentId = clazzStudent._id;
