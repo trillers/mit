@@ -23,7 +23,8 @@
       "is-js": "~0.7.1",
       "seajs": "~2.3.0",
       "seajs-wrap": "*",
-      "seedriot": "~2.0.11"
+      "seedriot": "~2.0.11",
+      "socket.io-client" : "~1.3.6"
     },
     "devDependencies": {
       "expect.js": "0.3.1"

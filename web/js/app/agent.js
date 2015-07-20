@@ -9,6 +9,7 @@ var page = require('./page');
 // * import global variables
 // */
 riot = require('seedriot');
+sock = require('socket.io-client');
 nest = require('./nest');
 $ = jquery;
 require('./camera');

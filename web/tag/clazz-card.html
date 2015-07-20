@@ -10,7 +10,7 @@
             <input type="button" value="添加学生" onclick="{addStudent}"/>
         </div>
         <ul>
-            <li each="{clazz.students}"><img src="{headUrl}"/>姓名: {name}   手机: {phone}</li>
+            <li each="{clazz.students}" onclick="{parent.toggleMsgBtn}"><img src="{headUrl}"/>姓名: {name}   手机: {phone}</li>
         </ul>
     </div>
     <style scoped>
@@ -22,6 +22,7 @@
                 ClazzLoadAction = domain.action('ClazzLoadAction'),
                 ClazzAddStudentAction = domain.action('ClazzAddStudentAction');
         self.showOrNot = false;
+        self.msgBtnShow = false;
         self.clazz = {
             students: [],
             qrChannel: {}
@@ -47,6 +48,11 @@
                 return false;
             }
             ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
+        }
+        toggleMsgBtn(e){
+            if(msgBtnShow){
+                console.log()
+            }
         }
         addStudent(e){
             var invocation = ClazzAddStudentAction.newInvocation({

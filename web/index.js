@@ -8,6 +8,7 @@ seajs.config({
         'jquery':'/web/spm/spm_modules/jquery/1.10.2/jquery.min.js',
         'zepto': '/web/spm/spm_modules/zepto/1.1.3/index.js',
         'seedriot':'/web/spm/spm_modules/seedriot/2.0.11/riot+compiler.js',
+        'socket.io-client':'/web/spm/spm_modules/socket.io-client/1.3.6/socket.io.js',
         'isjs':'/web/spm/spm_modules/is-js/0.7.1/is.min.js',
         'jssdk':'js/app/jssdk',
         'util':'js/app/util.js'
