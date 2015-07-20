@@ -1,6 +1,6 @@
 <clazz-chat>
     <div if="{!hidden}">
-        <div each="{[1, 2, 3]}">123</div>
+        <div each="{msgs}">123</div>
         <input type="text" value="" name="content"/><input onclick="{publishMsg}" type="button" value="确定发送"/>
     <style scoped>
 
@@ -10,7 +10,7 @@
         var self = nest.presentable(this),
                 MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
                 MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
-        self.messages = [];
+        self.msgs = [];
         self.clazzId = "";
 
         publishMsg(e){
@@ -19,7 +19,7 @@
 
         var _open = function(data){
             self.clazzId = data.clazzId;
-            //MsgInClazzLoadAction.execute({clazzId: data.clazzId});
+            MsgInClazzLoadAction.execute({clazzId: data.clazzId});
         }.bind(self);
         var _refresh = function(){
 
@@ -33,12 +33,12 @@
         });
 
         function OnMsgInClazzLoadAction(data){
-            self.messages = data;
+            self.msgs = data;
             self.trigger('view-route-to');
         }
 
         function OnMsgInClazzAddAction(data){
-            self.messages.unshift(data);
+            self.msgs.unshift(data);
             self.update();
         }
 

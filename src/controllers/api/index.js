@@ -40,5 +40,5 @@ module.exports = function(app){
     //message
     moduleRouter = express.Router({strict: true});
     require('./message')(moduleRouter);
-    subsystemRouter.use('/message', moduleRouter);
+    subsystemRouter.use('/msg', moduleRouter);
 };
