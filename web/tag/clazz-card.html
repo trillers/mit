@@ -1,5 +1,5 @@
 <clazz-card>
-    <span onclick="{toggleGetClazzInfo}">{name}</span>
+    <span onclick="{toggleGetClazzInfo}">{name}<input type="button" onclick="{locateToSendPage}" if="{showOrNot}" value="群发消息"/></span>
     <div if="{showOrNot}">
         <div class="qrSection"><b>班级二维码:</b> <img src="{getQrChannelImg()}"/></div>
         <div class="addStuSection">
@@ -27,6 +27,7 @@
             students: [],
             qrChannel: {}
         };
+        self.clazzId = this.opts['data-id'];
         self.clazzBriefId = this.opts['data-clazzbriefid'];
         self.getQrChannelImg = function(){
             return this.clazz && this.clazz.qrChannel && this.clazz.qrChannel.ticket && (util.CONSTANT.QRURL + this.clazz.qrChannel.ticket) || ""
@@ -49,10 +50,9 @@
             }
             ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
         }
-        toggleMsgBtn(e){
-            if(msgBtnShow){
-                console.log()
-            }
+        locateToSendPage(e){
+            riot.route('clazz/chat?clazzId=' + self.clazzId);
+            e.stopPropagation();
         }
         addStudent(e){
             var invocation = ClazzAddStudentAction.newInvocation({

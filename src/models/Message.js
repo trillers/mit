@@ -1,5 +1,6 @@
 var mongoose = require('../app/mongoose');
 var DomainBuilder = require('../framework/model/DomainBuilder');
+var MsgChannelType = require('./TypeRegistry').item('MsgChannelType');
 var _ = require('underscore');
 
 var schema = DomainBuilder
@@ -9,13 +10,12 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         from: {type: String, ref: 'User', required: true},
-        to: {type: String, ref: 'User', required: true},
-        type: {type: String},
-        content: {type: String},
-        multiOrNot: {type: String}
+        channelType: {type: String, enum: MsgChannelType.valueList(), default: MsgChannelType.Clazz.value()},
+        channel: {type: String, require: true},
+        contentType: {type: String, default: 'txt'},
+        content: {type: String}
     })
     .build();
-
 module.exports.schema = schema;
 module.exports.model = schema.model(true);
 

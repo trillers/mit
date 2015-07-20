@@ -34,6 +34,7 @@ server.listen(app.get('port'), app.get('bindip'), function(){
     system.memberUp(app);
 });
 
+require('./ws');
 //var wss = require('./wss');
 
 //var server = http.createServer(app).listen(app.get('port'), app.get('bindip'), function(){

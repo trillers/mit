@@ -42,11 +42,31 @@ util.appendLine = function(target, str, parseFlag){
     return target;
 }
 
+//relationshipId generator(Two strings have the same length)
+util.genOneToOneId = function(str1, str2) {
+    return _sortStr(str1, str2);
+}
+
+function _sortStr(str1, str2) {
+    for(var i = 0, len = str1.length; i<len; i++) {
+        var char1 = str1.charAt(i),
+            char2 = str2.charAt(i);
+        if(char1 < char2) {
+            return str1 + str2;
+        }else if(char1 > char2){
+            return str2 + str1;
+        }else if(i === (len-1)){
+            throw new Error('Failed to generate relationshipId One to One [error]: two objs has the same Id');
+        }
+    }
+}
+
 module.exports = {
     extend: util.extend,
     extendAll: util.extendAll,
     clone: util.clone,
     defaults: util.defaults,
     result: util.result,
-    appendLine: util.appendLine
+    appendLine: util.appendLine,
+    genOneToOneId: util.genOneToOneId
 };

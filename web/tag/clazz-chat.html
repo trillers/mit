@@ -1,0 +1,43 @@
+<clazz-chat>
+    <div if="{!hidden}">
+        <div each="{[1, 2, 3]}">123</div>
+        <input type="text" value=""/><input type="button" value="确定发送"/>
+    </div>
+    <style scoped>
+
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
+                MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
+        self.messages = [];
+
+        var _open = function(id){
+            MsgInClazzLoadAction.execute();
+        }.bind(self);
+        var _refresh = function(){
+
+        }.bind(self);
+        this.on('open', function(options){
+            _open(options);
+        });
+        this.on('mount',function(){
+            MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
+            MsgInClazzAddAction.onDone(OnMsgInClazzAddAction);
+        });
+
+        function OnMsgInClazzLoadAction(data){
+            self.messages = data;
+            self.trigger('view-route-to');
+        }
+
+        function OnMsgInClazzAddAction(data){
+            self.update();
+        }
+
+        this.on('refresh', function(){
+            _refresh();
+        });
+    </script>
+</clazz-chat>

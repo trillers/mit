@@ -1,5 +1,5 @@
 var settings = require('mit-settings');
-var wsServer = require('ws').Server;
+var wsServer = require('socket.io').Server;
 var events = require('events');
 
 
