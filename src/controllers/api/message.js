@@ -17,6 +17,7 @@ module.exports = function(router){
     //create
     router.post('/', function(req, res){
         var msg = req.body;
+        msg.from = req.session.user.id;
         messageService.create(msg, function(err, doc){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
@@ -41,4 +42,17 @@ module.exports = function(router){
             res.status(200).json(ApiReturn.i().ok(doc));
         })
     });
+
+    //clazz messages
+    router.get('/clazz_messages', function(req, res){
+        var clazzId = req.query.clazzId;
+        var params = {
+            condition: {channelType: 'c', channel: clazzId},
+            sort: {crtOn: -1}
+        }
+        messageService.filter(params, function(err, docs){
+            //TODO: error handling
+            res.status(200).json(ApiReturn.i().ok(docs));
+        })
+    })
 };
