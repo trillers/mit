@@ -36,4 +36,9 @@ module.exports = function(app){
     moduleRouter = express.Router({strict: true});
     require('./qr')(moduleRouter);
     subsystemRouter.use('/qr', moduleRouter);
+
+    //message
+    moduleRouter = express.Router({strict: true});
+    require('./message')(moduleRouter);
+    subsystemRouter.use('/message', moduleRouter);
 };
