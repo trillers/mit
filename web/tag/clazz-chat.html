@@ -1,8 +1,7 @@
 <clazz-chat>
     <div if="{!hidden}">
         <div each="{[1, 2, 3]}">123</div>
-        <input type="text" value=""/><input type="button" value="确定发送"/>
-    </div>
+        <input type="text" value="" name="content"/><input onclick="{publishMsg}" type="button" value="确定发送"/>
     <style scoped>
 
     </style>
@@ -12,9 +11,15 @@
                 MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
                 MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
         self.messages = [];
+        self.clazzId = "";
 
-        var _open = function(id){
-            MsgInClazzLoadAction.execute();
+        publishMsg(e){
+            MsgInClazzAddAction.execute({clazzId: self.clazzId, content: self.content.value})
+        }
+
+        var _open = function(data){
+            self.clazzId = data.clazzId;
+            //MsgInClazzLoadAction.execute({clazzId: data.clazzId});
         }.bind(self);
         var _refresh = function(){
 
@@ -33,6 +38,7 @@
         }
 
         function OnMsgInClazzAddAction(data){
+            self.messages.unshift(data);
             self.update();
         }
 
