@@ -75,6 +75,19 @@ app.routeView('clazz/chat', nest.viewable({
   }
 }));
 
+app.routeView('clazz/msgs', nest.viewable({
+  name: 'clazz/msgs',
+  mount: function(ctx){
+    var tags = riot.mount('clazz-msgs');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
+
 app.routeView('debug/index', nest.viewable({
   name: 'debug/index',
   mount: function(ctx){
