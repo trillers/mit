@@ -3,7 +3,7 @@
         <div>{__page.user.nicName}</div>
         <div>{__page.user.name}</div>
         <div>{__page.user.name}</div>
-        <div each="{clazzes}" class="clazz-card" data-clazzid="{_id}" onclick="{parent.enterClazz}">
+        <div each="{clazzes}" class="clazz-card" data-clazzid="{clazz}" onclick="{parent.enterClazz}">
             <span>{_id} {name}</span>
         </div>
     </div>
@@ -43,7 +43,7 @@
             self.trigger('view-route-to');
         }
         enterClazz(e){
-            riot.route('clazz/msgs?clazzId=' + e.currentTarget.getAttribute('data-clazzid'));
+            riot.route('clazz/notifies?clazzId=' + e.currentTarget.getAttribute('data-clazzid'));
         }
     </script>
 </student-index>

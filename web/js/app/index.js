@@ -75,10 +75,10 @@ app.routeView('clazz/chat', nest.viewable({
   }
 }));
 
-app.routeView('clazz/msgs', nest.viewable({
-  name: 'clazz/msgs',
+app.routeView('clazz/notifies', nest.viewable({
+  name: 'clazz/notifies',
   mount: function(ctx){
-    var tags = riot.mount('clazz-msgs');
+    var tags = riot.mount('clazz-notifies');
     this.tag = tags[0];
   },
   route: function(ctx){

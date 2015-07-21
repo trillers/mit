@@ -33,14 +33,13 @@
         publishMsg(e){
             MsgInClazzAddAction.execute({
                 channel: self.clazzId,
-                channelType: __app.enums.MsgChannelType.names['Clazz'],
                 content: self.content.value
             })
         }
 
         var _open = function(data){
             self.clazzId = data.clazzId;
-            MsgInClazzLoadAction.execute({clazzId: data.clazzId});
+            MsgInClazzLoadAction.execute({channel: data.clazzId});
         }.bind(self);
         var _refresh = function(){
 

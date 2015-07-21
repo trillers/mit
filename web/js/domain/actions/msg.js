@@ -7,6 +7,8 @@ domain.action('MsgInClazzLoadAction').onExecute(function(data){
 domain.action('MsgInClazzAddAction').onExecute(function(data){
     apiFactory.post('/msg').drive(this).send(data);
 });
-
+domain.action('MsgReplyLoadAction').onExecute(function(data){
+    apiFactory.get('/msg/reply').drive(this).send(data);
+});
 
 module.exports = null;

@@ -1,0 +1,48 @@
+<clazz-notifies>
+    <div class="chat_card" if="{!hidden}">
+        <clazz-notify each="{msgs}" onclick="{showOrNot}"></clazz-notify>
+    </div>
+    <style scoped>
+        .chat_card{
+            background: #f3f3f3;
+        }
+        .chat_card div{
+            background: white;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #E9E9E9;
+            min-height: 60px;
+            line-height: 60px;
+        }
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction');
+
+        self.msgs = [];
+        self.clazzId = "";
+
+        var _open = function(data){
+            self.clazzId = data.clazzId;
+            MsgInClazzLoadAction.execute({channel: data.clazzId});
+        }.bind(self);
+        var _refresh = function(){
+
+        }.bind(self);
+        this.on('open', function(options){
+            _open(options);
+        });
+        this.on('mount',function(){
+            MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
+        });
+
+        function OnMsgInClazzLoadAction(data){
+            self.msgs = data;
+            self.trigger('view-route-to');
+        }
+
+        this.on('refresh', function(){
+            _refresh();
+        });
+    </script>
+</clazz-notifies>
