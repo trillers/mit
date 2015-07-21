@@ -1,17 +1,25 @@
 <student-index>
     <div if="{!hidden}">
-        <div each="{clazzs}">
-            <div><span>{_id}{name}</span></div>
+        <div>{__page.user.nicName}</div>
+        <div>{__page.user.name}</div>
+        <div>{__page.user.name}</div>
+        <div each="{clazzes}" class="clazz-card" data-clazzid="{_id}" onclick="{parent.enterClazz}">
+            <span>{_id} {name}</span>
         </div>
     </div>
     <style scoped>
-
+        .clazz-card{
+            height: 40px;
+            line-height: 40px;
+            background: red;
+            margin-bottom: 10px;
+        }
     </style>
 
     <script>
         var self = nest.presentable(this),
                 ClazzFetchByStudentAction = domain.action("ClazzFetchByStudentAction");
-        self.clazzs = [];
+        self.clazzes = [];
         var _open = function(data){
             ClazzFetchByStudentAction.execute();
         }.bind(self);
@@ -30,8 +38,12 @@
         });
 
         function OnClazzFetchByStudentAction(data){
-            self.clazzs = data;
+            console.log(data)
+            self.clazzes = data.clazzes;
             self.trigger('view-route-to');
+        }
+        enterClazz(e){
+            riot.route('clazz/msgs?clazzId=' + e.currentTarget.getAttribute('data-clazzid'));
         }
     </script>
 </student-index>
