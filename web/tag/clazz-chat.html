@@ -1,9 +1,26 @@
 <clazz-chat>
-    <div if="{!hidden}">
-        <div each="{msgs}">123</div>
+    <div class="chat_card" if="{!hidden}">
+        <div each="{msgs}">
+            <div><span>{content}</span>
+                <ul>
+                    <li each="{replies}"><span>{from}: {content}</span>
+                        <ul>
+                            <li each="{replies}">{from}: {content}</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <input type="text" value="" name="content"/><input onclick="{publishMsg}" type="button" value="确定发送"/>
     <style scoped>
-
+        .chat_card{
+            background: #f3f3f3;
+        }
+        .chat_card div{
+            background: white;
+            margin-bottom: 10px;
+            height: 60px;
+        }
     </style>
 
     <script>
@@ -14,7 +31,11 @@
         self.clazzId = "";
 
         publishMsg(e){
-            MsgInClazzAddAction.execute({clazzId: self.clazzId, content: self.content.value})
+            MsgInClazzAddAction.execute({
+                channel: self.clazzId,
+                channelType: __app.enums.MsgChannelType.names['Clazz'],
+                content: self.content.value
+            })
         }
 
         var _open = function(data){

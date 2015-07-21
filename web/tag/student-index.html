@@ -1,3 +1,37 @@
 <student-index>
+    <div if="{!hidden}">
+        <div each="{clazzs}">
+            <div><span>{_id}{name}</span></div>
+        </div>
+    </div>
+    <style scoped>
 
+    </style>
+
+    <script>
+        var self = nest.presentable(this),
+                ClazzFetchByStudentAction = domain.action("ClazzFetchByStudentAction");
+        self.clazzs = [];
+        var _open = function(data){
+            ClazzFetchByStudentAction.execute();
+        }.bind(self);
+        var _refresh = function(){
+
+        }.bind(self);
+        this.on('open', function(options){
+            _open(options);
+        });
+        this.on('mount',function(){
+            ClazzFetchByStudentAction.onDone(OnClazzFetchByStudentAction);
+        });
+
+        this.on('refresh', function(){
+            _refresh();
+        });
+
+        function OnClazzFetchByStudentAction(data){
+            self.clazzs = data;
+            self.trigger('view-route-to');
+        }
+    </script>
 </student-index>

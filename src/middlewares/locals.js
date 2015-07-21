@@ -2,6 +2,7 @@ var settings = require('mit-settings');
 var resources = require('mit-settings').resources;
 var UserMeta = require('../kvs/UserMeta');
 var workflowRegistry = require('../app/workflow');
+var typeRegistry = require('../models/TypeRegistry');
 var time = require('../app/time');
 var _ = require('underscore');
 var env = settings.env.NODE_ENV;
@@ -13,6 +14,7 @@ var __app = {
         app: settings.app,
         env: settings.env
     },
+    enums: typeRegistry.dict(),
     workflows: workflowRegistry.dict(),
     resources: resources
 };

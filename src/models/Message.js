@@ -13,9 +13,12 @@ var schema = DomainBuilder
         channelType: {type: String, enum: MsgChannelType.valueList(), default: MsgChannelType.Clazz.value()},
         channel: {type: String, require: true},
         contentType: {type: String, default: 'txt'},
-        content: {type: String}
+        content: {type: String},
+        level: {type: Number, default: 0},
+        replies: [{type: String, ref: 'Message'}]
     })
     .build();
+
 module.exports.schema = schema;
 module.exports.model = schema.model(true);
 
