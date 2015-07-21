@@ -1,6 +1,5 @@
 var userService = require('../../services/UserService');
 var userBizService = require('../../services/UserBizService');
-var messageService = require('../../services/MessageService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -25,12 +24,6 @@ module.exports = function(router){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(doc));
         })
-    });
-
-    //loadUserMessage
-    router.get('/myMessage', function(req, res){
-        var userId = req.session.user.id;
-
     });
 
     //resetUserForChannel

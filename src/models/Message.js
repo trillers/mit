@@ -10,7 +10,7 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         from: {type: String, ref: 'User', required: true},
-
+        to: {type: String, ref: 'User'},
         channel: {type: String, require: true},
         contentType: {type: String, default: 'txt'},
         content: {type: String}
