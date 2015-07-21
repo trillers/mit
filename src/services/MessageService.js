@@ -118,6 +118,9 @@ Service.filter = function (params, callback) {
     if (params.conditions) {
         query.find(params.conditions);
     }
+
+    query.populate('from', 'role');
+    query.populate('to', 'role');
     query.lean(true);
     query.exec(function (err, docs) {
         if (err) {

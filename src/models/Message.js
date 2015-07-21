@@ -10,12 +10,10 @@ var schema = DomainBuilder
     .withCreatedOn()
     .withProperties({
         from: {type: String, ref: 'User', required: true},
-        channelType: {type: String, enum: MsgChannelType.valueList(), default: MsgChannelType.Clazz.value()},
+        to: {type: String, ref: 'User'},
         channel: {type: String, require: true},
         contentType: {type: String, default: 'txt'},
-        content: {type: String},
-        level: {type: Number, default: 0},
-        replies: [{type: String, ref: 'Message'}]
+        content: {type: String}
     })
     .build();
 
