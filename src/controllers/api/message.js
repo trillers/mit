@@ -47,7 +47,7 @@ module.exports = function(router){
     router.get('/clazz_messages', function(req, res){
         var clazzId = req.query.clazzId;
         var params = {
-            condition: {channelType: 'c', channel: clazzId},
+            conditions: {channelType: 'c', channel: clazzId},
             sort: {crtOn: -1}
         }
         messageService.filter(params, function(err, docs){
