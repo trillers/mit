@@ -2,10 +2,10 @@
         <span onclick="{toggleGetReplyInfo}">{content}</span>
         <div if="{showOrNot}">
             <input value="回复消息" type="button"/><br/>
-            <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
+            <input name="payLoad" type="text"/><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}">
-                    <span if="{parent.isSelfOrMyTeacher(from)}">{from || '匿名'} {to}: {content}</span>
+                    <span if="{parent.isSelfOrMyTeacher(from.user)}">{from.name || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
         </div>
@@ -20,9 +20,13 @@
             MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
                 MsgReplyLoadAction = domain.action('MsgReplyLoadAction');
         self.msgId = this.opts.msgid;
+        self.msgCurrFromId = "";
         self.replies = [];
         self.showOrNot = false;
         self.isSelfOrMyTeacher = function(fromUser){
+            console.log(fromUser)
+            console.log(__page.user._id);
+            console.log(this.parent._id);
             return fromUser === __page.user._id || fromUser === this.parent._id ? true : false;
         }
         toggleGetReplyInfo(e){
@@ -30,10 +34,11 @@
                 self.showOrNot = false;
                 return false;
             }
+            self.msgCurrFromId = e.currentTarget.getAttribute('data-msgfrom');
             MsgReplyLoadActionInvocation();
         }
         function MsgReplyLoadActionInvocation(data){
-            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId});
+            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});
             invocation.onDone(function(docs){
                 self.replies = docs;
                 self.showOrNot = true;
