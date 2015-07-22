@@ -51,7 +51,7 @@
             ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
         }
         locateToSendPage(e){
-            riot.route('clazz/chat?clazzId=' + self.clazzId);
+            riot.route('clazz/notifies?clazzId=' + self.clazzId);
             e.stopPropagation();
         }
         addStudent(e){

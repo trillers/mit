@@ -5,7 +5,7 @@
             <input name="payLoad" type="text"/><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}">
-                    <span if="{parent.isSelfOrMyTeacher(from.user)}">{from.name || '匿名'} {to}: {content}</span>
+                    <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
         </div>
@@ -23,12 +23,6 @@
         self.msgCurrFromId = "";
         self.replies = [];
         self.showOrNot = false;
-        self.isSelfOrMyTeacher = function(fromUser){
-            console.log(fromUser)
-            console.log(__page.user._id);
-            console.log(this.parent._id);
-            return fromUser === __page.user._id || fromUser === this.parent._id ? true : false;
-        }
         toggleGetReplyInfo(e){
             if (self.showOrNot === true) {
                 self.showOrNot = false;
