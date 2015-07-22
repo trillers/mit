@@ -73,13 +73,13 @@ module.exports = function(router){
         if(doc.from.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserIdAsync(doc.from._id)
                 .then(function(clazzTeacher){
-                    doc.from = clazzTeacher.name;
+                    doc.from = clazzTeacher;
                     return cb(null, doc);
                 });
         }else if(doc.from.role == UserRole.Student.value()){
             clazzStudentService.loadByUserIdAsync(doc.from._id)
                 .then(function(clazzStudent){
-                    doc.from = clazzStudent.name;
+                    doc.from = clazzStudent;
                     return cb(null, doc);
                 });
         }else{
@@ -90,13 +90,13 @@ module.exports = function(router){
         if(doc.to && doc.to.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserIdAsync(doc.to._id)
                 .then(function(clazzTeacher){
-                    doc.to = clazzTeacher.name;
+                    doc.to = clazzTeacher;
                     return cb(null, doc);
                 });
         }else if(doc.to && doc.to.role == UserRole.Student.value()){
             clazzStudentService.loadByUserIdAsync(doc.to._id)
                 .then(function(clazzStudent){
-                    doc.to = clazzStudent.name;
+                    doc.to = clazzStudent;
                     return cb(null, doc);
                 });
         }else{
