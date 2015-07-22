@@ -1,8 +1,6 @@
 var logger = require('../app/logging').logger;
 var u = require('../app/util');
 var ClazzTeacher = require('../models/ClazzTeacher').model;
-var UserService = require('../services/UserService');
-var UserRole = require('../models/TypeRegistry').item('UserRole');
 var Promise = require('bluebird');
 
 var Service = {};
@@ -61,17 +59,14 @@ Service.delete = function (id, callback) {
 };
 
 Service.updateByUserId = function (userId, update, callback) {
-    Service.updateByUserIdAsync(userId, {role: UserRole.Teacher.value()})
-        .then(function(user){
-            ClazzTeacher.update({user: userId}, update, {new: true}, function (err, result){
-                if(err) {
-                    callback(err);
-                } else {
-                    logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
-                    callback(null, result);
-                }
-            });
-        });
+    ClazzTeacher.update({user: userId}, update, {new: true}, function (err, result){
+        if(err) {
+            callback(err);
+        } else {
+            logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
+            callback(null, result);
+        }
+    });
 };
 
 Service.update = function (id, update, callback) {
