@@ -5,7 +5,7 @@
             <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}">
-                    <span>{from || '匿名'} {to && '@'+to || ''}: {content}</span>
+                    <span>{from || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
         </div>
@@ -26,8 +26,6 @@
         function MsgReplyLoadActionInvocation(data){
             var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId});
             invocation.onDone(function(docs){
-                console.log('-----');
-                console.log(docs);
                 self.replies = docs;
                 self.showOrNot = true;
                 self.update();
@@ -39,7 +37,6 @@
                 content: self.payLoad.value
             });
             invocation.onDone(function(doc){
-                console.log(doc)
                 self.replies.unshift(doc);
                 self.update();
             }).execute();
