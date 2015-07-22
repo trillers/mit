@@ -6,6 +6,8 @@ var UserBizService = require('../../../services/UserBizService');
 var ClazzStudentService = require('../../../services/ClazzStudentService');
 var wechatApi = require('../../../app/wechat/api').api;
 var Promise = require('bluebird');
+var UserRole = require('../../../models/TypeRegistry').item('UserRole');
+
 var tutorMediaId = "9Qx2NY4keMALv37HdZ-XfJjCsNWy1w5l3Kmar0zJc2DBtBb1fFRa_nRUv57RFv4P";
 var _replyMsg = "识别下面的二维码,可以添加您的小助手哦~";
 
@@ -14,7 +16,7 @@ var handle = function(message, user, res, qrChannel){
             wx_subscribe: 1,
             wx_subscribe_time: new Date(),
             $inc: {'subscribeCount': 1},
-            role: 's'
+            role: UserRole.Student.value()
         },
         clazzStudentId;
 

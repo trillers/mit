@@ -26,11 +26,10 @@ module.exports = function(router){
         msg.from = req.session.user.id;
         messageService.create(msg, function(err, doc){
             _populateFromUserAsync(doc)
-                .then(function(){
-                    return _populateToUserAsync(doc);
+                .then(function(doc){
+                    return _populateFromUserAsync(doc);
                 })
-                .then(function(){
-                    console.log(doc)
+                .then(function(doc){
                     return res.status(200).json(ApiReturn.i().ok(doc));
                 })
         })
