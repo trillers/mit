@@ -7,8 +7,7 @@ var agent = require('./agent').init();
 var util = require('./util');
 
 var Spa = require('./spa');
-var app = new Spa({defaultHash: 'teacher/index'});
-
+var app = new Spa({defaultHash: 'student/index'});
 
 app.routeView('teacher/signup', nest.viewable({
   name: 'teacher/signup',
@@ -119,11 +118,18 @@ app.on('init', function(){
   var attentionUrl = util.getCookie('attentionUrl');
   var hash = attentionUrl || window.location.hash;
   hash || (hash = app.defaultHash);
+  hash = authFilter(hash);
   riot.route(hash);
   if(attentionUrl){
     util.setCookie('attentionUrl', "", -1);
   }
 });
+function authFilter(hash){
+  var roleBinded = __page.user.roleBindOrNot;
+  if (__page.user.role == 't') roleBinded || (hash = 'teacher/signup');
+  else roleBinded || (hash = 'student/signup');
+  return hash;
+}
 
 app.init();
 

@@ -10,7 +10,8 @@ var schema = DomainBuilder
     .withProperties({
         user: {type: String, ref: 'User', required: true},
         name: {type: String},
-        phone: {type: String}
+        phone: {type: String},
+        headUrl: {type: String}
     })
     .build();
 
