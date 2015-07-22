@@ -26,7 +26,7 @@
     <script>
         var self = nest.presentable(this),
             MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
-                MsgReplyLoadAction = domain.action('MsgReplyLoadAction');
+            MsgReplyLoadAction = domain.action('MsgReplyLoadAction');
         self.msgId = this.opts.msgid;
         self.msgCurrFromId = "";
         self.replies = [];
@@ -34,6 +34,10 @@
         self.triggred = false;
         var Commenter = widget.commenter;
         var commenter = new Commenter();
+        util.extend(commenter, riot.observable({}));
+        commenter.on('toUserRemove', function(){
+            self.sendTo = null;
+        })
         this.on('initCommenter', function(){
             if(this.triggered){
                 return false;
@@ -53,10 +57,11 @@
             this.trigger('initCommenter');
         }
         selectSendTo(e){
+            self.sendTo = e.currentTarget.getAttribute('data-msgfrom')
             commenter.input(e.currentTarget.getAttribute('data-fromname'));
         }
         function MsgReplyLoadActionInvocation(data){
-            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});
+            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId, to: self.sendTo});
             invocation.onDone(function(docs){
                 self.replies = docs;
                 self.update();

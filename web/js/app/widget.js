@@ -28,6 +28,7 @@ function _build(wg, container){
     var $input = $container.find("input");
     $input.on('keydown', function(e){
         if($input.val() === "" && (e.keyCode === 46 || e.keyCode === 110 || e.keyCode === 8)){
+            wg.trigger('toUserRemove');
             wg.toUser = false;
             $container.find(">.touserdiv").remove();
         }
