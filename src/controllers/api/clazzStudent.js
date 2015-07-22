@@ -2,6 +2,7 @@ var studentService = require('../../services/ClazzStudentService');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
+var UserRole = require('../../models/TypeRegistry').item('UserRole');
 
 module.exports = function(router){
     require('../../app/routes-api')(router);

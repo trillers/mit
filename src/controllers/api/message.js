@@ -83,7 +83,6 @@ module.exports = function(router){
                     return cb(null, doc);
                 });
         }else{
-            doc.from = '匿名';
             return cb(null, doc)
         }
     }
@@ -101,7 +100,6 @@ module.exports = function(router){
                     return cb(null, doc);
                 });
         }else{
-            doc.to = '匿名';
             return cb(null, doc)
         }
     }
