@@ -9,6 +9,7 @@ var authFilterA = require('../middlewares/auth-filter-anonymously');
 var authFilterB = require('../middlewares/auth-filter-formally');
 var configureWechat = require('../middlewares/wechat-configuring');
 var configureLocals = require('../middlewares/locals');
+//var spaSignUpOrSignInFilter = require('../middlewares/spa-signuporsignin');
 module.exports = function(router){
     router.use(logger('dev'));
     router.use(methodOverride());
@@ -24,4 +25,5 @@ module.exports = function(router){
     router.use(configureLocals);
     router.use(configureWechat);
 
+    //router.use(spaSignUpOrSignInFilter);
 };

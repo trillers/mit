@@ -4,7 +4,7 @@
             <input value="回复消息" type="button"/><br/>
             <input name="payLoad" type="text"/><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
-                <li each="{replies}">
+                <li each="{replies}" data-msgfrom="{from.user}" onclick="{parent.selectSendTo}">
                     <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
@@ -30,6 +30,9 @@
             }
             self.msgCurrFromId = e.currentTarget.getAttribute('data-msgfrom');
             MsgReplyLoadActionInvocation();
+        }
+        selectSendTo(e){
+            self.payLoad.value = e.currentTarget.getAttribute('data-msgfrom');
         }
         function MsgReplyLoadActionInvocation(data){
             var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});

@@ -1,0 +1,15 @@
+<clazz-notify-reply>
+    <div onclick="{selectSendTo}">
+        <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to}: {content}</span>
+    </div>
+    <style scoped>
+    </style>
+    <script>
+        var self = nest.presentable(this);
+        console.log(self.opts.data-msgfrom)
+        selectSendTo(e){
+
+        }
+
+    </script>
+</clazz-notify-reply>
