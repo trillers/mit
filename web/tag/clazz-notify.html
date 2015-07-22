@@ -5,7 +5,7 @@
             <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}">
-                    <span>{from.name || '匿名'}: {content}</span>
+                    <span>{from || '匿名'} {to && '@'+to || ''}: {content}</span>
                 </li>
             </ul>
         </div>

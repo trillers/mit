@@ -57,57 +57,56 @@ module.exports = function(router){
             sort: {crtOn: -1}
         }
         messageService.filter(params, function(err, docs){
-            var eventNotify = {i : 0};
+            var eventNotify = {i : 0},
+                arr = [];
             myutil.extend(eventNotify, new EventEmitter());
-            eventNotify.on('complete', function(len, docs){
-                if(++i == len){
-                    res.status(200).json(ApiReturn.i().ok(docs));
-                }
+            eventNotify.on('complete', function(data){
+                res.status(200).json(ApiReturn.i().ok(data.docs));
             });
-            //TODO: error handling
             for(var i = 0, len = docs.length; i < len; i++){
-                (function(i) {
-                    var arr = [];
-                    arr.push(_func1Async(docs[i]));
-                    arr.push(_func2Async(docs[i]));
-                    Promise.all(arr).then(function () {
-                        eventNotify.emit('complete', {len: len, docs: docs});
-                    })
-                })(i)
+                arr.push(_func1Async(docs[i]));
+                arr.push(_func2Async(docs[i]));
             }
+            Promise.all(arr).then(function () {
+                eventNotify.emit('complete', {docs: docs});
+            })
 
         })
     });
     var _func1Async = Promise.promisify(_func1);
     var _func2Async = Promise.promisify(_func2);
     function _func1(doc, cb){
-        if(doc.from.role == UserRole.Teacher){
+        if(doc.from.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserId(doc.from._id)
                 .then(function(clazzTeacher){
                     doc.from = clazzTeacher.name;
-                    return cb(doc);
+                    return cb(null, doc);
                 });
-        }else if(doc.from.role == UserRole.Student){
+        }else if(doc.from.role == UserRole.Student.value()){
             clazzStudentService.loadByUserId(doc.from._id)
                 .then(function(clazzStudent){
                     doc.from = clazzStudent.name;
-                    return cb(doc);
+                    return cb(null, doc);
                 });
+        }else{
+            return cb(null, doc)
         }
     }
     function _func2(doc, cb){
-        if(doc.to && doc.to.role == UserRole.Teacher){
+        if(doc.to && doc.to.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserId(doc.to._id)
                 .then(function(clazzTeacher){
                     doc.to = clazzTeacher.name;
-                    return cb(doc);
+                    return cb(null, doc);
                 });
-        }else if(doc.to && doc.to.role == UserRole.Student){
+        }else if(doc.to && doc.to.role == UserRole.Student.value()){
             clazzStudentService.loadByUserId(doc.to._id)
                 .then(function(clazzStudent){
                     doc.to = clazzStudent.name;
-                    return cb(doc);
+                    return cb(null, doc);
                 });
+        }else{
+            return cb(null, doc)
         }
     }
     //loadUserMessage
