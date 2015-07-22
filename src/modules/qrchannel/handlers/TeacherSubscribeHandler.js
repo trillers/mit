@@ -14,7 +14,7 @@ var handle = function(message, user, res, qrChannel){
 
     UserService.updateAsync(user.id, update)
         .then(function(result){
-            return ClazzTeacherService.createAsync({user: user.id});
+            return ClazzTeacherService.createAsync({user: user.id, headUrl: user.wx_headimgurl, name: user.wx_nickname});
         })
         .then(function(ClazzTeacher){
             var replyMsg = '欢迎老师注册！';
