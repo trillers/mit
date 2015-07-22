@@ -36,7 +36,7 @@ Service.create = function (json, callback) {
                     path: 'to',
                     select: 'role'
                 }, function(err, populateddoc){
-                    if (callback) callback(null, populateddoc);
+                    if (callback) callback(null, populateddoc.toObject());
                 })
         }
         else {
