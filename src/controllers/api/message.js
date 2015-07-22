@@ -5,6 +5,9 @@ var UserRole = require('../../models/TypeRegistry').item('UserRole');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
+var EventEmitter = require('events').EventEmitter;
+var Promise = require('bluebird');
+var myutil = require('../../app/util');
 
 module.exports = function(router){
     require('../../app/routes-api')(router);
@@ -54,35 +57,59 @@ module.exports = function(router){
             sort: {crtOn: -1}
         }
         messageService.filter(params, function(err, docs){
+            var eventNotify = {i : 0};
+            myutil.extend(eventNotify, new EventEmitter());
+            eventNotify.on('complete', function(len, docs){
+                if(++i == len){
+                    res.status(200).json(ApiReturn.i().ok(docs));
+                }
+            });
             //TODO: error handling
             for(var i = 0, len = docs.length; i < len; i++){
-                if(docs[i].from.role == UserRole.Teacher){
-                    clazzTeacherService.loadByUserId(docs[i].from._id)
-                        .then(function(clazzTeacher){
-                            docs[i].from = clazzTeacher.name;
-                        });
-                }else if(docs[i].from.role == UserRole.Student){
-                    clazzStudentService.loadByUserId(docs[i].from._id)
-                        .then(function(clazzStudent){
-                            docs[i].from = clazzStudent.name;
-                        });
-                }
-                //if(docs[i].to.role == UserRole.Teacher){
-                //    clazzTeacherService.loadByUserId(docs[i].to._id)
-                //        .then(function(clazzTeacher){
-                //            docs[i].to = clazzTeacher.name;
-                //        });
-                //}else if(docs[i].to.role == UserRole.Student){
-                //    clazzStudentService.loadByUserId(docs[i].to._id)
-                //        .then(function(clazzStudent){
-                //            docs[i].to = clazzStudent.name;
-                //        });
-                //}
+                (function(i) {
+                    var arr = [];
+                    arr.push(_func1Async(docs[i]));
+                    arr.push(_func2Async(docs[i]));
+                    Promise.all(arr).then(function () {
+                        eventNotify.emit('complete', {len: len, docs: docs});
+                    })
+                })(i)
             }
-            res.status(200).json(ApiReturn.i().ok(docs));
-        })
-    })
 
+        })
+    });
+    var _func1Async = Promise.promisify(_func1);
+    var _func2Async = Promise.promisify(_func2);
+    function _func1(doc, cb){
+        if(doc.from.role == UserRole.Teacher){
+            clazzTeacherService.loadByUserId(doc.from._id)
+                .then(function(clazzTeacher){
+                    doc.from = clazzTeacher.name;
+                    return cb(doc);
+                });
+        }else if(doc.from.role == UserRole.Student){
+            clazzStudentService.loadByUserId(doc.from._id)
+                .then(function(clazzStudent){
+                    doc.from = clazzStudent.name;
+                    return cb(doc);
+                });
+        }
+    }
+    function _func2(doc, cb){
+        if(doc.to && doc.to.role == UserRole.Teacher){
+            clazzTeacherService.loadByUserId(doc.to._id)
+                .then(function(clazzTeacher){
+                    doc.to = clazzTeacher.name;
+                    return cb(doc);
+                });
+        }else if(doc.to && doc.to.role == UserRole.Student){
+            clazzStudentService.loadByUserId(doc.to._id)
+                .then(function(clazzStudent){
+                    doc.to = clazzStudent.name;
+                    return cb(doc);
+                });
+        }
+    }
     //loadUserMessage
     router.get('/myMessage', function(req, res){
         var userId = req.session.user.id;
