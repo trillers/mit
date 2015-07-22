@@ -77,35 +77,37 @@ module.exports = function(router){
     var _func2Async = Promise.promisify(_func2);
     function _func1(doc, cb){
         if(doc.from.role == UserRole.Teacher.value()){
-            clazzTeacherService.loadByUserId(doc.from._id)
+            clazzTeacherService.loadByUserIdAsync(doc.from._id)
                 .then(function(clazzTeacher){
                     doc.from = clazzTeacher.name;
                     return cb(null, doc);
                 });
         }else if(doc.from.role == UserRole.Student.value()){
-            clazzStudentService.loadByUserId(doc.from._id)
+            clazzStudentService.loadByUserIdAsync(doc.from._id)
                 .then(function(clazzStudent){
                     doc.from = clazzStudent.name;
                     return cb(null, doc);
                 });
         }else{
+            doc.from = '匿名';
             return cb(null, doc)
         }
     }
     function _func2(doc, cb){
         if(doc.to && doc.to.role == UserRole.Teacher.value()){
-            clazzTeacherService.loadByUserId(doc.to._id)
+            clazzTeacherService.loadByUserIdAsync(doc.to._id)
                 .then(function(clazzTeacher){
                     doc.to = clazzTeacher.name;
                     return cb(null, doc);
                 });
         }else if(doc.to && doc.to.role == UserRole.Student.value()){
-            clazzStudentService.loadByUserId(doc.to._id)
+            clazzStudentService.loadByUserIdAsync(doc.to._id)
                 .then(function(clazzStudent){
                     doc.to = clazzStudent.name;
                     return cb(null, doc);
                 });
         }else{
+            doc.to = '匿名';
             return cb(null, doc)
         }
     }
