@@ -4,6 +4,7 @@
 var jquery = require('jquery');
 jquery = require('../lib/jquery.cookie');
 util = require('./util');
+widget = require('./widget');
 var page = require('./page');
 ///*
 // * import global variables

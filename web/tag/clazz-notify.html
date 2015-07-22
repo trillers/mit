@@ -2,9 +2,9 @@
         <span onclick="{toggleGetReplyInfo}">{content}</span>
         <div if="{showOrNot}">
             <input value="回复消息" type="button"/><br/>
-            <input name="payLoad" type="text"/><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
+            <div id="commenter"><input name="payLoad" type="text"/></div><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
-                <li each="{replies}" data-msgfrom="{from.user}" onclick="{parent.selectSendTo}">
+                <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{parent.selectSendTo}">
                     <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
@@ -13,6 +13,14 @@
         span:first-child{
             background: #f5f5f5;
             display: block;
+        }
+        .reply_to{
+            display: inline-block;
+            height:32px;
+            background: #0055aa;
+            color:white;
+            line-height: 32px;
+            padding:0px 10px;
         }
     </style>
     <script>
@@ -23,22 +31,34 @@
         self.msgCurrFromId = "";
         self.replies = [];
         self.showOrNot = false;
+        self.triggred = false;
+        var Commenter = widget.commenter;
+        var commenter = new Commenter();
+        this.on('initCommenter', function(){
+            if(this.triggered){
+                return false;
+            }
+            commenter.init({container: document.getElementById("commenter")});
+            this.triggered = true
+        })
         toggleGetReplyInfo(e){
             if (self.showOrNot === true) {
                 self.showOrNot = false;
                 return false;
             }
+            self.showOrNot = true;
+            self.update();
             self.msgCurrFromId = e.currentTarget.getAttribute('data-msgfrom');
             MsgReplyLoadActionInvocation();
+            this.trigger('initCommenter');
         }
         selectSendTo(e){
-            self.payLoad.value = e.currentTarget.getAttribute('data-msgfrom');
+            commenter.input(e.currentTarget.getAttribute('data-fromname'));
         }
         function MsgReplyLoadActionInvocation(data){
             var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});
             invocation.onDone(function(docs){
                 self.replies = docs;
-                self.showOrNot = true;
                 self.update();
             }).execute();
         }
