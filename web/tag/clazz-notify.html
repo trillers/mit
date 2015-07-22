@@ -5,7 +5,7 @@
             <div id="commenter"><input name="payLoad" type="text"/></div><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{parent.selectSendTo}">
-                    <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to}: {content}</span>
+                    <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to && '@' + to.name}: {content}</span>
                 </li>
             </ul>
         </div>
@@ -61,7 +61,7 @@
             commenter.input(e.currentTarget.getAttribute('data-fromname'));
         }
         function MsgReplyLoadActionInvocation(data){
-            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId, to: self.sendTo});
+            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});
             invocation.onDone(function(docs){
                 self.replies = docs;
                 self.update();
@@ -72,10 +72,13 @@
                 return;
             }
             var invocation = MsgInClazzAddAction.newInvocation({
+                to: self.sendTo,
                 channel: e.currentTarget.getAttribute('data-msgid'),
                 content: self.payLoad.value
             });
             invocation.onDone(function(doc){
+                console.log("---------------")
+                console.log(doc)
                 self.payLoad.value = "";
                 self.replies.unshift(doc);
                 self.update();
