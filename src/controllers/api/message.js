@@ -52,10 +52,13 @@ module.exports = function(router){
     //clazz messages
     router.get('/clazz_messages', function(req, res){
         var channel = req.query.channel;
+        var msgFrom = req.query.msgFrom;
+        var user = req.session.user;
         var params = {
             conditions: {channel: channel},
             sort: {crtOn: -1}
         }
+        user.role == UserRole.Student.value() ? params.conditions['$or'] = [{from: {$in: [user.id, msgFrom]}}, {to: {$in: [user.id, msgFrom]}}] : '';
         messageService.filter(params, function(err, docs){
             var arr = [];
             for(var i = 0, len = docs.length; i < len; i++){
