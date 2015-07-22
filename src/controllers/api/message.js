@@ -57,25 +57,19 @@ module.exports = function(router){
             sort: {crtOn: -1}
         }
         messageService.filter(params, function(err, docs){
-            var eventNotify = {i : 0},
-                arr = [];
-            myutil.extend(eventNotify, new EventEmitter());
-            eventNotify.on('complete', function(data){
-                res.status(200).json(ApiReturn.i().ok(data.docs));
-            });
+            var arr = [];
             for(var i = 0, len = docs.length; i < len; i++){
-                arr.push(_func1Async(docs[i]));
-                arr.push(_func2Async(docs[i]));
+                arr.push(_populateFromUserAsync(docs[i]));
+                arr.push(_populateToUserAsync(docs[i]));
             }
             Promise.all(arr).then(function () {
-                eventNotify.emit('complete', {docs: docs});
+                res.status(200).json(ApiReturn.i().ok(docs));
             })
-
         })
     });
-    var _func1Async = Promise.promisify(_func1);
-    var _func2Async = Promise.promisify(_func2);
-    function _func1(doc, cb){
+    var _populateFromUserAsync = Promise.promisify(_populateFromUser);
+    var _populateToUserAsync = Promise.promisify(_populateToUser);
+    function _populateFromUser(doc, cb){
         if(doc.from.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserId(doc.from._id)
                 .then(function(clazzTeacher){
@@ -92,7 +86,7 @@ module.exports = function(router){
             return cb(null, doc)
         }
     }
-    function _func2(doc, cb){
+    function _populateToUser(doc, cb){
         if(doc.to && doc.to.role == UserRole.Teacher.value()){
             clazzTeacherService.loadByUserId(doc.to._id)
                 .then(function(clazzTeacher){
