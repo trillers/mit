@@ -25,8 +25,14 @@ module.exports = function(router){
         var msg = req.body;
         msg.from = req.session.user.id;
         messageService.create(msg, function(err, doc){
-            //TODO: error handling
-            res.status(200).json(ApiReturn.i().ok(doc));
+            _populateFromUserAsync(doc)
+                .then(function(){
+                    return _populateFromUserAsync(doc);
+                })
+                .then(function(){
+                    console.log(doc)
+                    return res.status(200).json(ApiReturn.i().ok(doc));
+                })
         })
     });
 
@@ -36,7 +42,13 @@ module.exports = function(router){
         var update = req.body;
         messageService.update(id, update, function(err, doc){
             //TODO: error handling
-            res.status(200).json(ApiReturn.i().ok(doc));
+            _populateFromUserAsync(doc)
+                .then(function(){
+                    return _populateFromUserAsync(doc);
+                })
+                .then(function(){
+                    return res.status(200).json(ApiReturn.i().ok(doc));
+                })
         })
     });
 

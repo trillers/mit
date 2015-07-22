@@ -5,10 +5,16 @@
             <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
                 <li each="{replies}">
-                    <span>{from || '匿名'} {to}: {content}</span>
+                    <span if="{parent.isSelfOrMyTeacher(from)}">{from || '匿名'} {to}: {content}</span>
                 </li>
             </ul>
         </div>
+    <style scoped>
+        span:first-child{
+            background: #f5f5f5;
+            display: block;
+        }
+    </style>
     <script>
         var self = nest.presentable(this),
             MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
@@ -16,6 +22,9 @@
         self.msgId = this.opts.msgid;
         self.replies = [];
         self.showOrNot = false;
+        self.isSelfOrMyTeacher = function(fromUser){
+            return fromUser === __page.user._id || fromUser === this.parent._id ? true : false;
+        }
         toggleGetReplyInfo(e){
             if (self.showOrNot === true) {
                 self.showOrNot = false;
@@ -32,11 +41,15 @@
             }).execute();
         }
         replyNotify(e){
+            if(self.payLoad.value.trim() === ''){
+                return;
+            }
             var invocation = MsgInClazzAddAction.newInvocation({
                 channel: e.currentTarget.getAttribute('data-msgid'),
                 content: self.payLoad.value
             });
             invocation.onDone(function(doc){
+                self.payLoad.value = "";
                 self.replies.unshift(doc);
                 self.update();
             }).execute();
