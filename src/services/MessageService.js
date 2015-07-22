@@ -28,7 +28,16 @@ Service.create = function (json, callback) {
         }
         if (numberAffected) {
             logger.debug('Succeed to create message: ' + require('util').inspect(doc) + '\r\n');
-            if (callback) callback(null, doc);
+            doc.populate({
+                path: 'from',
+                select: 'role'
+            })
+                .populate({
+                    path: 'to',
+                    select: 'role'
+                }, function(err, populateddoc){
+                    if (callback) callback(null, populateddoc);
+                })
         }
         else {
             logger.error('Fail to create message: ' + require('util').inspect(doc) + '\r\n');
