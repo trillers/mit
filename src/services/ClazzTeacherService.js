@@ -59,7 +59,7 @@ Service.delete = function (id, callback) {
 };
 
 Service.updateByUserId = function (userId, update, callback) {
-    ClazzTeacher.update({user: userId}, update, {new: true}, function (err, result){
+    ClazzTeacher.update({user: userId}, update, {new: true, upsert: true}, function (err, result){
         if(err) {
             callback(err);
         } else {
