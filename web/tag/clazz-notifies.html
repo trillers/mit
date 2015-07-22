@@ -1,12 +1,13 @@
 <clazz-notifies>
     <div class="chat_card" if="{!hidden}">
-        <clazz-notify each="{msgs}" onclick="{showOrNot}"></clazz-notify>
+        <clazz-notify class="chat_notify" each="{msgs}" msgid="{_id}"></clazz-notify>
     </div>
     <style scoped>
         .chat_card{
             background: #f3f3f3;
         }
-        .chat_card div{
+        .chat_card .chat_notify{
+            display: block;
             background: white;
             margin-bottom: 10px;
             border-bottom: 1px solid #E9E9E9;

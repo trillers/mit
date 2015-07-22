@@ -1,28 +1,33 @@
 <clazz-notify>
-    <span onclick="{toggleGetReplyInfo}">{content}</span>
-    <div if="{showOrNot}">
-        <input value="回复消息" type="button"/><br/>
-        <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
-        <ul>
-            <li each="{replies}"><span>{from}: {content}</span>
-
-            </li>
-        </ul>
-    </div>
+        <span onclick="{toggleGetReplyInfo}">{content}</span>
+        <div if="{showOrNot}">
+            <input value="回复消息" type="button"/><br/>
+            <input name="payLoad" type="text"/><input data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
+            <ul>
+                <li each="{replies}">
+                    <span>{from.name || '匿名'}: {content}</span>
+                </li>
+            </ul>
+        </div>
     <script>
         var self = nest.presentable(this),
             MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
                 MsgReplyLoadAction = domain.action('MsgReplyLoadAction');
+        self.msgId = this.opts.msgid;
+        self.replies = [];
         self.showOrNot = false;
         toggleGetReplyInfo(e){
             if (self.showOrNot === true) {
                 self.showOrNot = false;
                 return false;
             }
+            MsgReplyLoadActionInvocation();
         }
         function MsgReplyLoadActionInvocation(data){
-            var invocation = MsgReplyLoadAction.newInvocation(data.clazzId);
+            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId});
             invocation.onDone(function(docs){
+                console.log('-----');
+                console.log(docs);
                 self.replies = docs;
                 self.showOrNot = true;
                 self.update();
@@ -34,7 +39,8 @@
                 content: self.payLoad.value
             });
             invocation.onDone(function(doc){
-                self.msgs.unshift(data);
+                console.log(doc)
+                self.replies.unshift(doc);
                 self.update();
             }).execute();
             e.stopPropagation();

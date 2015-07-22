@@ -1,7 +1,7 @@
 var messageService = require('../../services/MessageService');
 var clazzStudentService = require('../../services/ClazzStudentService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
-var UserRole = require('./TypeRegistry').item('UserRole');
+var UserRole = require('../../models/TypeRegistry').item('UserRole');
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -67,17 +67,17 @@ module.exports = function(router){
                             docs[i].from = clazzStudent.name;
                         });
                 }
-                if(docs[i].to.role == UserRole.Teacher){
-                    clazzTeacherService.loadByUserId(docs[i].to._id)
-                        .then(function(clazzTeacher){
-                            docs[i].to = clazzTeacher.name;
-                        });
-                }else if(docs[i].to.role == UserRole.Student){
-                    clazzStudentService.loadByUserId(docs[i].toBase64()._id)
-                        .then(function(clazzStudent){
-                            docs[i].to = clazzStudent.name;
-                        });
-                }
+                //if(docs[i].to.role == UserRole.Teacher){
+                //    clazzTeacherService.loadByUserId(docs[i].to._id)
+                //        .then(function(clazzTeacher){
+                //            docs[i].to = clazzTeacher.name;
+                //        });
+                //}else if(docs[i].to.role == UserRole.Student){
+                //    clazzStudentService.loadByUserId(docs[i].to._id)
+                //        .then(function(clazzStudent){
+                //            docs[i].to = clazzStudent.name;
+                //        });
+                //}
             }
             res.status(200).json(ApiReturn.i().ok(docs));
         })
