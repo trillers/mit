@@ -47,6 +47,19 @@ app.routeView('teacher/signup', nest.viewable({
   }
 }));
 
+app.routeView('student/signup', nest.viewable({
+  name: 'student/signup',
+  mount: function(ctx){
+    var tags = riot.mount('student-signup');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
+
 app.routeView('student/index', nest.viewable({
   name: 'student/index',
   mount: function(ctx){
