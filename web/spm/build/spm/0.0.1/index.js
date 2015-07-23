@@ -11528,12 +11528,50 @@
 	var util = __webpack_require__(4);
 
 	var Spa = __webpack_require__(14);
-	var app = new Spa({defaultHash: 'student/index'});
-
+	var app = new Spa({defaultHash: authFilter()});
+	function authFilter(){
+	  var hash;
+	  var roleBinded = JSON.parse(__page.user.roleBindOrNot);
+	  alert(__page.user.role)
+	  alert(roleBinded)
+	  if (__page.user.role == 't'){
+	    alert(1)
+	    if(roleBinded){
+	      alert(2)
+	      hash = 'teacher/index'
+	    }else{
+	      alert(3)
+	      hash = 'teacher/signup'
+	    }
+	  }else{
+	    alert(4)
+	    if(roleBinded){
+	      alert(5)
+	      hash = 'student/index'
+	    }else{
+	      alert(6)
+	      hash = 'student/signup'
+	    }
+	  }
+	  return hash;
+	}
 	app.routeView('teacher/signup', nest.viewable({
 	  name: 'teacher/signup',
 	  mount: function(ctx){
 	    var tags = riot.mount('teacher-signup');
+	    this.tag = tags[0];
+	  },
+	  route: function(ctx){
+	    this.context = ctx;
+	    this.parent.currentTrigger('mask');
+	    this.tag.trigger('open', ctx.req.query);
+	  }
+	}));
+
+	app.routeView('student/signup', nest.viewable({
+	  name: 'student/signup',
+	  mount: function(ctx){
+	    var tags = riot.mount('student-signup');
 	    this.tag = tags[0];
 	  },
 	  route: function(ctx){
@@ -11639,18 +11677,12 @@
 	  var attentionUrl = util.getCookie('attentionUrl');
 	  var hash = attentionUrl || window.location.hash;
 	  hash || (hash = app.defaultHash);
-	  hash = authFilter(hash);
 	  riot.route(hash);
 	  if(attentionUrl){
 	    util.setCookie('attentionUrl', "", -1);
 	  }
 	});
-	function authFilter(hash){
-	  var roleBinded = __page.user.roleBindOrNot;
-	  if (__page.user.role == 't') roleBinded || (hash = 'teacher/signup');
-	  else roleBinded || (hash = 'student/signup');
-	  return hash;
-	}
+
 
 	app.init();
 

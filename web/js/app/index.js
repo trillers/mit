@@ -10,16 +10,47 @@ var Spa = require('./spa');
 var app = new Spa({defaultHash: authFilter()});
 function authFilter(){
   var hash;
-  var roleBinded = __page.user.roleBindOrNot;
-  alert(roleBinded);
-  if (__page.user.role == 't') roleBinded && (hash = 'teacher/index') || (hash = 'teacher/signup');
-  else roleBinded && (hash = 'student/index') || (hash = 'student/signup');
+  var roleBinded = JSON.parse(__page.user.roleBindOrNot);
+  alert(__page.user.role)
+  alert(roleBinded)
+  if (__page.user.role == 't'){
+    alert(1)
+    if(roleBinded){
+      alert(2)
+      hash = 'teacher/index'
+    }else{
+      alert(3)
+      hash = 'teacher/signup'
+    }
+  }else{
+    alert(4)
+    if(roleBinded){
+      alert(5)
+      hash = 'student/index'
+    }else{
+      alert(6)
+      hash = 'student/signup'
+    }
+  }
   return hash;
 }
 app.routeView('teacher/signup', nest.viewable({
   name: 'teacher/signup',
   mount: function(ctx){
     var tags = riot.mount('teacher-signup');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
+
+app.routeView('student/signup', nest.viewable({
+  name: 'student/signup',
+  mount: function(ctx){
+    var tags = riot.mount('student-signup');
     this.tag = tags[0];
   },
   route: function(ctx){
