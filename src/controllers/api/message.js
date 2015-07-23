@@ -27,7 +27,7 @@ module.exports = function(router){
         messageService.create(msg, function(err, doc){
             _populateFromUserAsync(doc)
                 .then(function(doc){
-                    return _populateFromUserAsync(doc);
+                    return _populateToUserAsync(doc);
                 })
                 .then(function(doc){
                     return res.status(200).json(ApiReturn.i().ok(doc));
@@ -43,7 +43,7 @@ module.exports = function(router){
             //TODO: error handling
             _populateFromUserAsync(doc)
                 .then(function(){
-                    return _populateFromUserAsync(doc);
+                    return _populateToUserAsync(doc);
                 })
                 .then(function(){
                     return res.status(200).json(ApiReturn.i().ok(doc));
