@@ -11531,7 +11531,7 @@
 	var app = new Spa({defaultHash: authFilter()});
 	function authFilter(){
 	  var hash;
-	  var roleBinded = Boolean(__page.user.roleBindOrNot);
+	  var roleBinded = JSON.parse(__page.user.roleBindOrNot);
 	  alert(__page.user.role)
 	  alert(roleBinded)
 	  if (__page.user.role == 't'){
