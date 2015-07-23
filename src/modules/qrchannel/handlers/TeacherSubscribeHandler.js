@@ -2,6 +2,7 @@ var QrHandler = require('../common/QrHandler');
 var UserService = require('../../../services/UserService');
 var ClazzTeacherService = require('../../../services/ClazzTeacherService')
 var logger = require('../../../app/logging').logger;
+var UserRole = require('../../../models/TypeRegistry').item('UserRole');
 
 var handle = function(message, user, res, qrChannel){
     //TODO: implementation
