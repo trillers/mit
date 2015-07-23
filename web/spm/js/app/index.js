@@ -11,8 +11,19 @@ var app = new Spa({defaultHash: authFilter()});
 function authFilter(){
   var hash;
   var roleBinded = Boolean(__page.user.roleBindOrNot);
-  if (__page.user.role == 't') roleBinded && (hash = 'teacher/index') || (hash = 'teacher/signup');
-  else roleBinded && (hash = 'student/index') || (hash = 'student/signup');
+  if (__page.user.role == 't'){
+    if(roleBinded){
+      hash = 'teacher/index'
+    }else{
+      hash = 'teacher/signup'
+    }
+  }else{
+    if(roleBinded){
+      hash = 'student/index'
+    }else{
+      hash = 'student/signup'
+    }
+  }
   return hash;
 }
 app.routeView('teacher/signup', nest.viewable({
