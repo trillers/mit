@@ -54,7 +54,7 @@ Service.updateByUserId = function (userId, update, callback) {
         if(err) {
             callback(err);
         } else {
-            logger.debug('Succeed to update by userId clazzTeacher [id=' + id + ']');
+            logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
             callback(null, result);
         }
     });
