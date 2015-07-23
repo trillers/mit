@@ -11,6 +11,7 @@ var app = new Spa({defaultHash: authFilter()});
 function authFilter(){
   var hash;
   var roleBinded = __page.user.roleBindOrNot;
+  alert(roleBinded);
   if (__page.user.role == 't') roleBinded && (hash = 'teacher/index') || (hash = 'teacher/signup');
   else roleBinded && (hash = 'student/index') || (hash = 'student/signup');
   return hash;
