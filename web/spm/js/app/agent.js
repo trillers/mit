@@ -4,11 +4,17 @@
 var jquery = require('jquery');
 jquery = require('../lib/jquery.cookie');
 util = require('./util');
+widget = require('./widget');
 var page = require('./page');
 ///*
 // * import global variables
 // */
 riot = require('seedriot');
+socket = require('socket.io-client')();
+socket.emit('hello', 'world');
+socket.on('res', function(data){
+  console.log(data)
+})
 nest = require('./nest');
 $ = jquery;
 require('./camera');
