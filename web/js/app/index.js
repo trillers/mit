@@ -12,8 +12,26 @@ function authFilter(){
   var hash;
   var roleBinded = __page.user.roleBindOrNot;
   alert(roleBinded);
-  if (__page.user.role == 't') roleBinded && (hash = 'teacher/index') || (hash = 'teacher/signup');
-  else roleBinded && (hash = 'student/index') || (hash = 'student/signup');
+  alert(__page.user.role);
+  if (__page.user.role == 't') {
+    alert(1);
+    if(roleBinded){
+      alert(3)
+      hash = 'teacher/index'
+    }else{
+      alert(5)
+      hash = 'teacher/signup'
+    }
+  }else{
+    alert(2)
+    if(roleBinded){
+      alert(4)
+      hash = 'student/index'
+    }else{
+      alert(6)
+      hash = 'student/signup'
+    }
+  }
   return hash;
 }
 app.routeView('teacher/signup', nest.viewable({
