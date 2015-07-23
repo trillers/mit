@@ -213,7 +213,10 @@ Service.createOrUpdateFromWechatOAuth = function(oauth, callback){
             return UserKv.loadIdByOpenidAsync(openid);
         })
         .then(function(id){
+            console.log('load id by openid');
+            console.log(id);
             if(id){
+                console.log('update user');
                 return Service.updateFromWechat(id, newUserJson);
             }
             else{
