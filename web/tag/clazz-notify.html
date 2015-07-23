@@ -4,7 +4,7 @@
             <input value="回复消息" type="button"/><br/>
             <div id="commenter"><input name="payLoad" type="text"/></div><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
             <ul>
-                <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{parent.selectSendTo}">
+                <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{from.user != __page.user._id ? parent.selectSendTo : ''}">
                     <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to && '@' + to.name}: {content}</span>
                 </li>
             </ul>
@@ -77,8 +77,6 @@
                 content: self.payLoad.value
             });
             invocation.onDone(function(doc){
-                console.log("---------------")
-                console.log(doc)
                 self.payLoad.value = "";
                 self.replies.unshift(doc);
                 self.update();
