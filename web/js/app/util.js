@@ -308,6 +308,9 @@ var util = {
         return 'http://' + return_url;
     },
 
+    teacherOrNot :function(){
+        return __page.user.role === __app.enums.UserRole.names['Teacher'];
+    },
     calcImageUrl:function(item){
         var return_url = "";
         if(item.images && item.images[0]){

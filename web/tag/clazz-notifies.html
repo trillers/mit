@@ -1,4 +1,7 @@
 <clazz-notifies>
+    <div if="{util.teacherOrNot()}">
+        <input name="content" type="text"/><input onclick="{sendToClazz}" type="button" value="发送"/>
+    </div>
     <div class="chat_card" if="{!hidden}">
         <clazz-notify class="chat_notify" each="{msgs}" msgid="{_id}"></clazz-notify>
     </div>
@@ -18,7 +21,8 @@
 
     <script>
         var self = nest.presentable(this),
-                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction');
+                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
+                MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
 
         self.msgs = [];
         self.clazzId = "";
@@ -35,13 +39,22 @@
         });
         this.on('mount',function(){
             MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
+            MsgInClazzAddAction.onDone(OnMsgInClazzAddAction);
         });
-
+        sendToClazz(e){
+            MsgInClazzAddAction.execute({
+                channel: self.clazzId,
+                content: self.content.value
+            })
+        }
         function OnMsgInClazzLoadAction(data){
             self.msgs = data;
             self.trigger('view-route-to');
         }
-
+        function OnMsgInClazzAddAction(data){
+            self.msgs.unshift(data);
+            self.update();
+        }
         this.on('refresh', function(){
             _refresh();
         });
