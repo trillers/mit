@@ -26,6 +26,20 @@ function authFilter(){
   }
   return hash;
 }
+
+app.routeView('msg/usr', nest.viewable({
+  name: 'msg/usr',
+  mount: function(ctx){
+    var tags = riot.mount('msg-usr');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
+
 app.routeView('teacher/signup', nest.viewable({
   name: 'teacher/signup',
   mount: function(ctx){

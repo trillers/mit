@@ -60,6 +60,24 @@ module.exports = function(router){
         })
     });
 
+    router.get('/one_to_one', function(req, res){
+        var channel = req.query.channel;
+        var params = {
+            conditions: {channel: channel},
+            sort: {crtOn: -1}
+        }
+        messageService.filter(params, function(err, docs){
+            var arr = [];
+            for(var i = 0, len = docs.length; i < len; i++){
+                arr.push(_populateFromUserAsync(docs[i]));
+                arr.push(_populateToUserAsync(docs[i]));
+            }
+            Promise.all(arr).then(function () {
+                res.status(200).json(ApiReturn.i().ok(docs));
+            })
+        })
+    });
+
     //clazz messages
     router.get('/clazz_messages', function(req, res){
         var channel = req.query.channel;
