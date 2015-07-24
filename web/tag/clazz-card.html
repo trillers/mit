@@ -53,7 +53,7 @@
             e.item.show = true;
         }
         sendToUser(e){
-            riot.route('msg/usr?userId=' + e.item.user);
+            riot.route('clazz/notifies?channel=' + util.getRelationShip(e.item.user, __page.user.id));
             e.stopPropagation();
         }
         toggleGetClazzInfo(e){
@@ -64,7 +64,7 @@
             ClazzLoadActionInvocation({clazzId: e.target.parentNode.getAttribute('data-id')})
         }
         locateToSendPage(e){
-            riot.route('clazz/notifies?clazzId=' + self.clazzId);
+            riot.route('clazz/notifies?channel=' + self.clazzId);
             e.stopPropagation();
         }
         addStudent(e){

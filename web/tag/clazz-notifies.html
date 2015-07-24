@@ -25,11 +25,11 @@
                 MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
 
         self.msgs = [];
-        self.clazzId = "";
+        self.channel = "";
 
         var _open = function(data){
-            self.clazzId = data.clazzId;
-            MsgInClazzLoadAction.execute({channel: data.clazzId});
+            self.channel = data.channel;
+            MsgInClazzLoadAction.execute({channel: data.channel});
         }.bind(self);
         var _refresh = function(){
 
@@ -42,7 +42,7 @@
         });
         sendToClazz(e){
             var invocation = MsgInClazzAddAction.newInvocation({
-                channel: self.clazzId,
+                channel: self.channel,
                 content: self.content.value
             });
             invocation.onDone(function(doc){

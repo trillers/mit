@@ -1,8 +1,14 @@
 <student-index>
     <div if="{!hidden}">
-        <div>{__page.user.nicName}</div>
-        <div>{__page.user.name}</div>
-        <div>{__page.user.name}</div>
+        <div><label>昵称：</label>{__page.user.wx_nickname}</div>
+        <div><label>姓名：</label>{__page.user.name}</div>
+        <div><label>手机：</label>{__page.user.name}</div>
+        <hr>
+        <label>教师私信</label>
+        <hr>
+        <div class="private-msg"></div>
+        <label>班级信息</label>
+        <hr>
         <div each="{clazzes}" class="clazz-card" data-clazzid="{clazz}" onclick="{parent.enterClazz}">
             <span>{_id} {name}</span>
         </div>
@@ -13,6 +19,12 @@
             line-height: 40px;
             background: red;
             margin-bottom: 10px;
+        }
+        .private-msg{
+            height:48px;
+            line-height: 48px;
+            background: green;
+            text-align: center;
         }
     </style>
 
