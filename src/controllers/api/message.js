@@ -1,6 +1,7 @@
 var messageService = require('../../services/MessageService');
 var clazzStudentService = require('../../services/ClazzStudentService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
+var clazzService = require('../../services/ClazzService');
 var UserRole = require('../../models/TypeRegistry').item('UserRole');
 var util = require('util');
 var logger = require('../../app/logging').logger;
@@ -121,4 +122,62 @@ module.exports = function(router){
         var userId = req.session.user.id;
 
     });
+
+    //send single msg
+    router.post('/single_msg', function(req, res){
+        var msg = req.query.body;
+        var userId = req.session.user.id;
+        msg.from = userId;
+        msg.channel = util.genOneToOneId(userId, msg.to);
+        saveMessage(msg, function(err, doc){
+            //TODO error handler
+            return res.status(200).json(ApiReturn.i().ok(doc));
+        })
+    });
+
+    //send mass msg
+    router.post('/mass_msg', function(req, res){
+        var msg = req.query.msg;
+        var clazzId = req.query.clazzId;
+        var userId = req.session.user.id;
+        msg.from = userId;
+        msg.channel = clazzId;
+        var result;
+        saveMessageAsync(msg)
+            .then(function(doc){
+                result = doc;
+                return  clazzService.loadStudentsByIdAsync(clazzId);
+            })
+            .then(function(students){
+                var arr = [];
+                for(var i = 0, len = students.length; i < len; i++){
+                    var newMsg = msg;
+                    newMsg.channel = util.genOneToOneId(students[i].user, userId);
+                    arr.push(saveMessageAsync(newMsg));
+                }
+                Promise.all(arr).then(function () {
+                    res.status(200).json(ApiReturn.i().ok(doc));
+                })
+            })
+            .catch(Error, function(err) {
+                logger.error('send mass message error: ' + err);
+                res.status(500).json(ApiReturn.i().errMsg(500, 'failed to send mass msg'));
+            })
+    });
+    //save message
+    function saveMessage(msg, cb){
+        messageService.create(msg, function(err, doc){
+            if(err){
+                return cb(err);
+            }
+            _populateFromUserAsync(doc)
+                .then(function(doc){
+                    return _populateToUserAsync(doc);
+                })
+                .then(function(doc){
+                    return cb(null, doc);
+                })
+        })
+    }
+    var saveMessageAsync = Promise.promisify(saveMessage);
 };

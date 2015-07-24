@@ -21,6 +21,14 @@ module.exports = function(router){
         });
     });
 
+    //all clazz
+    router.get('/allClazz', function(req, res){
+        clazzService.loadAll(function(err, docs){
+            //TODO: error handling
+            res.status(200).json(ApiReturn.i().ok(docs));
+        });
+    });
+
     router.get('/students', function(req, res){
         clazzService.loadStudentsById(req.params.id, function(err, doc){
             res.status(200).json(ApiReturn.i().ok(doc));
