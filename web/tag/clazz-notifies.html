@@ -1,5 +1,5 @@
 <clazz-notifies>
-    <div if="{util.teacherOrNot()}">
+    <div if="{util.teacherOrNot() && !hidden}">
         <input name="content" type="text"/><input onclick="{sendToClazz}" type="button" value="发送"/>
     </div>
     <div class="chat_card" if="{!hidden}">
@@ -39,21 +39,21 @@
         });
         this.on('mount',function(){
             MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
-            MsgInClazzAddAction.onDone(OnMsgInClazzAddAction);
         });
         sendToClazz(e){
-            MsgInClazzAddAction.execute({
+            var invocation = MsgInClazzAddAction.newInvocation({
                 channel: self.clazzId,
                 content: self.content.value
-            })
+            });
+            invocation.onDone(function(doc){
+                self.msgs.unshift(doc);
+                self.update();
+            }).execute();
+            e.stopPropagation();
         }
         function OnMsgInClazzLoadAction(data){
             self.msgs = data;
             self.trigger('view-route-to');
-        }
-        function OnMsgInClazzAddAction(data){
-            self.msgs.unshift(data);
-            self.update();
         }
         this.on('refresh', function(){
             _refresh();

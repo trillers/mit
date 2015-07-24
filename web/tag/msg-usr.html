@@ -2,11 +2,32 @@
     <div if="{!hidden}">
         <input type="text" name="content"/>
         <input onclick="{sendToStu}" type="button" value="发送"/>
-        <div each="{msgs}">
-            <span>{from.name}</span>：<span>{content}</span>
+        <div class="msg_bubble_container" each="{msgs}">
+            <span class="{msg_bubble:true, msg_bubble_l:from.user === __page.user._id, msg_bubble_r:from.user != __page.user._id}"><span>{from.name}</span>：<span>{content}</span></span>
         </div>
     </div>
-
+    <style scoped>
+        .msg_bubble_container{
+            overflow: hidden;
+        }
+        .msg_bubble{
+            display: inline-block;
+            height:40px;
+            line-height: 40px;
+            padding: 0px 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+            color:white
+        }
+        .msg_bubble_l{
+            background:#009926;
+            float:left
+        }
+        .msg_bubble_r{
+            background:#C3C3C3;
+            float:right
+        }
+    </style>
     <script>
         var self = nest.presentable(this),
             MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
