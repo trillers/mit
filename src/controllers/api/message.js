@@ -1,4 +1,5 @@
 var messageService = require('../../services/MessageService');
+var clazzService = require('../../services/ClazzService');
 var clazzStudentService = require('../../services/ClazzStudentService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
 var clazzService = require('../../services/ClazzService');
@@ -61,8 +62,16 @@ module.exports = function(router){
         })
     });
 
-    //clazz messages
-    router.get('/clazz_messages', function(req, res){
+    router.get('/one_to_one', function(req, res){
+        var channel = req.query.channel;
+        var params = {
+            conditions: {channel: channel},
+            sort: {crtOn: -1}
+        }
+        msgFilter(params, res);
+    });
+
+    router.get('/reply', function(req, res){
         var channel = req.query.channel;
         var user = req.session.user;
         var params = {
@@ -70,6 +79,37 @@ module.exports = function(router){
             sort: {crtOn: -1}
         }
         user.role == UserRole.Student.value()  ? params.conditions['$or'] = [{from: user.id}, {to: user.id}] : '';
+        msgFilter(params, res);
+    });
+
+    //clazz messages
+    router.get('/clazz_messages', function(req, res){
+        var clazzId = req.query.channel;
+        console.log("--------------------"+clazzId)
+        var oneToOneId;
+        var user = req.session.user;
+        var params = {
+            conditions: {},
+            sort: {crtOn: -1}
+        }
+        if(user.role == UserRole.Student.value()) {
+            clazzService.loadAsync(clazzId)
+                .then(function (clazz) {
+                    return clazzTeacherService.loadByIdAsync(clazz.teachers[0])
+                })
+                .then(function (clazzTeacher) {
+                    var oneToOneId = myutil.genOneToOneId(clazzTeacher.user, user._id)
+                    params.conditions['channel'] = {'$in': [clazzId, oneToOneId]}
+                    msgFilter(params, res);
+                })
+        }else{
+            console.log("00000000000")
+            params.conditions['channel'] = clazzId;
+            msgFilter(params, res);
+        }
+    });
+
+    function msgFilter(params ,res){
         messageService.filter(params, function(err, docs){
             var arr = [];
             for(var i = 0, len = docs.length; i < len; i++){
@@ -80,7 +120,8 @@ module.exports = function(router){
                 res.status(200).json(ApiReturn.i().ok(docs));
             })
         })
-    });
+    }
+
     var _populateFromUserAsync = Promise.promisify(_populateFromUser);
     var _populateToUserAsync = Promise.promisify(_populateToUser);
     function _populateFromUser(doc, cb){

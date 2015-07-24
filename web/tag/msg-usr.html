@@ -1,0 +1,68 @@
+<msg-usr>
+    <div if="{!hidden}">
+        <input type="text" name="content"/>
+        <input onclick="{sendToStu}" type="button" value="发送"/>
+        <div class="msg_bubble_container" each="{msgs}">
+            <span class="{msg_bubble:true, msg_bubble_l:from.user === __page.user._id, msg_bubble_r:from.user != __page.user._id}"><span>{from.name}</span>：<span>{content}</span></span>
+        </div>
+    </div>
+    <style scoped>
+        .msg_bubble_container{
+            overflow: hidden;
+        }
+        .msg_bubble{
+            display: inline-block;
+            height:40px;
+            line-height: 40px;
+            padding: 0px 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+            color:white
+        }
+        .msg_bubble_l{
+            background:#009926;
+            float:left
+        }
+        .msg_bubble_r{
+            background:#C3C3C3;
+            float:right
+        }
+    </style>
+    <script>
+        var self = nest.presentable(this),
+            MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
+            MsgToUserLoadAction = domain.action('MsgToUserLoadAction'),
+            rsId;
+        self.msgs = [];
+        self.userId;
+        sendToStu(e){
+            MsgInClazzAddAction.execute({
+                channel: rsId,
+                content: self.content.value
+            });
+            e.stopPropagation();
+        }
+        this.on('open', function(options){
+            self.userId = options.userId;
+            rsId = util.getRelationShip(self.userId, __page.user._id);
+            MsgToUserLoadAction.execute({
+                channel: rsId,
+                to: self.userId
+            })
+        })
+        this.on('mount', function(){
+            MsgInClazzAddAction.onDone(OnMsgInClazzAddAction);
+            MsgToUserLoadAction.onDone(OnMsgToUserLoadAction);
+        })
+        function OnMsgInClazzAddAction(data){
+            console.log(data)
+            self.msgs.unshift(data)
+            self.content.value = ""
+            self.update()
+        }
+        function OnMsgToUserLoadAction(docs){
+            self.msgs = docs;
+            self.trigger('view-route-to');
+        }
+    </script>
+</msg-usr>

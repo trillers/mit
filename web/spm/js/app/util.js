@@ -307,7 +307,22 @@ var util = {
         return_url = img.meta && img.meta!="" && img.meta.split('|')[0] != 'undefined' && this.imageAdaptCfg4qn_copy.getCfg(img.meta.split('|')[0],img.meta.split('|')[1],img.url) || img.url;
         return 'http://' + return_url;
     },
-
+    getRelationShip: function(str1, str2){
+        for(var i = 0, len = str1.length; i<len; i++) {
+            var char1 = str1.charAt(i),
+                char2 = str2.charAt(i);
+            if(char1 < char2) {
+                return str1 + str2;
+            }else if(char1 > char2){
+                return str2 + str1;
+            }else if(i === (len-1)){
+                throw new Error('Failed to generate relationshipId One to One [error]: two objs has the same Id');
+            }
+        }
+    },
+    teacherOrNot :function(){
+        return __page.user.role === __app.enums.UserRole.names['Teacher'];
+    },
     calcImageUrl:function(item){
         var return_url = "";
         if(item.images && item.images[0]){

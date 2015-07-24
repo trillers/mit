@@ -1,8 +1,10 @@
 <clazz-notify>
         <span onclick="{toggleGetReplyInfo}">{content}</span>
         <div if="{showOrNot}">
-            <input value="回复消息" type="button"/><br/>
-            <div id="commenter"><input name="payLoad" type="text"/></div><input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
+            <div id="commenter">
+                <input name="payLoad" type="text"/>
+                <input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
+            </div>
             <ul>
                 <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{from.user != __page.user._id ? parent.selectSendTo : ''}">
                     <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to && '@' + to.name}: {content}</span>

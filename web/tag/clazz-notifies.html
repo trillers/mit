@@ -1,4 +1,7 @@
 <clazz-notifies>
+    <div if="{util.teacherOrNot() && !hidden}">
+        <input name="content" type="text"/><input onclick="{sendToClazz}" type="button" value="发送"/>
+    </div>
     <div class="chat_card" if="{!hidden}">
         <clazz-notify class="chat_notify" each="{msgs}" msgid="{_id}"></clazz-notify>
     </div>
@@ -18,14 +21,15 @@
 
     <script>
         var self = nest.presentable(this),
-                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction');
+                MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
+                MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
 
         self.msgs = [];
-        self.clazzId = "";
+        self.channel = "";
 
         var _open = function(data){
-            self.clazzId = data.clazzId;
-            MsgInClazzLoadAction.execute({channel: data.clazzId});
+            self.channel = data.channel;
+            MsgInClazzLoadAction.execute({channel: data.channel});
         }.bind(self);
         var _refresh = function(){
 
@@ -36,12 +40,21 @@
         this.on('mount',function(){
             MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
         });
-
+        sendToClazz(e){
+            var invocation = MsgInClazzAddAction.newInvocation({
+                channel: self.channel,
+                content: self.content.value
+            });
+            invocation.onDone(function(doc){
+                self.msgs.unshift(doc);
+                self.update();
+            }).execute();
+            e.stopPropagation();
+        }
         function OnMsgInClazzLoadAction(data){
             self.msgs = data;
             self.trigger('view-route-to');
         }
-
         this.on('refresh', function(){
             _refresh();
         });
