@@ -186,7 +186,7 @@ Service.loadTeachersById = function(clazzId, cb){
     var query = Clazz.findById(clazzId);
     query.populate('teachers').lean(true).exec(function(err, doc){
         if(err) return cb(err);
-        return cb(doc.teachers);
+        return cb(null, doc.teachers);
     });
 }
 
