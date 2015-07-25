@@ -1,5 +1,6 @@
 var messageService = require('../../services/MessageService');
 var clazzService = require('../../services/ClazzService');
+var userBizService = require('../../services/UserBizService');
 var clazzStudentService = require('../../services/ClazzStudentService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
 var clazzService = require('../../services/ClazzService');
@@ -109,6 +110,7 @@ module.exports = function(router){
         }
     });
 
+    var msgFilterAsync = Promise.promisify(msgFilter);
     function msgFilter(params ,res){
         messageService.filter(params, function(err, docs){
             var arr = [];
@@ -166,7 +168,7 @@ module.exports = function(router){
 
     //send single msg
     router.post('/single_msg', function(req, res){
-        var msg = req.query.body;
+        var msg = req.body;
         var userId = req.session.user.id;
         msg.from = userId;
         msg.channel = util.genOneToOneId(userId, msg.to);
@@ -178,8 +180,8 @@ module.exports = function(router){
 
     //send mass msg
     router.post('/mass_msg', function(req, res){
-        var msg = req.query.msg;
-        var clazzId = req.query.clazzId;
+        var msg = req.body.msg;
+        var clazzId = req.body.clazzId;
         var userId = req.session.user.id;
         msg.from = userId;
         msg.channel = clazzId;
@@ -221,4 +223,50 @@ module.exports = function(router){
         })
     }
     var saveMessageAsync = Promise.promisify(saveMessage);
+
+    //initial chat page data
+    router.get('/chatInitData', function(req, res){
+        var clazzId = req.query.clazzId;
+        var userId = req.session.user.id;
+        var receiverId = req.query.userId;
+        var result = {}, clazzData;
+
+        clazzService.loadAsync(clazzId)
+            .then(function(clazz){
+                clazzData = clazz;
+                return userBizService.loadUserClazzAsync(userId);
+            })
+            .then(function(clazzes){
+                for(var i = 0, len = clazzes.length; i < len; i++){
+                    if(clazzes[i].clazz == clazzData._id){
+                        clazzes[i] = clazzData;
+                        break;
+                    }
+                }
+                result.clazzes = clazzes;
+                var params = {
+                    conditions: {channel: util.genOneToOneId(userId, receiverId)},
+                    sort: {crtOn: -1}
+                }
+                return msgFilterAsync(params);
+            })
+            .then(function(msgs){
+                result.msgs = msgs;
+                res.status(200).json(ApiReturn.i().ok(result));
+            })
+    });
+
+    //load message record
+    router.get('/historyMsg', function(req, res){
+        var receiverId = req.query.userId;
+        var userId = req.session.user.id;
+        var params = {
+            conditions: {channel: util.genOneToOneId(userId, receiverId)},
+            sort: {crtOn: -1}
+        }
+        msgFilterAsync(params)
+            .then(function(msgs){
+                res.status(200).json(ApiReturn.i().ok(msgs));
+            })
+    });
 };

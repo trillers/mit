@@ -22,7 +22,7 @@ module.exports = function(router){
     });
 
     //all clazz
-    router.get('/allClazz', function(req, res){
+    router.get('/myClazzs', function(req, res){
         clazzService.loadAll(function(err, docs){
             //TODO: error handling
             res.status(200).json(ApiReturn.i().ok(docs));
