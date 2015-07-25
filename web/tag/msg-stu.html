@@ -1,13 +1,43 @@
 <msg-stu>
     <div if="{!hidden}">
+        <input type="text" name="content"/>
+        <input onclick="{sendToStu}" type="button" value="发送"/>
         <div class="msg_bubble_container" each="{msgs}">
             <span class="{msg_bubble:true, msg_bubble_l:from.user === __page.user._id, msg_bubble_r:from.user != __page.user._id}"><span>{from.name}</span>：<span>{content}</span></span>
         </div>
     </div>
     <script>
-        var self = nest.presentable(this);
-        this.on('open', function(){
+        var self = nest.presentable(this),
+                MsgSingleSendAction = domain.action('MsgSingleSendAction'),
+                MsgStuInitDataAction = domain.action('MsgStuInitDataAction');
+        self.sendTo={}
+        this.on('open', function(options){
+            self.clazzId = options.clazzId;
+            _onOpen();
             self.trigger('view-route-to');
         });
+        this.on('mount', function(){
+
+        })
+        _onOpen = function(){
+            MsgStuInitDataAction.newInvocation({
+                clazzId: self.clazzId,
+            }).onDone(function(data){
+                self.msgs = data.msgs;
+                self.sendTo.userId = data.teacher.user;
+                self.update()
+            }).execute();
+        }.bind(self)
+        sendToStu(e){
+            MsgSingleSendAction.newInvocation({
+                to: self.sendTo.userId,
+                content: self.content.value
+            }).onDone(function(data){
+                console.log(data)
+                self.msgs.unshift(data);
+                self.update()
+            }).execute();
+            e.stopPropagation();
+        }
     </script>
 </msg-stu>

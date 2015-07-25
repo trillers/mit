@@ -14,7 +14,10 @@ domain.action('MsgToUserLoadAction').onExecute(function(data){
     apiFactory.get('/msg/one_to_one').drive(this).send(data);
 });
 domain.action('MsgInitDataAction').onExecute(function(data){
-    apiFactory.get('/msg/chatInitData').drive(this).send(data);
+    apiFactory.get('/msg/teacherChatInitData').drive(this).send(data);
+});
+domain.action('MsgStuInitDataAction').onExecute(function(data){
+    apiFactory.get('/msg/studentChatInitData').drive(this).send(data);
 });
 domain.action('MsgSingleSendAction').onExecute(function(data){
     apiFactory.post('/msg/single_msg').drive(this).send(data);
