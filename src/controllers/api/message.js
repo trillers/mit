@@ -92,34 +92,14 @@ module.exports = function(router){
     //clazz messages
     router.get('/clazz_messages', function(req, res){
         var clazzId = req.query.channel;
-        console.log("--------------------"+clazzId)
-        var oneToOneId;
-        var user = req.session.user;
         var params = {
-            conditions: {},
+            conditions: {channel: clazzId},
             sort: {crtOn: -1}
         }
-        if(user.role == UserRole.Student.value()) {
-            clazzService.loadAsync(clazzId)
-                .then(function (clazz) {
-                    return clazzTeacherService.loadByIdAsync(clazz.teachers[0])
-                })
-                .then(function (clazzTeacher) {
-                    var oneToOneId = myutil.genOneToOneId(clazzTeacher.user, user._id)
-                    params.conditions['channel'] = {'$in': [clazzId, oneToOneId]}
-                    return msgFilterAsync(params);
-                })
-                .then(function(msgs){
-                    return res.status(200).json(ApiReturn.i().ok(msgs));
-                })
-        }else{
-            console.log("00000000000")
-            params.conditions['channel'] = clazzId;
-            msgFilterAsync(params)
-                .then(function(msgs){
-                    return res.status(200).json(ApiReturn.i().ok(msgs));
-                });
-        }
+        msgFilterAsync(params)
+            .then(function(msgs){
+                res.status(200).json(ApiReturn.i().ok(msgs));ßß
+            });
     });
 
     var msgFilterAsync = Promise.promisify(msgFilter);
