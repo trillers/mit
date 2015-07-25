@@ -50,6 +50,18 @@ app.routeView('msg/usr', nest.viewable({
     this.tag.trigger('open', ctx.req.query);
   }
 }));
+app.routeView('debug/index', nest.viewable({
+  name: 'debug/index',
+  mount: function(ctx){
+    var tags = riot.mount('debug-index');
+    this.tag = tags[0];
+  },
+  route: function(ctx){
+    this.context = ctx;
+    this.parent.currentTrigger('mask');
+    this.tag.trigger('open', ctx.req.query);
+  }
+}));
 app.routeView('msg/stu', nest.viewable({
   name: 'msg/stu',
   mount: function(ctx){
