@@ -162,7 +162,7 @@ Service.loadByQrChannelId = function (qrChannelId, cb) {
         if (err) {
             return cb(err, null);
         }else{
-            if (cb) cb(null, doc);
+            if (cb) return cb(null, doc);
         }
     });
 }
@@ -170,7 +170,7 @@ Service.loadByQrChannelId = function (qrChannelId, cb) {
 Service.addStudent = function(clazzId, clazzStudentId, userId, cb){
     Service.update(clazzId, {$addToSet: {'students': clazzStudentId}}, function(err, doc){
         if(err) return cb(err);
-        cb(null, doc);
+        return cb(null, doc);
     })
 }
 
@@ -178,7 +178,7 @@ Service.loadStudentsById = function(clazzId, cb){
     var query = Clazz.findById(clazzId);
     query.populate('students').lean(true).exec(function(err, doc){
         if(err) return cb(err);
-        return cb(doc.students);
+        return cb(null, doc.students);
     });
 }
 

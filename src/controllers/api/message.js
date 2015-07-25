@@ -98,7 +98,7 @@ module.exports = function(router){
         }
         msgFilterAsync(params)
             .then(function(msgs){
-                res.status(200).json(ApiReturn.i().ok(msgs));ßß
+                res.status(200).json(ApiReturn.i().ok(msgs));
             });
     });
 
@@ -189,7 +189,7 @@ module.exports = function(router){
                     arr.push(saveMessageAsync(newMsg));
                 }
                 Promise.all(arr).then(function () {
-                    res.status(200).json(ApiReturn.i().ok(doc));
+                    res.status(200).json(ApiReturn.i().ok(result));
                 })
             })
             .catch(Error, function(err) {

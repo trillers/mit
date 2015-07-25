@@ -2,10 +2,18 @@
     <div onclick="{toggleSubMenu}" data-cid="{clazz}" class="{acc_lv1_div:true, acc_lv1_div_sel:clazz === sendTo.clazzId}">{name}</div>
     <ul if="{showOrNot}">
         <li each="{students}" onclick="{parent.sendToHandler}" data-sid="{user}">
-            <div class="{acc_lv2_div:true, acc_lv2_div_sel:user === parent.sendTo.userId}">{name}</div>
+            <div class="{acc_lv2_div:true, acc_lv2_div_sel:user === parent.sendTo.userId}">
+                <img class="def_head" src="{headUrl || '/web/images/def-head.png'}"/>
+                <label>{name}</label>
+            </div>
         </li>
     </ul>
     <style>
+        .def_head{
+            display: inline-block;
+            width:32px;
+            height:32px;
+        }
         .acc >li{
             float:left;
             background: grey;
@@ -30,7 +38,7 @@
             line-height: 40px;
         }
         .acc_lv2_div_sel{
-            background: #f5ff3c !important;
+            background: #49ffe4 !important;
         }
     </style>
     <script>
