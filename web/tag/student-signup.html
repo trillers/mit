@@ -1,5 +1,10 @@
 <student-signup>
     <div if="{!hidden}">
+        <div>
+            <a href="#activity/index">返回</a>
+            <a onclick={refresh} href="">刷新</a>
+            <a href="#debug/index">调试</a>
+        </div>
         <label>学生名</label><input type="text" name="studentName"/><br/>
         <label>手机</label><input type="text" name="studentPhone"/><br/>
         <input type="button" value="注册" onclick="{signUp}"/>
