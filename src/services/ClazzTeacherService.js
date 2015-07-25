@@ -59,12 +59,24 @@ Service.delete = function (id, callback) {
 };
 
 Service.updateByUserId = function (userId, update, callback) {
-    ClazzTeacher.update({user: userId}, update, {new: true, upsert: true}, function (err, result){
-        if(err) {
-            callback(err);
+    ClazzTeacher.findOne({user: userId}).lean(true).exec(function(err, doc){
+        if(err) return callback(err);
+        if(doc){
+            ClazzTeacher.update({user: userId}, update, {new: true}, function (err, result){
+                if(err) {
+                    return callback(err);
+                }
+                logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
+                return callback(null, result);
+            });
         } else {
-            logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
-            callback(null, result);
+            var clazzTeacher = new ClazzTeacher(update);
+            clazzTeacher.save(function (err, doc, numberAffected) {
+                if (err) {
+                    if (callback) return callback(err);
+                }
+                if (callback) callback(null, doc);
+            });
         }
     });
 };

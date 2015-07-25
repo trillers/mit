@@ -61,12 +61,24 @@ Service.loadByUserId = function(userId, callback){
 }
 
 Service.updateByUserId = function (userId, update, callback) {
-    ClazzStudent.update({user: userId}, update, {new: true, upsert: true}, function (err, result){
-        if(err) {
-            callback(err);
+    ClazzStudent.findOne({user: userId}).lean(true).exec(function(err, doc){
+        if(err) return callback(err);
+        if(doc){
+            ClazzStudent.update({user: userId}, update, {new: true}, function (err, result){
+                if(err) {
+                    return callback(err);
+                }
+                logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
+                return callback(null, result);
+            });
         } else {
-            logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
-            callback(null, result);
+            var clazzStudent = new ClazzStudent(update);
+            clazzStudent.save(function (err, doc, numberAffected) {
+                if (err) {
+                    if (callback) return callback(err);
+                }
+                if (callback) callback(null, doc);
+            });
         }
     });
 };
