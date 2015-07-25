@@ -53,7 +53,7 @@
             e.item.show = true;
         }
         sendToUser(e){
-            riot.route('clazz/notifies?channel=' + util.getRelationShip(e.item.user, __page.user.id));
+            riot.route('msg/usr?userId=' + e.item.user +"&clazzId=" + self.clazzId);
             e.stopPropagation();
         }
         toggleGetClazzInfo(e){

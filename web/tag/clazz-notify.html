@@ -1,16 +1,5 @@
 <clazz-notify>
-        <span onclick="{toggleGetReplyInfo}">{content}</span>
-        <div if="{showOrNot}">
-            <div id="commenter">
-                <input name="payLoad" type="text"/>
-                <input data-msgfrom="{from.user}" data-msgid="{_id}" onclick="{replyNotify}" value="确认发送" type="button"/>
-            </div>
-            <ul>
-                <li each="{replies}" data-msgfrom="{from.user}" data-fromname="{from.name}" onclick="{from.user != __page.user._id ? parent.selectSendTo : ''}">
-                    <img src="{from.headUrl}"/><span>{from.name || '匿名'} {to && '@' + to.name}: {content}</span>
-                </li>
-            </ul>
-        </div>
+        <span>{content}</span>
     <style scoped>
         span:first-child{
             background: #f5f5f5;
@@ -26,64 +15,6 @@
         }
     </style>
     <script>
-        var self = nest.presentable(this),
-            MsgInClazzAddAction = domain.action('MsgInClazzAddAction'),
-            MsgReplyLoadAction = domain.action('MsgReplyLoadAction');
-        self.msgId = this.opts.msgid;
-        self.msgCurrFromId = "";
-        self.replies = [];
-        self.showOrNot = false;
-        self.triggred = false;
-        var Commenter = widget.commenter;
-        var commenter = new Commenter();
-        util.extend(commenter, riot.observable({}));
-        commenter.on('toUserRemove', function(){
-            self.sendTo = null;
-        })
-        this.on('initCommenter', function(){
-            if(this.triggered){
-                return false;
-            }
-            commenter.init({container: document.getElementById("commenter")});
-            this.triggered = true
-        })
-        toggleGetReplyInfo(e){
-            if (self.showOrNot === true) {
-                self.showOrNot = false;
-                return false;
-            }
-            self.showOrNot = true;
-            self.update();
-            self.msgCurrFromId = e.currentTarget.getAttribute('data-msgfrom');
-            MsgReplyLoadActionInvocation();
-            this.trigger('initCommenter');
-        }
-        selectSendTo(e){
-            self.sendTo = e.currentTarget.getAttribute('data-msgfrom')
-            commenter.input(e.currentTarget.getAttribute('data-fromname'));
-        }
-        function MsgReplyLoadActionInvocation(data){
-            var invocation = MsgReplyLoadAction.newInvocation({channel: self.msgId, msgFrom: self.msgCurrFromId});
-            invocation.onDone(function(docs){
-                self.replies = docs;
-                self.update();
-            }).execute();
-        }
-        replyNotify(e){
-            if(self.payLoad.value.trim() === ''){
-                return;
-            }
-            var invocation = MsgInClazzAddAction.newInvocation({
-                to: self.sendTo,
-                channel: e.currentTarget.getAttribute('data-msgid'),
-                content: self.payLoad.value
-            });
-            invocation.onDone(function(doc){
-                self.payLoad.value = "";
-                self.replies.unshift(doc);
-                self.update();
-            }).execute();
-            e.stopPropagation();
-        }
+
     </script>
 </clazz-notify>
