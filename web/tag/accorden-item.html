@@ -1,17 +1,72 @@
 <accorden-item>
-    <div onclick="{toggleSubMenu}" class="{acc_lv1_div:true, acc_lv1_div_sel:_id === clazzid}">{name}</div>
+    <div onclick="{toggleSubMenu}" data-cid="{clazz}" class="{acc_lv1_div:true, acc_lv1_div_sel:clazz === sendTo.clazzId}">{name}</div>
     <ul if="{showOrNot}">
-        <li each="students">
-            <div class="{acc_lv2_div:true, acc_lv2_div_sel:_id === studentid}">{name}</div>
+        <li each="{students}" onclick="{parent.sendToHandler}" data-sid="{user}">
+            <div class="{acc_lv2_div:true, acc_lv2_div_sel:user === parent.sendTo.userId}">{name}</div>
         </li>
     </ul>
+    <style>
+        .acc >li{
+            float:left;
+            background: grey;
+        }
+        .acc_lv1_div{
+            width:100%;
+            height:40px;
+            line-height: 40px;
+            background: #167880;
+        }
+        .acc_lv1_div_sel{
+            background: #62a4a9 !important;
+        }
+        .acc li>ul>li{
+            float:left;
+            height:40px;
+            line-height: 40px;
+        }
+        .acc_lv2_div{
+            width:100%;
+            height:40px;
+            line-height: 40px;
+        }
+        .acc_lv2_div_sel{
+            background: #f5ff3c !important;
+        }
+    </style>
     <script>
         var self = nest.presentable(this);
-        self.showOrNot = false;
         self.students = [];
+        self.showOrNot = false;
+        self.parentTag = self.parent.parent;
+        self.sendTo = self.parentTag.msgJson;
+        ClazzLoadAction = domain.action('ClazzLoadAction');
+        MsgSingleSendAction = domain.action('MsgSingleSendAction');
+        MsgUserLoadAction = domain.action('MsgUserLoadAction');
+        this.on('mount', function(){
+            if(this.opts['data-clazz'].clazz === self.sendTo.clazzId){
+                self.showOrNot = true
+            }
+        })
+        function ClazzLoadActionInvocation(data){
+            var invocation = ClazzLoadAction.newInvocation(data.clazzId);
+            invocation.onDone(function(doc){
+                self.students = doc.students || [];
+                self.showOrNot = true;
+                self.update();
+            }).execute();
+        }
         toggleSubMenu(e){
-            self.showOrNot?self.showOrNot = false : true;
-
+            self.showOrNot = !self.showOrNot;
+            if(self.showOrNot && self.students.length === 0){
+                ClazzLoadActionInvocation({clazzId: e.currentTarget.getAttribute('data-cid')});
+            }
+        }
+        sendToHandler(e){
+            self.sendTo.userId = e.currentTarget.getAttribute('data-sid');
+            self.sendTo.clazzId = e.currentTarget.parentNode.previousElementSibling.getAttribute('data-cid');
+            MsgUserLoadAction.execute({
+                userId: self.sendTo.userId
+            })
         }
     </script>
 </accorden-item>

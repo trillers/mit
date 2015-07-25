@@ -22,7 +22,7 @@
     <script>
         var self = nest.presentable(this),
                 MsgInClazzLoadAction = domain.action('MsgInClazzLoadAction'),
-                MsgInClazzAddAction = domain.action('MsgInClazzAddAction');
+                MsgMassSendAction = domain.action('MsgMassSendAction');
 
         self.msgs = [];
         self.channel = "";
@@ -41,7 +41,7 @@
             MsgInClazzLoadAction.onDone(OnMsgInClazzLoadAction);
         });
         sendToClazz(e){
-            var invocation = MsgInClazzAddAction.newInvocation({
+            var invocation = MsgMassSendAction.newInvocation({
                 channel: self.channel,
                 content: self.content.value
             });

@@ -1,6 +1,6 @@
 <contact-accorden>
     <div class="acc">
-        <accorden-item each="clazzes" onclick="{parent.toggleStuInfo}"></accorden-item>
+        <accorden-item each="{clazzes}" data-clazz="{this}"></accorden-item>
     </div>
     <style scoped>
         .acc >li{
@@ -11,9 +11,10 @@
             width:100%;
             height:40px;
             line-height: 40px;
+            color:white
         }
         .acc_lv1_div_sel{
-            background: red !important;
+            background: #62a4a9 !important;
         }
         .acc li>ul>li{
             float:left;
@@ -32,12 +33,15 @@
     </style>
     <script>
         var self = nest.presentable(this);
-        self.clazzes = this.opts.clazzes;
+        self.msgJson = this.parent.msgJson
+        var cache = {};
         this.on('mount', function(){
 
         })
-        toggleStuInfo(e){
-            e.item.showOrNot && (e.item.showOrNot = true) || (e.item.showOrNot = false)
-        }
+        this.on('update', function(){
+            if(!cache['clazzes']){
+                self.clazzes = this.opts.clazzes;
+            }
+        })
     </script>
 </contact-accorden>
