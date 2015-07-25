@@ -252,7 +252,7 @@ module.exports = function(router){
                 var clazzes = userBiz.clazzes;
                 for(var i = 0, len = clazzes.length; i < len; i++){
                     if(clazzes[i].clazz == clazzData._id){
-                        clazzes[i] = clazzData;
+                        clazzes[i].students = clazzData.students;
                         break;
                     }
                 }
