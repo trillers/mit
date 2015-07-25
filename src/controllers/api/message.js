@@ -69,7 +69,10 @@ module.exports = function(router){
             conditions: {channel: channel},
             sort: {crtOn: -1}
         }
-        msgFilter(params, res);
+        msgFilterAsync(params)
+            .then(function(msgs){
+                return res.status(200).json(ApiReturn.i().ok(msgs));
+            });
     });
 
     router.get('/reply', function(req, res){
@@ -80,7 +83,10 @@ module.exports = function(router){
             sort: {crtOn: -1}
         }
         user.role == UserRole.Student.value()  ? params.conditions['$or'] = [{from: user.id}, {to: user.id}] : '';
-        msgFilter(params, res);
+        msgFilterAsync(params)
+            .then(function(msgs){
+                return res.status(200).json(ApiReturn.i().ok(msgs));
+            });
     });
 
     //clazz messages
@@ -101,17 +107,23 @@ module.exports = function(router){
                 .then(function (clazzTeacher) {
                     var oneToOneId = myutil.genOneToOneId(clazzTeacher.user, user._id)
                     params.conditions['channel'] = {'$in': [clazzId, oneToOneId]}
-                    msgFilter(params, res);
+                    return msgFilterAsync(params);
+                })
+                .then(function(msgs){
+                    return res.status(200).json(ApiReturn.i().ok(msgs));
                 })
         }else{
             console.log("00000000000")
             params.conditions['channel'] = clazzId;
-            msgFilter(params, res);
+            msgFilterAsync(params)
+                .then(function(msgs){
+                    return res.status(200).json(ApiReturn.i().ok(msgs));
+                });
         }
     });
 
     var msgFilterAsync = Promise.promisify(msgFilter);
-    function msgFilter(params ,res){
+    function msgFilter(params, cb){
         messageService.filter(params, function(err, docs){
             var arr = [];
             for(var i = 0, len = docs.length; i < len; i++){
@@ -119,7 +131,7 @@ module.exports = function(router){
                 arr.push(_populateToUserAsync(docs[i]));
             }
             Promise.all(arr).then(function () {
-                res.status(200).json(ApiReturn.i().ok(docs));
+                cb(null, docs);
             })
         })
     }
@@ -248,7 +260,7 @@ module.exports = function(router){
                     conditions: {channel: myutil.genOneToOneId(userId, receiverId)},
                     sort: {crtOn: -1}
                 }
-                return msgFilterAsync(params, res);
+                return msgFilterAsync(params);
             })
             .then(function(msgs){
                 result.msgs = msgs;
@@ -264,7 +276,7 @@ module.exports = function(router){
             conditions: {channel: myutil.genOneToOneId(userId, receiverId)},
             sort: {crtOn: -1}
         }
-        msgFilterAsync(params, res)
+        msgFilterAsync(params)
             .then(function(msgs){
                 res.status(200).json(ApiReturn.i().ok(msgs));
             })
