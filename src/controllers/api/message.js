@@ -173,10 +173,8 @@ module.exports = function(router){
     //send mass msg
     router.post('/mass_msg', function(req, res){
         var msg = req.body.msg;
-        var clazzId = req.body.clazzId;
         var userId = req.session.user.id;
         msg.from = userId;
-        msg.channel = clazzId;
         var result;
         saveMessageAsync(msg)
             .then(function(doc){
