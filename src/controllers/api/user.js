@@ -38,10 +38,10 @@ module.exports = function(router){
                 result.user = user;
                 return userBizService.loadUserClazzAsync(userId);
             })
-            .then(function(clazzes){;
+            .then(function(clazzes){
                 result.clazzes = clazzes;
-                res.status(200).json(ApiReturn.i().ok(doc));
-            })
+                res.status(200).json(ApiReturn.i().ok(result));
+            });
     });
 
     //resetUserForChannel
