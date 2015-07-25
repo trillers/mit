@@ -30,7 +30,15 @@ module.exports = function(router){
     });
 
     router.get('/students', function(req, res){
-        clazzService.loadStudentsById(req.params.id, function(err, doc){
+        var clazzId = req.query.clazzId;
+        clazzService.loadStudentsById(clazzId, function(err, doc){
+            res.status(200).json(ApiReturn.i().ok(doc));
+        });
+    });
+
+    router.get('/teachers', function(req, res){
+        var clazzId = req.query.clazzId;
+        clazzService.loadTeachersById(clazzId, function(err, doc){
             res.status(200).json(ApiReturn.i().ok(doc));
         });
     });
