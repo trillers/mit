@@ -171,7 +171,7 @@ module.exports = function(router){
         var msg = req.body;
         var userId = req.session.user.id;
         msg.from = userId;
-        msg.channel = util.genOneToOneId(userId, msg.to);
+        msg.channel = myutil.genOneToOneId(userId, msg.to);
         saveMessage(msg, function(err, doc){
             //TODO error handler
             return res.status(200).json(ApiReturn.i().ok(doc));
@@ -195,7 +195,7 @@ module.exports = function(router){
                 var arr = [];
                 for(var i = 0, len = students.length; i < len; i++){
                     var newMsg = msg;
-                    newMsg.channel = util.genOneToOneId(students[i].user, userId);
+                    newMsg.channel = myutil.genOneToOneId(students[i].user, userId);
                     arr.push(saveMessageAsync(newMsg));
                 }
                 Promise.all(arr).then(function () {
@@ -245,10 +245,10 @@ module.exports = function(router){
                 }
                 result.clazzes = clazzes;
                 var params = {
-                    conditions: {channel: util.genOneToOneId(userId, receiverId)},
+                    conditions: {channel: myutil.genOneToOneId(userId, receiverId)},
                     sort: {crtOn: -1}
                 }
-                return msgFilterAsync(params);
+                return msgFilterAsync(params, res);
             })
             .then(function(msgs){
                 result.msgs = msgs;
@@ -261,10 +261,10 @@ module.exports = function(router){
         var receiverId = req.query.userId;
         var userId = req.session.user.id;
         var params = {
-            conditions: {channel: util.genOneToOneId(userId, receiverId)},
+            conditions: {channel: myutil.genOneToOneId(userId, receiverId)},
             sort: {crtOn: -1}
         }
-        msgFilterAsync(params)
+        msgFilterAsync(params, res)
             .then(function(msgs){
                 res.status(200).json(ApiReturn.i().ok(msgs));
             })

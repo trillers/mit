@@ -14,6 +14,6 @@ domain.action('MsgToUserLoadAction').onExecute(function(data){
     apiFactory.get('/msg/one_to_one').drive(this).send(data);
 });
 domain.action('MsgInitDataAction').onExecute(function(data){
-    apiFactory.get('/msg/chatInitDataAction').drive(this).send(data);
+    apiFactory.get('/msg/chatInitData').drive(this).send(data);
 });
 module.exports = null;
