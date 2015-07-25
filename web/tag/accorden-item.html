@@ -1,8 +1,17 @@
 <accorden-item>
-    <div class="{acc_lv1_div:true, acc_lv1_div_sel:_id === clazzid}">{name}</div>
+    <div onclick="{toggleSubMenu}" class="{acc_lv1_div:true, acc_lv1_div_sel:_id === clazzid}">{name}</div>
     <ul if="{showOrNot}">
         <li each="students">
             <div class="{acc_lv2_div:true, acc_lv2_div_sel:_id === studentid}">{name}</div>
         </li>
     </ul>
+    <script>
+        var self = nest.presentable(this);
+        self.showOrNot = false;
+        self.students = [];
+        toggleSubMenu(e){
+            self.showOrNot?self.showOrNot = false : true;
+
+        }
+    </script>
 </accorden-item>
