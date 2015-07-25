@@ -29,7 +29,7 @@ module.exports = function(router){
         if(user.role == UserRole.Student.value()){
             promise = clazzStudentService.loadByUserIdAsync(userId);
         }else if(user.role == UserRole.Teacher.value()){
-            promise = clazzStudentService.loadByUserIdAsync(userId);
+            promise = clazzTeacherService.loadByUserIdAsync(userId);
         } else {
             return res.status(500).json(ApiReturn.i().error(500, 'error role'));
         }
