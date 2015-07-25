@@ -248,7 +248,8 @@ module.exports = function(router){
                 clazzData = clazz;
                 return userBizService.loadUserClazzAsync(userId);
             })
-            .then(function(clazzes){
+            .then(function(userBiz){
+                var clazzes = userBiz.clazzes;
                 for(var i = 0, len = clazzes.length; i < len; i++){
                     if(clazzes[i].clazz == clazzData._id){
                         clazzes[i] = clazzData;
