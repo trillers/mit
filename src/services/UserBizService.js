@@ -139,7 +139,7 @@ Service.filter = function (params, callback) {
 };
 
 Service.loadUserClazz = function(userId, callback){
-    UserBiz.findOne({user: userId}, {_id: 0, clazzes: 1}).populate('clazzes').exec(function(err, result){
+    UserBiz.findOne({user: userId}, {_id: 0, clazzes: 1}).populate('clazzes').lean(true).exec(function(err, result){
         if(err) {
             logger.error('load user class error: ' + err);
             callback(err);
