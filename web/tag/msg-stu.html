@@ -1,0 +1,13 @@
+<msg-stu>
+    <div if="{!hidden}">
+        <div class="msg_bubble_container" each="{msgs}">
+            <span class="{msg_bubble:true, msg_bubble_l:from.user === __page.user._id, msg_bubble_r:from.user != __page.user._id}"><span>{from.name}</span>：<span>{content}</span></span>
+        </div>
+    </div>
+    <script>
+        var self = nest.presentable(this);
+        this.on('open', function(){
+            self.trigger('view-route-to');
+        });
+    </script>
+</msg-stu>

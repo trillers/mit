@@ -38,8 +38,8 @@ module.exports = function(router){
                 result.user = user;
                 return userBizService.loadUserClazzAsync(userId);
             })
-            .then(function(clazzes){
-                result.clazzes = clazzes;
+            .then(function(doc){
+                result.clazzes = doc.clazzes;
                 res.status(200).json(ApiReturn.i().ok(result));
             });
     });

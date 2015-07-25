@@ -1,5 +1,5 @@
 <student-index>
-    <div if="{!hidden}">
+    <div if="{!hidden}" class="usr_index">
         <div class="usr_index_top">
             <img src="/web/images/def-head.png"/>
         </div>
@@ -7,17 +7,19 @@
         <div><label>姓名：</label>{user.name || '匿名'}</div>
         <div><label>手机：</label>{user.phone || '您没有输入手机号哦'}</div>
         <hr>
-        <label>我的班级</label>
-        <hr>
+        <label style="display:block;margin-bottom: 10px">我的班级</label>
         <div each="{clazzes}" class="clazz-card" data-clazzid="{clazz}" onclick="{parent.enterClazz}">
             <span>{name}</span>
         </div>
     </div>
     <style scoped>
+        .usr_index div{
+            margin-bottom: 5px;
+        }
         .clazz-card{
             height: 40px;
             line-height: 40px;
-            background: #e2dee4;
+            background: #E9E9E9;
             margin-bottom: 10px;
         }
         .private-msg{
@@ -27,7 +29,8 @@
             text-align: center;
         }
         .usr_index_top{
-            text-align: center;height:120px;line-height: 120px;background:transparent url('/web/images/userinfobanner.png') no-repeat
+            text-align: center;height:120px;line-height: 120px;background:transparent url('/web/images/userinfobanner.png') no-repeat;
+            background:#F3F3F3;
         }
 
     </style>
@@ -57,10 +60,11 @@
             console.log(data)
             self.user = data.user;
             self.clazzes = data.clazzes;
+            self.update()
             self.trigger('view-route-to');
         }
         enterClazz(e){
-            riot.route('clazz/notifies?clazzId=' + e.currentTarget.getAttribute('data-clazzid'));
+            riot.route('msg/stu?clazzId=' + e.currentTarget.getAttribute('data-clazzid'));
         }
     </script>
 </student-index>
