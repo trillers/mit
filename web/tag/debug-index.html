@@ -115,7 +115,9 @@
         }
 
         userReset(e){
+            alert(1)
             $.cookie("token", null, { path: '/' });
+            alert($.cookie("token"))
             $.cookie("agent", null, { path: '/' });
         }
 
