@@ -1,5 +1,9 @@
 var userService = require('../../services/UserService');
 var userBizService = require('../../services/UserBizService');
+var clazzStudentService = require('../../services/ClazzStudentService');
+var clazzTeacherService = require('../../services/ClazzTeacherService');
+var UserRole = require('../../models/TypeRegistry').item('UserRole');
+
 var util = require('util');
 var logger = require('../../app/logging').logger;
 var ApiReturn = require('../../framework/ApiReturn');
@@ -19,11 +23,25 @@ module.exports = function(router){
 
     //loadUserClass
     router.get('/myClazz', function(req, res){
-        var userId = req.session.user.id;
-        userBizService.loadUserClazz(userId, function(err, doc){
-            //TODO: error handling
-            res.status(200).json(ApiReturn.i().ok(doc));
-        })
+        var user = req.session.user;
+        var userId = user.id;
+        var promise, result = {};
+        if(user.role == UserRole.Student.value()){
+            promise = clazzStudentService.loadByUserIdAsync(userId);
+        }else if(user.role == UserRole.Teacher.value()){
+            promise = clazzStudentService.loadByUserIdAsync(userId);
+        } else {
+            return res.status(500).json(ApiReturn.i().error(500, 'error role'));
+        }
+        promise
+            .then(function(user){
+                result.user = user;
+                return userBizService.loadUserClazzAsync(userId);
+            })
+            .then(function(clazzes){
+                result.clazzes = clazzes;
+                res.status(200).json(ApiReturn.i().ok(result));
+            });
     });
 
     //resetUserForChannel
