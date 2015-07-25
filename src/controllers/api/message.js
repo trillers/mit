@@ -179,7 +179,7 @@ module.exports = function(router){
         saveMessageAsync(msg)
             .then(function(doc){
                 result = doc;
-                return  clazzService.loadStudentsByIdAsync(clazzId);
+                return  clazzService.loadStudentsByIdAsync(msg.channel);
             })
             .then(function(students){
                 var arr = [];
@@ -194,7 +194,7 @@ module.exports = function(router){
             })
             .catch(Error, function(err) {
                 logger.error('send mass message error: ' + err);
-                res.status(500).json(ApiReturn.i().errMsg(500, 'failed to send mass msg'));
+                res.status(500).json(ApiReturn.i().error(500, 'failed to send mass msg'));
             })
     });
     //save message
