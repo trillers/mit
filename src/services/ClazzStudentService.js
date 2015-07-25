@@ -64,14 +64,21 @@ Service.updateByUserId = function (userId, update, callback) {
     ClazzStudent.findOne({user: userId}).lean(true).exec(function(err, doc){
         if(err) return callback(err);
         if(doc){
+            console.log('+++++++++++++++++');
+            console.log(doc);
+            console.log(update);
+            console.log('update clazz student');
             ClazzStudent.update({user: userId}, update, {new: true}, function (err, result){
                 if(err) {
                     return callback(err);
                 }
                 logger.debug('Succeed to update by userId clazzTeacher [id=' + userId + ']');
+                console.log(result);
                 return callback(null, result);
             });
         } else {
+            console.log('*****************');
+            console.log('create clazz student');
             var clazzStudent = new ClazzStudent(update);
             clazzStudent.save(function (err, doc, numberAffected) {
                 if (err) {
