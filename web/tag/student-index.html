@@ -1,7 +1,7 @@
 <student-index>
     <div if="{!hidden}" class="usr_index">
         <div class="usr_index_top">
-            <img src="/web/images/def-head.png"/>
+            <img src="{__page.user.wx_headimgurl || '/web/images/def-head.png'}"/>
         </div>
         <div><label>昵称：</label>{__page.user.wx_nickname}</div>
         <div><label>姓名：</label>{user.name || '匿名'}</div>

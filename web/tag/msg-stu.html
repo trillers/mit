@@ -6,6 +6,39 @@
             <span class="{msg_bubble:true, msg_bubble_l:from.user === __page.user._id, msg_bubble_r:from.user != __page.user._id}"><span>{from.name}</span>：<span>{content}</span></span>
         </div>
     </div>
+    <style scoped>
+        .chat-left-container {
+            float: left;
+            width:30%;
+            background:#f3f3f3;
+            height:100%;
+        }
+        .chat-right-container{
+            float:right;
+            width:70%
+        }
+        .msg_bubble_container{
+            overflow: hidden;
+        }
+        .msg_bubble{
+            display: inline-block;
+            height:40px;
+            line-height: 40px;
+            padding: 0px 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+            color:white
+        }
+        .msg_bubble_l{
+            background:#009926;
+            float:left
+        }
+        .msg_bubble_r{
+            background:#C3C3C3;
+            float:right
+        }
+    </style>
+
     <script>
         var self = nest.presentable(this),
                 MsgSingleSendAction = domain.action('MsgSingleSendAction'),
