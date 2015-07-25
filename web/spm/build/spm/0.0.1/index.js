@@ -11547,6 +11547,7 @@
 	function authFilter(){
 	  var hash;
 	  var roleBinded = JSON.parse(__page.user.roleBindOrNot || false);
+	  alert(JSON.stringify(__page.user))
 	  alert(__page.user.role)
 	  alert(__app.enums.UserRole.names['Teacher'])
 	  alert(__page.user.role == __app.enums.UserRole.names['Teacher'])
