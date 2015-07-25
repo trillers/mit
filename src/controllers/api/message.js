@@ -1,7 +1,9 @@
 var messageService = require('../../services/MessageService');
 var clazzService = require('../../services/ClazzService');
+var userBizService = require('../../services/UserBizService');
 var clazzStudentService = require('../../services/ClazzStudentService');
 var clazzTeacherService = require('../../services/ClazzTeacherService');
+var clazzService = require('../../services/ClazzService');
 var UserRole = require('../../models/TypeRegistry').item('UserRole');
 var util = require('util');
 var logger = require('../../app/logging').logger;
@@ -108,6 +110,7 @@ module.exports = function(router){
         }
     });
 
+    var msgFilterAsync = Promise.promisify(msgFilter);
     function msgFilter(params ,res){
         messageService.filter(params, function(err, docs){
             var arr = [];
@@ -161,5 +164,109 @@ module.exports = function(router){
     router.get('/myMessage', function(req, res){
         var userId = req.session.user.id;
 
+    });
+
+    //send single msg
+    router.post('/single_msg', function(req, res){
+        var msg = req.body;
+        var userId = req.session.user.id;
+        msg.from = userId;
+        msg.channel = util.genOneToOneId(userId, msg.to);
+        saveMessage(msg, function(err, doc){
+            //TODO error handler
+            return res.status(200).json(ApiReturn.i().ok(doc));
+        })
+    });
+
+    //send mass msg
+    router.post('/mass_msg', function(req, res){
+        var msg = req.body.msg;
+        var clazzId = req.body.clazzId;
+        var userId = req.session.user.id;
+        msg.from = userId;
+        msg.channel = clazzId;
+        var result;
+        saveMessageAsync(msg)
+            .then(function(doc){
+                result = doc;
+                return  clazzService.loadStudentsByIdAsync(clazzId);
+            })
+            .then(function(students){
+                var arr = [];
+                for(var i = 0, len = students.length; i < len; i++){
+                    var newMsg = msg;
+                    newMsg.channel = util.genOneToOneId(students[i].user, userId);
+                    arr.push(saveMessageAsync(newMsg));
+                }
+                Promise.all(arr).then(function () {
+                    res.status(200).json(ApiReturn.i().ok(doc));
+                })
+            })
+            .catch(Error, function(err) {
+                logger.error('send mass message error: ' + err);
+                res.status(500).json(ApiReturn.i().errMsg(500, 'failed to send mass msg'));
+            })
+    });
+    //save message
+    function saveMessage(msg, cb){
+        messageService.create(msg, function(err, doc){
+            if(err){
+                return cb(err);
+            }
+            _populateFromUserAsync(doc)
+                .then(function(doc){
+                    return _populateToUserAsync(doc);
+                })
+                .then(function(doc){
+                    return cb(null, doc);
+                })
+        })
+    }
+    var saveMessageAsync = Promise.promisify(saveMessage);
+
+    //initial chat page data
+    router.get('/chatInitData', function(req, res){
+        var clazzId = req.query.clazzId;
+        var userId = req.session.user.id;
+        var receiverId = req.query.userId;
+        var result = {}, clazzData;
+
+        clazzService.loadAsync(clazzId)
+            .then(function(clazz){
+                clazzData = clazz;
+                return userBizService.loadUserClazzAsync(userId);
+            })
+            .then(function(clazzes){
+                for(var i = 0, len = clazzes.length; i < len; i++){
+                    if(clazzes[i].clazz == clazzData._id){
+                        clazzes[i] = clazzData;
+                        break;
+                    }
+                }
+                result.clazzes = clazzes;
+                var params = {
+                    conditions: {channel: util.genOneToOneId(userId, receiverId)},
+                    sort: {crtOn: -1}
+                }
+                return msgFilterAsync(params);
+            })
+            .then(function(msgs){
+                result.msgs = msgs;
+                res.status(200).json(ApiReturn.i().ok(result));
+            })
+    });
+
+    //load message record
+    router.get('/historyMsg', function(req, res){
+        var receiverId = req.query.userId;
+        var userId = req.session.user.id;
+        var params = {
+            conditions: {channel: util.genOneToOneId(userId, receiverId)},
+            sort: {crtOn: -1}
+        }
+        msgFilterAsync(params)
+            .then(function(msgs){
+                res.status(200).json(ApiReturn.i().ok(msgs));
+            })
     });
 };

@@ -25,6 +25,24 @@ Service.load = function (id, callback) {
     })
 };
 
+Service.loadAll = function(callback){
+    Clazz.find({},'name students')
+        .populate({
+            path: 'students',
+            options: {sort: {'crtOn': -1}}
+        })
+        .lean(true).exec(function (err, docs) {
+            if (err) {
+                logger.error('Fail to load all class ' + err);
+                if (callback) callback(err);
+                return;
+            }
+
+            logger.debug('Succeed to load all class');
+            if (callback) callback(null, docs);
+        })
+}
+
 Service.create = function (json, callback) {
     var clazz = new Clazz(json);
     clazz.save(function (err, doc, numberAffected) {
