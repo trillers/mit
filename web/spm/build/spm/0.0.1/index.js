@@ -11547,16 +11547,26 @@
 	function authFilter(){
 	  var hash;
 	  var roleBinded = JSON.parse(__page.user.roleBindOrNot || false);
+	  alert(__page.user.role)
+	  alert(__app.enums.UserRole.names['Teacher'])
+	  alert(__page.user.role == __app.enums.UserRole.names['Teacher'])
+	  alert(roleBinded);
 	  if (__page.user.role == __app.enums.UserRole.names['Teacher']){
+	    alert(1)
 	    if(roleBinded){
+	      alert(2)
 	      hash = 'teacher/index'
 	    }else{
+	      alert(3)
 	      hash = 'teacher/signup'
 	    }
 	  }else{
+	    alert(4)
 	    if(roleBinded){
+	      alert(5)
 	      hash = 'student/index'
 	    }else{
+	      alert(6)
 	      hash = 'student/signup'
 	    }
 	  }
