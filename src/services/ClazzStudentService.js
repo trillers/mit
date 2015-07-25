@@ -49,6 +49,17 @@ Service.delete = function (id, callback) {
     });
 };
 
+Service.loadByUserId = function(userId, callback){
+    ClazzStudent.findOne({user: userId}).lean(true).exec(function(err, doc){
+        if(err){
+            return callback(err);
+        }
+        logger.debug('Succeed to load  clazzStudent by userId[ userId=' + userId + ']');
+
+        return callback(null, doc);
+    })
+}
+
 Service.updateByUserId = function (userId, update, callback) {
     ClazzStudent.update({user: userId}, update, {new: true, upsert: true}, function (err, result){
         if(err) {
