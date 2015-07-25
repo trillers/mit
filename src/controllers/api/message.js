@@ -179,7 +179,7 @@ module.exports = function(router){
         saveMessageAsync(msg)
             .then(function(doc){
                 result = doc;
-                return  clazzService.loadStudentsByIdAsync(clazzId);
+                return  clazzService.loadStudentsByIdAsync(msg.channel);
             })
             .then(function(students){
                 var arr = [];
