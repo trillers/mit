@@ -214,8 +214,28 @@ module.exports = function(router){
     }
     var saveMessageAsync = Promise.promisify(saveMessage);
 
-    //initial chat page data
-    router.get('/chatInitData', function(req, res){
+    //initial student chat page data
+    router.get('/studentChatInitData', function(req, res){
+        var clazzId = req.query.clazzId;
+        var userId = req.session.user.id;
+        var result = {};
+        clazzService.loadTeachersByIdAsync(clazzId)
+            .then(function(teachers){
+                result.teacher = teachers[0];
+                var params = {
+                    conditions: {channel: myutil.genOneToOneId(userId, result.teacher.user)},
+                    sort: {crtOn: -1}
+                }
+                return msgFilterAsync(params)
+            })
+            .then(function(msgs){
+                result.msgs = msgs;
+                res.status(200).json(ApiReturn.i().ok(result));
+            })
+    });
+
+    //initial teacher chat page data
+    router.get('/teacherChatInitData', function(req, res){
         var clazzId = req.query.clazzId;
         var userId = req.session.user.id;
         var receiverId = req.query.userId;
@@ -246,7 +266,6 @@ module.exports = function(router){
                 res.status(200).json(ApiReturn.i().ok(result));
             })
     });
-
     //load message record
     router.get('/historyMsg', function(req, res){
         var receiverId = req.query.userId;
