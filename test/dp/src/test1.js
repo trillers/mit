@@ -1,42 +1,41 @@
+var request = require('request');
 var fs = require('fs');
-var cache = {};
-var i = 0
-function inconsistentRead(filename, callback) {
-    if(cache[filename]) {
-        //invoked synchronously
-        callback(cache[filename]);
+var mkdirp = require('mkdirp');
+var path = require('path');
+var utilities = require('./utilities');
+
+function spider(url, callback) {
+    var filename = utilities.urlToFilename(url);
+    fs.exists(filename, function(exists) {
+//[1]
+        if(!exists) {
+            console.log("Downloading " + url);
+            request(url, function(err, response, body) {
+                if(err) {
+                    callback(err);
+                } else {
+                    mkdirp(path.dirname(filename), function(err) {
+                        if(err) {
+                            callback(err);
+                        } else {
+                            fs.writeFile(filename, body, function(err) { //[4]
+                                if(err) {
+                                    callback(err);
+                                } else {
+                                    callback(null, filename, true);
+                                } });
+                        } });
+                } });
+        } else {
+            callback(null, filename, false);
+        } });
+}
+spider(process.argv[2], function(err, filename, downloaded) {
+    if(err) {
+        console.log(err);
+    } else if(downloaded){
+        console.log('Completed the download of "'+ filename +'"');
     } else {
-        //asynchronous function
-        fs.readFile(filename, 'utf8', function(err, data) {
-            console.log("===========")
-            cache[filename] = data;
-            callback(data);
-        });
+        console.log('"'+ filename +'" was already downloaded');
     }
-}
-function createFileReader(filename) {
-    var listeners = [];
-    inconsistentRead(filename, function(value) {
-        listeners.forEach(function(listener) {
-            listener(value);
-        }); });
-    return {
-        onDataReady: function(listener) {
-            listeners.push(listener);
-        }
-    };
-}
-var reader1 = createFileReader('./data.txt');
-reader1.onDataReady(function(data) {
-    console.log('First call data: ' + data);
-    //...sometime later we try to read again from
-    //the same file
-    var reader2 = createFileReader('./data.txt');
-    reader2.onDataReady(function(data) {
-        console.log('Second call data: ' + data);
-        var reader3 = createFileReader('./data.txt');
-        reader3.onDataReady(function(data) {
-            console.log('Third call data: ' + data);
-        });
-    });
 });
