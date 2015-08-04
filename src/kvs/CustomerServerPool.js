@@ -36,7 +36,7 @@ var CustomerServerPool = {
     },
 
     saveCSById: function(id, cs, callback){
-        var key = idToCSField(id);
+        var key = idToCSKey(id);
         redis.hmset(key, cs, function(err, result){
             cbUtil.logCallback(
                 err,
