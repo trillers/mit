@@ -68,6 +68,8 @@ var CustomerServerPool = {
 
     saveCSSByOpendId: function(openId, cs, callback){
         var key = openIdToCSSKey(openId);
+        console.log(key);
+        console.log(cs);
         redis.hmset(key, cs, function(err, result){
             cbUtil.logCallback(
                 err,
@@ -87,7 +89,7 @@ var CustomerServerPool = {
 
             cbUtil.handleSingleValue(callback, err, result);
         });
-    },
+    }
 
 };
 

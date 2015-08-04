@@ -37,6 +37,7 @@ module.exports = function(){
                 //else {
                 //    res.reply('欢迎来到快乐种子！');
                 //}
+                res.reply('');
                 CustomerServer.loadCSSByOpenIdAsync(user.wx_openid)
                     .then(function(css){
                         if(css){

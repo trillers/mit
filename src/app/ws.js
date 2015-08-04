@@ -11,6 +11,14 @@ io.path('/socket.io');
 io.on('connection', socketConnected);
 
 function socketConnected(socket){
+    console.log(socket);
+    console.log('====================')
+    console.log('====================')
+    console.log('====================')
+    console.log('====================')
+    console.log('====================')
+
+
     socket.on('message', messageHandler);
     socket.on('saveSocket', saveSocketHandler);
 }
@@ -25,6 +33,7 @@ function messageHandler(data){
 function saveSocketHandler(data){
     var userId = data;
     var socket = this;
+    console.log(this);
     CustomerServer.saveCSById(userId, socket, function(err){
         //TODO
     });
