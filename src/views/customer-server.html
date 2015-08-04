@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            window.__user = {{JSON.stringify(__page.user)}};
+            var socket = io('http://bot.bao.nong600.com');
+            socket.on('connect', function(){
+                socket.emit('saveSocket', __user.id);
+            });
+            socket.on('message', function (data) {
+                var li = document.createElement('li');
+                li.setAttribute('openId', data.user.wx_openid);
+                li.innerHTML = '<img src='+ data.user.wx_headimgurl+'>' + '<p>'+ data.user.wx_nickname +'</p>'
+                var customerList = document.getElementById('customerList').appendChild(li);
+                li.onclick = function(){
+                    document.getElementById('openId').value = this.getAttribute('openId');
+                }
+                var msg = document.createElement('span');
+                msg.innerHTML = data.msg;
+                var msgList = document.getElementById('msgList');
+                msg.appendChild(msg);
+            });
+            document.getElementById('send').onclick = function(){
+                var msg = document.getElementById('msg').value;
+                var openId = document.getElementById('openId').value;
+                socket.emit('message', {msg: msg, openId: openId});
+            }
+        }
+    </script>
+</head>
+<body>
+    <ul id="customerList">
+
+    </ul>
+    <div id = "msgList">
+
+    </div>
+    <input id = 'msg' type="text"/><input type="button" value="Send" id="send"/>
+    <input id = 'openId' type="hidden">
+</body>
+</html>

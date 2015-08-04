@@ -5,6 +5,7 @@ var wechat = require('wechat');
 var WechatOperationService = require('../../services/WechatOperationService');
 var QrChannelDispatcher = require('../../modules/qrchannel');
 var UserKv = require('../../kvs/User');
+var CustomerServer = require('../../kvs/CustomerServerPool');
 var productionMode = settings.env.mode == 'production';
 var logger = require('../../app/logging').logger;
 var tokenConfig = productionMode ? {
@@ -28,14 +29,28 @@ module.exports = function(){
             authenticator.ensureSignin(message, req, res, next, function(user){
                 WechatOperationService.logAction(message);
                 // TODO: add code here
-                var fdStart = message.Content.indexOf('反馈');
-
-                if (fdStart == 0){
-                    res.reply('收到，非常感谢你的反馈！');
-                }
-                else {
-                    res.reply('欢迎来到快乐种子！');
-                }
+                //var fdStart = message.Content.indexOf('反馈');
+                //
+                //if (fdStart == 0){
+                //    res.reply('收到，非常感谢你的反馈！');
+                //}
+                //else {
+                //    res.reply('欢迎来到快乐种子！');
+                //}
+                CustomerServer.loadCSSByOpenIdAsync(user.wx_openid)
+                    .then(function(css){
+                        if(css){
+                            css.emit('message', {'user': user, 'msg': message.content});
+                        } else {
+                            CustomerServer.loadCSByIdAsync('aaa')
+                                .then(function(cs){
+                                    CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
+                                        .then(function(){
+                                            cs.emit('message', {'user': user, 'msg': message.content});
+                                        });
+                                });
+                        }
+                    })
             });
         })
         .image(function (message, req, res, next) {

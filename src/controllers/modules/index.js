@@ -15,4 +15,8 @@ module.exports = function(app){
     require('./spa')(router);
     app.use('/', router);
 
+    router = express.Router({strict: false});
+    require('./cs')(router);
+    app.use('/customer-server', router);
+
 };
