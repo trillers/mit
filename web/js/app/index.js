@@ -9,22 +9,13 @@ var util = require('./util');
 var Spa = require('./spa');
 var app = new Spa({defaultHash: authFilter()});
 function authFilter(){
-  var hash;
   var roleBinded = JSON.parse(__page.user.roleBindOrNot || false);
   if (__page.user.role == __app.enums.UserRole.names['Teacher']){
-    if(roleBinded){
-      hash = 'teacher/index'
-    }else{
-      hash = 'teacher/signup'
-    }
-  }else{
-    if(roleBinded){
-      hash = 'student/index'
-    }else{
-      hash = 'student/signup'
-    }
+    if(roleBinded) return 'teacher/index';
+    return 'teacher/signup'
   }
-  return hash;
+  if(roleBinded) return 'student/index';
+  return 'student/signup'
 }
 
 app.routeView('msg/usr', nest.viewable({
