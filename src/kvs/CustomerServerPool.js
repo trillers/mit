@@ -21,7 +21,7 @@ var openIdToCSSKey = function(openId){
 }
 
 var CustomerServerPool = {
-    loadCSById: function(id){
+    loadCSById: function(id, callback){
         var key = idToCSKey(id);
         redis.hgetall(key, function(err, result){
             cbUtil.logCallback(
@@ -55,7 +55,7 @@ var CustomerServerPool = {
         });
     },
 
-    loadCSSByOpenId: function(openId){
+    loadCSSByOpenId: function(openId, callback){
         var key = openIdToCSSKey(openId);
         redis.hgetall(key, function(err, result){
             cbUtil.logCallback(
