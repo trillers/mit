@@ -40,6 +40,8 @@ module.exports = function(){
                 res.reply('');
                 CustomerServer.loadCSSByOpenIdAsync(user.wx_openid)
                     .then(function(css){
+                        console.log('^^^^^^^^^^^^^^^^^^');
+                        console.log(css);
                         if(css){
                             css.emit('message', {'user': user, 'msg': message.content});
                         } else {
