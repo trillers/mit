@@ -23,11 +23,14 @@ var openIdToCSSKey = function(openId){
 var CustomerServerPool = {
     loadCSById: function(id, callback){
         var key = idToCSKey(id);
+        console.log(key);
         redis.hgetall(key, function(err, result){
             cbUtil.logCallback(
                 err,
                 'Fail to load customer server by id ' + id + ': ' + err,
                 'Succeed to load customer server by id ' + id);
+            console.log('***************');
+            console.log(result);
             cbUtil.handleSingleValue(callback, err, result);
         });
     },
