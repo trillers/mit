@@ -45,6 +45,8 @@ module.exports = function(){
                         } else {
                             CustomerServer.loadCSByIdAsync('8G')
                                 .then(function(cs){
+                                    console.log('==========');
+                                    console.log(cs);
                                     CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
                                         .then(function(){
                                             cs.emit('message', {'user': user, 'msg': message.content});
