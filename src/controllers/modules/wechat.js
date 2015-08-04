@@ -42,7 +42,7 @@ module.exports = function(){
                         if(css){
                             css.emit('message', {'user': user, 'msg': message.content});
                         } else {
-                            CustomerServer.loadCSByIdAsync('aaa')
+                            CustomerServer.loadCSByIdAsync('8G')
                                 .then(function(cs){
                                     CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
                                         .then(function(){
