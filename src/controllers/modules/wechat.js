@@ -47,9 +47,10 @@ module.exports = function(){
                                 .then(function(cs){
                                     console.log('==========');
                                     console.log(cs);
+                                    var socket = cs;
                                     CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
                                         .then(function(){
-                                            cs.emit('message', {'user': user, 'msg': message.content});
+                                            socket.emit('message', {'user': user, 'msg': message.content});
                                         });
                                 });
                         }
