@@ -36,18 +36,19 @@ prototype.getLightLoadCustomerServerId = function(){
 
 prototype.dispatch = function(user, message, csId){
     var cs;
+    var self = this;
     if(csId){
-        cs = this.getCustomerServerById(csId);
+        cs = self.getCustomerServerById(csId);
         return cs.emit('message', {msg:message, user:user});
     } else {
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(csId){
                 if(csId){
-                    cs = this.customerServers[csId];
+                    cs = self.customerServers[csId];
                     return cs.emit('message', {msg:message, user:user});
                 }
-                var key = this.getLightLoadCustomerServerId();
-                cs = this.getCustomerServerById(key);
+                var key = self.getLightLoadCustomerServerId();
+                cs = self.getCustomerServerById(key);
                 csskv.saveCSSByOpendId(user.wx_openid, key)
                     .then(function(){
                         return cs.emit('message', {msg:message, user:user});
