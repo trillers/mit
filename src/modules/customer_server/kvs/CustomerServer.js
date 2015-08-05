@@ -94,4 +94,4 @@ var CustomerServer = {
 
 CustomerServer = Promise.promisifyAll(CustomerServer);
 
-module.exports = CustomerServerPool;
+module.exports = CustomerServer;
