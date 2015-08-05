@@ -12,6 +12,7 @@
                 socket.emit('saveSocket', __user.id);
             });
             socket.on('message', function (data) {
+                console.log(data);
                 var li = document.createElement('li');
                 li.setAttribute('openId', data.user.wx_openid);
                 li.innerHTML = '<img src='+ data.user.wx_headimgurl+'>' + '<p>'+ data.user.wx_nickname +'</p>'
@@ -20,7 +21,7 @@
                     document.getElementById('openId').value = this.getAttribute('openId');
                 }
                 var msg = document.createElement('span');
-                msg.innerHTML = data.msg;
+                msg.innerHTML = data.msg.content;
                 var msgList = document.getElementById('msgList');
                 msg.appendChild(msg);
             });
