@@ -25,7 +25,6 @@ prototype.getCustomerServerById = function(csId){
 prototype.getLightLoadCustomerServerId = function(){
     var key, load = 0;
     var csLoad = this.customerServerload;
-    console.log(csLoad);
     for(k in csLoad){
         if(csLoad[k] >= load){
             key = k;
@@ -44,6 +43,7 @@ prototype.dispatch = function(user, message, csId){
     } else {
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(csId){
+                console.log(csId);
                 if(csId){
                     cs = self.customerServers[csId];
                     return cs.emit('message', {msg:message, user:user});
