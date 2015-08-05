@@ -1,6 +1,6 @@
 var Server = require('socket.io');
 var srv = require('./http-server');
-var CustomerServer = require('../kvs/CustomerServerPool');
+var CSDispatcher = require('../modules/customer_server');
 var util = require('./util');
 var wechatApi = require('../app/wechat/api').api;
 var io = new Server();
@@ -11,14 +11,6 @@ io.path('/socket.io');
 io.on('connection', socketConnected);
 
 function socketConnected(socket){
-    console.log(socket);
-    console.log('====================')
-    console.log('====================')
-    console.log('====================')
-    console.log('====================')
-    console.log('====================')
-
-
     socket.on('message', messageHandler);
     socket.on('saveSocket', saveSocketHandler);
 }
@@ -33,10 +25,7 @@ function messageHandler(data){
 function saveSocketHandler(data){
     var userId = data;
     var socket = this;
-    console.log(this);
-    CustomerServer.saveCSById(userId, socket, function(err){
-        //TODO
-    });
+    CSDispatcher.registryCustomerServer(userId, socket);
 }
 module.exports = null;
 

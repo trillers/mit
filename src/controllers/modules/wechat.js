@@ -5,7 +5,7 @@ var wechat = require('wechat');
 var WechatOperationService = require('../../services/WechatOperationService');
 var QrChannelDispatcher = require('../../modules/qrchannel');
 var UserKv = require('../../kvs/User');
-var CustomerServer = require('../../kvs/CustomerServerPool');
+var CSDispatcher = require('../../modules/customer_server');
 var productionMode = settings.env.mode == 'production';
 var logger = require('../../app/logging').logger;
 var tokenConfig = productionMode ? {
@@ -38,25 +38,7 @@ module.exports = function(){
                 //    res.reply('欢迎来到快乐种子！');
                 //}
                 res.reply('');
-                CustomerServer.loadCSSByOpenIdAsync(user.wx_openid)
-                    .then(function(css){
-                        console.log('^^^^^^^^^^^^^^^^^^');
-                        console.log(css);
-                        if(css){
-                            css.emit('message', {'user': user, 'msg': message.content});
-                        } else {
-                            CustomerServer.loadCSByIdAsync('8G')
-                                .then(function(cs){
-                                    console.log('==========');
-                                    console.log(cs);
-                                    var socket = cs;
-                                    CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
-                                        .then(function(){
-                                            socket.emit('message', {'user': user, 'msg': message.content});
-                                        });
-                                });
-                        }
-                    })
+                CSDispatcher.dispatch(user, message);
             });
         })
         .image(function (message, req, res, next) {
