@@ -24,9 +24,9 @@ prototype.getCustomerServerById = function(csId){
 
 prototype.getLightLoadCustomerServerId = function(){
     var key, load = 0;
-
-    for(k in cs){
-        if(cs[k].load >= load){
+    var csLoad = this.customerServerload;
+    for(k in csLoad){
+        if(csLoad[k].load >= load){
             key = k;
         }
     }
