@@ -68,7 +68,7 @@ var CustomerServerPool = {
 
     saveCSSByOpendId: function(openId, csId, callback){
         var key = openIdToCSSKey(openId);
-        redis.set(key, cs, function(err, result){
+        redis.set(key, csId, function(err, result){
             cbUtil.logCallback(
                 err,
                 'Fail to save customer server session by customer openId: ' + openId + ': ' + err,
