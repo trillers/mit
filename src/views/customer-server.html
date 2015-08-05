@@ -21,7 +21,9 @@
                     document.getElementById('openId').value = this.getAttribute('openId');
                 }
                 var msg = document.createElement('span');
-                msg.innerHTML = data.msg.content;
+                console.log(msg);
+                console.log(data.msg.Content)
+                msg.innerHTML = data.msg.Content;
                 var msgList = document.getElementById('msgList');
                 msgList.appendChild(msg);
             });
