@@ -40,7 +40,7 @@ prototype.dispatch = function(user, message, csId){
         cs = this.getCustomerServerById(csId);
         return cs.emit('message', {msg:message, user:user});
     } else {
-        csskv.loadCSSByOpenIdAsync()
+        csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(csId){
                 if(csId){
                     cs = this.customerServers[csId];
