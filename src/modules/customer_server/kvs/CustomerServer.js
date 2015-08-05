@@ -20,7 +20,7 @@ var openIdToCSSKey = function(openId){
     return 'cs:session:' + openId;
 }
 
-var CustomerServerPool = {
+var CustomerServer = {
     loadCSById: function(id, callback){
         var key = idToCSKey(id);
         redis.hgetall(key, function(err, result){
@@ -92,6 +92,6 @@ var CustomerServerPool = {
 };
 
 
-CustomerServerPool = Promise.promisifyAll(CustomerServerPool);
+CustomerServer = Promise.promisifyAll(CustomerServer);
 
 module.exports = CustomerServerPool;

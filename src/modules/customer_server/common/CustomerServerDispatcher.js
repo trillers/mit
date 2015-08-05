@@ -49,7 +49,7 @@ prototype.dispatch = function(user, message, csId){
                 }
                 var key = self.getLightLoadCustomerServerId();
                 cs = self.getCustomerServerById(key);
-                csskv.saveCSSByOpendId(user.wx_openid, key)
+                csskv.saveCSSByOpendIdAsync(user.wx_openid, key)
                     .then(function(){
                         return cs.emit('message', {msg:message, user:user});
                     })
