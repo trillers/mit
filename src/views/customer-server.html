@@ -7,7 +7,7 @@
     <script type="text/javascript">
         window.onload = function(){
             window.__user = {{JSON.stringify(__page.user)}};
-            var socket = io('http://bot.bao.nong600.com');
+            var socket = io('http://ci.bot.bao.nong600.com');
             socket.on('connect', function(){
                 socket.emit('saveSocket', __user.id);
             });
