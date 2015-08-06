@@ -1,8 +1,8 @@
-var redis = require('../app/redis');
-var logger = require('../app/logging').logger;
+var redis = require('../../../app/redis');
+var logger = require('../../../app/logging').logger;
 var _ = require('underscore');
 var Promise = require('bluebird');
-var cbUtil = require('../framework/callback');
+var cbUtil = require('../../../framework/callback');
 
 var getCSKey = function(){
     return 'cs';
@@ -20,7 +20,7 @@ var openIdToCSSKey = function(openId){
     return 'cs:session:' + openId;
 }
 
-var CustomerServerPool = {
+var CustomerServer = {
     loadCSById: function(id, callback){
         var key = idToCSKey(id);
         redis.hgetall(key, function(err, result){
@@ -33,7 +33,7 @@ var CustomerServerPool = {
     },
 
     saveCSById: function(id, cs, callback){
-        var key = idToCSField(id);
+        var key = idToCSKey(id);
         redis.hmset(key, cs, function(err, result){
             cbUtil.logCallback(
                 err,
@@ -57,7 +57,7 @@ var CustomerServerPool = {
 
     loadCSSByOpenId: function(openId, callback){
         var key = openIdToCSSKey(openId);
-        redis.hgetall(key, function(err, result){
+        redis.get(key, function(err, result){
             cbUtil.logCallback(
                 err,
                 'Fail to load customer server session by customer openId ' + openId + ': ' + err,
@@ -66,16 +66,14 @@ var CustomerServerPool = {
         });
     },
 
-    saveCSSByOpendId: function(openId, cs, callback){
+    saveCSSByOpendId: function(openId, csId, callback){
         var key = openIdToCSSKey(openId);
-        console.log(key);
-        console.log(cs);
-        redis.hmset(key, cs, function(err, result){
+        redis.set(key, csId, function(err, result){
             cbUtil.logCallback(
                 err,
                 'Fail to save customer server session by customer openId: ' + openId + ': ' + err,
                 'Succeed to save customer server session by customer openId: ' + openId);
-            cbUtil.handleOk(callback, err, result);
+            cbUtil.handleOk(callback, err, result, csId);
         });
     },
 
@@ -94,6 +92,6 @@ var CustomerServerPool = {
 };
 
 
-CustomerServerPool = Promise.promisifyAll(CustomerServerPool);
+CustomerServer = Promise.promisifyAll(CustomerServer);
 
-module.exports = CustomerServerPool;
+module.exports = CustomerServer;

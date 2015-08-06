@@ -5,7 +5,7 @@ var wechat = require('wechat');
 var WechatOperationService = require('../../services/WechatOperationService');
 var QrChannelDispatcher = require('../../modules/qrchannel');
 var UserKv = require('../../kvs/User');
-var CustomerServer = require('../../kvs/CustomerServerPool');
+var CSDispatcher = require('../../modules/customer_server');
 var productionMode = settings.env.mode == 'production';
 var logger = require('../../app/logging').logger;
 var tokenConfig = productionMode ? {

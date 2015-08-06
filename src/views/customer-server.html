@@ -12,17 +12,20 @@
                 socket.emit('saveSocket', __user.id);
             });
             socket.on('message', function (data) {
+                console.log(data);
                 var li = document.createElement('li');
                 li.setAttribute('openId', data.user.wx_openid);
-                li.innerHTML = '<img src='+ data.user.wx_headimgurl+'>' + '<p>'+ data.user.wx_nickname +'</p>'
+                li.innerHTML = '<img width="100px" src='+ data.user.wx_headimgurl+'>' + '<p>'+ data.user.wx_nickname +'</p>'
                 var customerList = document.getElementById('customerList').appendChild(li);
                 li.onclick = function(){
                     document.getElementById('openId').value = this.getAttribute('openId');
                 }
                 var msg = document.createElement('span');
-                msg.innerHTML = data.msg;
+                console.log(msg);
+                console.log(data.msg.Content)
+                msg.innerHTML = data.msg.Content;
                 var msgList = document.getElementById('msgList');
-                msg.appendChild(msg);
+                msgList.appendChild(msg);
             });
             document.getElementById('send').onclick = function(){
                 var msg = document.getElementById('msg').value;
