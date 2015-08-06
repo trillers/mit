@@ -26,7 +26,7 @@ module.exports = function(){
     var wechatMiddleware = wechat(tokenConfig, function(req, res, next){
         console.log(req.weixin);
         next();
-    }).middlewarify();
+    });
 
     router.use(wechatMiddleware);
     router.use(function(req, res, next){
