@@ -80,9 +80,12 @@ prototype.dispatch = function(user, message, csId){
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(csId){
                 if(csId){
+                    console.log('has session');
                     return self.publishMessage(csId, user, message);
                 }
                 var csId = self.getLightLoadCustomerServerId();
+                console.log('0000000')
+                console.log(scId);
                 var date = new Date();
                 var min = date.getMinutes();
                 date = date.setMinutes(min + 30);
@@ -92,6 +95,8 @@ prototype.dispatch = function(user, message, csId){
                 }
                 csskv.saveCSSByOpenIdAsync(user.wx_openid, css)
                     .then(function(){
+                        console.log('9999');
+                        console.log(csId);
                         return self.publishMessage(csId, user, message);
                     })
             })
