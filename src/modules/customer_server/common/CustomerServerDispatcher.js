@@ -29,7 +29,7 @@ prototype.handleMessage = function(channel, message){
     console.log(msg);
     var cs = this.getCustomerServerById(csId);
     console.log(cs);
-    
+
     if(cs){
         cs.emit('message', msg);
     }
@@ -86,10 +86,10 @@ prototype.dispatch = function(user, message, csId){
         return self.publishMessage(csId, user, message);
     } else {
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
-            .then(function(csId){
-                if(csId){
+            .then(function(css){
+                if(css){
                     console.log('has session');
-                    return self.publishMessage(csId, user, message);
+                    return self.publishMessage(css.csId, user, message);
                 }
                 self.getLightLoadCustomerServerId()
                     .then(function(csId){
