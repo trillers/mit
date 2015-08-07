@@ -51,11 +51,11 @@
                 }
 
             });
-            $('#send').onclick = function(){
+            $('#send').click(function(){
                 var msg = $('#msg').val();
                 var openId = $('#openId').val();
                 socket.emit('message', {msg: msg, openId: openId});
-            }
+            });
         });
     </script>
 </head>
