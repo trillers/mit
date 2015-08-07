@@ -23,11 +23,9 @@
                     $('#' + openId + 'chat').append(msg);
                     var chatPanel = $('#' + openId + 'chat:visible');
                     if(!chatPanel.length){
-                        var msgNum = li.find('i .msgNum');
+                        var msgNum = li.find('i');
                         if(msgNum.length){
                             var num = parseInt(msgNum.text());
-                            alert(num);
-                            alert(typeof num);
                             msgNum.text(num + 1);
                         }else{
                             msgNum = $('<i class="msgNum" style="width:50px; height:50px; background-color: red">1</i>')
@@ -69,7 +67,7 @@
         <div id="sessionList">
 
         </div>
-        <div style="position: fixed; margin-top: 500px;">
+        <div>
             <input id = 'msg' type="text"/><input type="button" value="Send" id="send"/>
         </div>
         <input id = 'openId' type="hidden">
