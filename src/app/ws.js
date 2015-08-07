@@ -34,7 +34,6 @@ function saveSocketHandler(data){
 
 function disconnectHandler(socket){
     console.log('got disconnect');
-    console.log(socket);
 }
 module.exports = null;
 

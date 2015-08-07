@@ -23,6 +23,8 @@ prototype.handleMessage = function(channel, message){
     //TODO
     var msg = JSON.parse(message);
     var csId = msg.csId;
+    console.log(')))))))))))');
+    console.log(this);
     var cs = this.getCustomerServerById(csId);
     if(cs){
         cs.emit('message', msg);
