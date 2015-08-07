@@ -34,7 +34,7 @@
                     li = $('<li></li>').attr('id', openId);
                     li.append($('<i class="msgNum" style="width:50px; height:50px; background-color: red">1</i><img width="100px" src='+ customer.wx_headimgurl+'>' + '<p>'+ customer.wx_nickname +'</p>'));
                     li.click(function(){
-                        this.find('.msgNum').remove();
+                        $(this).find('.msgNum').remove();
                         $('.chat').hide();
                         $('#' + openId + 'chat').show();
                         $('#openId').val(this.attr('id'));
