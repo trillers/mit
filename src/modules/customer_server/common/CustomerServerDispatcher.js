@@ -61,10 +61,12 @@ prototype.getCustomerServerById = function(csId){
 }
 
 prototype.getLightLoadCustomerServerId = function(){
-    var key, load = 100000;
     return csskv.loadCSLoadAsync()
-        .then(function(err, csLoad){
+        .then(function(csLoad){
+            console.log('had load csLoad');
             console.log(csLoad);
+            var key, load = 100000;
+
             for(k in csLoad){
                 if(csLoad[k] <= load){
                     key = k;
