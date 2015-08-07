@@ -24,8 +24,9 @@ prototype.handleMessage = function(channel, message){
     //TODO
     var msg = JSON.parse(message);
     var csId = msg.csId;
+    var openId = msg.customer.wx_openid;
     var incrLoad = msg.ses;
-    var cs = this.getCustomerServerById(csId, incrLoad);
+    var cs = this.getCustomerServerById(csId, openId, incrLoad);
     if(cs){
         cs.emit('message', msg);
     }
@@ -53,11 +54,19 @@ prototype.delCustomerServer = function(csId){
     delete this.customerServers[csId];
 }
 
-prototype.getCustomerServerById = function(csId , incrLoad){
+prototype.getCustomerServerById = function(csId, openId, incrLoad){
+    console.log('&&&&&&&&&&&&');
+    console.log(csId);
+    console.log(openId);
+    console.log(incrLoad);
     if(incrLoad){
+        console.log('add load and handing set');
         csskv.modifyCSLoadById(csId, 1, function(){
             //TODO
         });
+        csskv.pushCSHandingSetById(csId, openId, function(){
+            //TODO
+        })
     }
     return this.customerServers[csId];
 }
@@ -68,9 +77,8 @@ prototype.getLightLoadCustomerServerId = function(){
             var key, load = 100000;
 
             for(k in csLoad){
-                console.log(k);
-                console.log(parseInt(csLoad[k]) <= load)
                 if(parseInt(csLoad[k]) <= load){
+                    load = parseInt(csLoad[k]);
                     key = k;
                 }
             }
