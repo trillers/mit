@@ -1,5 +1,6 @@
 var csskv = require('../kvs/CustomerServer');
 var redis = require('redis');
+var Promise = require('bluebird');
 
 var CustomerServerDispatcher = function(){
     this.customerServers = {};
@@ -61,8 +62,9 @@ prototype.getCustomerServerById = function(csId){
 
 prototype.getLightLoadCustomerServerId = function(){
     var key, load = 100000;
-    csskv.loadCSLoadAsync()
+    return csskv.loadCSLoadAsync()
         .then(function(err, csLoad){
+            console.log(csLoad);
             for(k in csLoad){
                 if(csLoad[k] <= load){
                     key = k;
@@ -71,6 +73,8 @@ prototype.getLightLoadCustomerServerId = function(){
             return key;
         });
 }
+
+var getLightLoadCustomerServerIdAsync = Promise.promisify(prototype.getLightLoadCustomerServerId);
 
 prototype.dispatch = function(user, message, csId){
     var self = this;
@@ -83,22 +87,24 @@ prototype.dispatch = function(user, message, csId){
                     console.log('has session');
                     return self.publishMessage(csId, user, message);
                 }
-                var csId = self.getLightLoadCustomerServerId();
-                console.log('0000000')
-                console.log(csId);
-                var date = new Date();
-                var min = date.getMinutes();
-                date = date.setMinutes(min + 30);
-                var css = {
-                    csId: csId,
-                    expire: date
-                }
-                csskv.saveCSSByOpenIdAsync(user.wx_openid, css)
-                    .then(function(){
-                        console.log('9999');
+                getLightLoadCustomerServerIdAsync()
+                    .then(function(csId){
+                        console.log('0000000')
                         console.log(csId);
-                        return self.publishMessage(csId, user, message);
+                        var date = new Date();
+                        var min = date.getMinutes();
+                        date = date.setMinutes(min + 30);
+                        var css = {
+                            csId: csId,
+                            expire: date
+                        }
+                        return csskv.saveCSSByOpenIdAsync(user.wx_openid, css);
                     })
+                    .then(function(css){
+                        console.log('9999');
+                        console.log(css);
+                        return self.publishMessage(css.csId, user, message);
+                    });
             })
     }
 }
