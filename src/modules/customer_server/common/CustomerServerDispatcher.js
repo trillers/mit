@@ -76,7 +76,14 @@ prototype.dispatch = function(user, message, csId){
                     return this.publishMessage(csId, user, message);
                 }
                 var csId = self.getLightLoadCustomerServerId();
-                csskv.saveCSSByOpenIdAsync(user.wx_openid, csId)
+                var date = new Date();
+                var min = date.getMinutes();
+                date = date.setMinutes(min + 30);
+                var css = {
+                    csId: csId,
+                    expire: date.getTime()
+                }
+                csskv.saveCSSByOpenIdAsync(user.wx_openid, css)
                     .then(function(){
                         return this.publishMessage(csId, user, message);
                     })
