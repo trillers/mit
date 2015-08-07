@@ -18,11 +18,12 @@
                 var openId = customer.wx_openid;
                 var li = $('#' + openId);
                 if(li.length){
-                    $('<span>').text(data.Content).appendTo($('#' + openId + 'chat'));
+                    var msg = $('<span>').text(data.Content);
+                    $('#' + openId + 'chat').append(msg);
                     var chatPanel = $('#' + openId + 'chat:visible');
-                    if(!chatPanel){
+                    if(chatPanel.length){
                         var msgNum = li.find('i .msgNum');
-                        if(msgNum){
+                        if(msgNum.length){
                             var num = parseInt(msgNum.text());
                             msgNum.text(num + 1);
                         }else{
@@ -37,13 +38,13 @@
                         $(this).find('.msgNum').remove();
                         $('.chat').hide();
                         $('#' + openId + 'chat').show();
-                        $('#openId').val(this.attr('id'));
+                        $('#openId').val($(this).attr('id'));
                     });
                     $('#customerList').append(li);
                     var chatPanel = $('<div class="chat"></div>');
                     chatPanel.hide();
                     chatPanel.append($('<span>').text(data.Content));
-                    chatPanel.appendTo($('.sessionList'));
+                    $('.sessionList').append(chatPanel);
 
                 }
 
