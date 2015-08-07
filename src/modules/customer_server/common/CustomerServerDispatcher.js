@@ -29,6 +29,7 @@ prototype.handleMessage = function(channel, message){
     console.log(msg);
     var cs = this.getCustomerServerById(csId);
     console.log(cs);
+    
     if(cs){
         cs.emit('message', msg);
     }
