@@ -31,7 +31,7 @@ prototype.handleMessage = function(channel, message){
 prototype.publishMessage = function(csId, user, msg){
     msg.csId = csId;
     msg.customer = user;
-    this.publishClient.publish('customer server message', JSON.stringify(message));
+    this.publishClient.publish('customer server message', JSON.stringify(msg));
 }
 
 prototype.registryCustomerServer = function(csId, cs){
