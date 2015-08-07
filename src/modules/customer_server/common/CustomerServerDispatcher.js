@@ -11,11 +11,12 @@ var CustomerServerDispatcher = function(){
 var prototype  = CustomerServerDispatcher.prototype;
 
 prototype.redisClientInit = function(){
-    this.subscribeClient.on('subscribe', function(){
+    var self = this;
+    self.subscribeClient.on('subscribe', function(){
         console.log('redis client had subscribed');
     });
-    this.subscribeClient.subscribe('customer server message');
-    this.subscribeClient.on('message', this.handleMessage);
+    self.subscribeClient.subscribe('customer server message');
+    self.subscribeClient.on('message', self.handleMessage);
 }
 
 prototype.handleMessage = function(channel, message){
