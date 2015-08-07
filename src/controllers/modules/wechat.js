@@ -47,22 +47,7 @@ module.exports = function(){
                 //    res.reply('欢迎来到快乐种子！');
                 //}
                 res.reply('');
-                CustomerServer.loadCSSByOpenIdAsync(user.wx_openid)
-                    .then(function(css){
-                        if(css){
-                            css.emit('message', {'user': user, 'msg': message.content});
-                        } else {
-                            CustomerServer.loadCSByIdAsync('8G')
-                                .then(function(cs){
-                                    console.log('==========');
-                                    console.log(cs);
-                                    CustomerServer.saveCSSByOpendIdAsync(user.wx_openid, cs)
-                                        .then(function(){
-                                            cs.emit('message', {'user': user, 'msg': message.content});
-                                        });
-                                });
-                        }
-                    })
+                CSDispatcher.dispatch(user, message);
             });
         })
         .image(function (message, req, res, next) {
