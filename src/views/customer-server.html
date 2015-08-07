@@ -54,7 +54,7 @@
             $('#send').click(function(){
                 var msg = $('#msg').val();
                 var chatPanel = $('.chat:visible');
-                var msgObj = $('<span style="fload: right">').text(data.Content);
+                var msgObj = $('<span style="fload: right">').text(msg);
                 msgObj.append($('</br>'));
                 chatPanel.append(msgObj);
                 var openId = $('#openId').val();
