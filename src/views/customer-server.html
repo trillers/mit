@@ -16,7 +16,7 @@
                 console.log(data);
                 var openId = data.customer.wx_openid;
                 var li = $('#' + openId);
-                if(li){
+                if(li.length){
                     $('<span>').text(data.Content).appendTo($('#' + openId + 'chat'));
                     var chatPanel = $('#' + openId + 'chat:visible');
                     if(!chatPanel){
