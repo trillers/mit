@@ -85,7 +85,7 @@ prototype.dispatch = function(user, message, csId){
                 }
                 var csId = self.getLightLoadCustomerServerId();
                 console.log('0000000')
-                console.log(scId);
+                console.log(csId);
                 var date = new Date();
                 var min = date.getMinutes();
                 date = date.setMinutes(min + 30);
