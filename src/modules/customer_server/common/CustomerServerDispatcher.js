@@ -81,7 +81,7 @@ prototype.dispatch = function(user, message, csId){
                 date = date.setMinutes(min + 30);
                 var css = {
                     csId: csId,
-                    expire: date.getTime()
+                    expire: date
                 }
                 csskv.saveCSSByOpenIdAsync(user.wx_openid, css)
                     .then(function(){
