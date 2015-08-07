@@ -18,10 +18,10 @@
                 var openId = customer.wx_openid;
                 var li = $('#' + openId);
                 if(li.length){
-                    var msg = $('<span>').text(data.Content);
+                    var msg = $('<span>').text(data.Content + '</br>');
                     $('#' + openId + 'chat').append(msg);
                     var chatPanel = $('#' + openId + 'chat:visible');
-                    if(chatPanel.length){
+                    if(!chatPanel.length){
                         var msgNum = li.find('i .msgNum');
                         if(msgNum.length){
                             var num = parseInt(msgNum.text());
@@ -44,7 +44,7 @@
                     var chatPanel = $('<div class="chat"></div>');
                     chatPanel.attr('id', openId + 'chat');
                     chatPanel.hide();
-                    chatPanel.append($('<span>').text(data.Content));
+                    chatPanel.append($('<span>').text(data.Content + '</br>'));
                     $('#sessionList').append(chatPanel);
 
                 }
