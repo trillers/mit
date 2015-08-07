@@ -41,16 +41,12 @@ prototype.registryCustomerServer = function(csId, cs){
     this.customerServers[csId] = cs;
     csskv.loadCSLoadByIdAsync(csId)
         .then(function(num){
-            console.log('--------------');
-            console.log(num);
-            if(num){
-                return csskv.setCSLoadByIdAsync(csId, num);
-            }
+            if(num) return   '';
             return csskv.setCSLoadByIdAsync(csId, 0);
         })
         .then(function(){
             //TODO
-        })
+        });
 }
 
 prototype.delCustomerServer = function(csId){

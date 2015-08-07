@@ -164,7 +164,7 @@ var CustomerServer = {
                 err,
                 'Fail to set customer server load ' + err,
                 'Succeed to set customer server load');
-            cbUtil.handleAffected(callback, err, id, result);
+            cbUtil.handleSingleValue(callback, err, num);
         });
     },
 
