@@ -68,12 +68,12 @@ prototype.getLightLoadCustomerServerId = function(){
 prototype.dispatch = function(user, message, csId){
     var self = this;
     if(csId){
-        return this.publishMessage(csId, user, message);
+        return self.publishMessage(csId, user, message);
     } else {
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(csId){
                 if(csId){
-                    return this.publishMessage(csId, user, message);
+                    return self.publishMessage(csId, user, message);
                 }
                 var csId = self.getLightLoadCustomerServerId();
                 var date = new Date();
@@ -85,7 +85,7 @@ prototype.dispatch = function(user, message, csId){
                 }
                 csskv.saveCSSByOpenIdAsync(user.wx_openid, css)
                     .then(function(){
-                        return this.publishMessage(csId, user, message);
+                        return self.publishMessage(csId, user, message);
                     })
             })
     }
