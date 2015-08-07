@@ -34,6 +34,7 @@ prototype.handleMessage = function(channel, message){
 
 prototype.publishMessage = function(csId, user, msg){
     console.log('------------------------------------------')
+    console.log(csId);
     console.log(msg);
     msg.csId = csId;
     msg.customer = user;
