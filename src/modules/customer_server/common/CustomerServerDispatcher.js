@@ -81,7 +81,7 @@ prototype.dispatch = function(user, message, csId){
         csskv.loadCSSByOpenIdAsync(user.wx_openid)
             .then(function(css){
                 if(css){
-                    msg.ses = true;
+                    message.ses = true;
                     return self.publishMessage(css.csId, user, message);
                 }
                 self.getLightLoadCustomerServerId()
