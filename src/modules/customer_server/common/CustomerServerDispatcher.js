@@ -59,7 +59,7 @@ prototype.getCustomerServerById = function(csId, openId, incrLoad){
     console.log(csId);
     console.log(openId);
     console.log(incrLoad);
-    if(incrLoad){
+    if(!incrLoad){
         console.log('add load and handing set');
         csskv.modifyCSLoadById(csId, 1, function(){
             //TODO
