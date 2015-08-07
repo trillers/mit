@@ -115,7 +115,7 @@ describe('CustomerServer', function(){
     });
 
     it('setCSLoadById', function(done){
-        cskv.setCSLoadById(id, function(err, data){
+        cskv.setCSLoadById(id, 0, function(err, data){
             console.log(data);
             assert.ok(!err);
             assert.equal(data, id);

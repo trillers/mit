@@ -53,6 +53,10 @@
             });
             $('#send').click(function(){
                 var msg = $('#msg').val();
+                var chatPanel = $('.chat:visible');
+                var msgObj = $('<span style="fload: right">').text(data.Content);
+                msgObj.append($('</br>'));
+                chatPanel.append(msgObj);
                 var openId = $('#openId').val();
                 socket.emit('message', {msg: msg, openId: openId});
             });

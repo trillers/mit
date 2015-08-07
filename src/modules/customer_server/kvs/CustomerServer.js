@@ -146,9 +146,20 @@ var CustomerServer = {
         });
     },
 
-    setCSLoadById: function(id, callback){
+    loadCSLoadById: function(id, callback){
         var key = getCSLoadKey();
-        redis.hset(key, id, 0, function(err, result){
+        redis.hget(key, id, function(err, result){
+            cbUtil.logCallback(
+                err,
+                'Fail to load customer server load ' + err,
+                'Succeed to load customer server load');
+            cbUtil.handleSingleValue(callback, err, result);
+        });
+    },
+
+    setCSLoadById: function(id, num, callback){
+        var key = getCSLoadKey();
+        redis.hset(key, id, num, function(err, result){
             cbUtil.logCallback(
                 err,
                 'Fail to set customer server load ' + err,

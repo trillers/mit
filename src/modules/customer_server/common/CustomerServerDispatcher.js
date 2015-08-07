@@ -39,9 +39,18 @@ prototype.publishMessage = function(csId, user, msg){
 
 prototype.registryCustomerServer = function(csId, cs){
     this.customerServers[csId] = cs;
-    csskv.setCSLoadById(csId, function(){
-        //TODO
-    });
+    csskv.loadCSLoadByIdAsync(csId)
+        .then(function(num){
+            console.log('--------------');
+            console.log(num);
+            if(num){
+                return csskv.setCSLoadByIdAsync(csId, num);
+            }
+            return csskv.setCSLoadByIdAsync(csId, 0);
+        })
+        .then(function(){
+            //TODO
+        })
 }
 
 prototype.delCustomerServer = function(csId){
