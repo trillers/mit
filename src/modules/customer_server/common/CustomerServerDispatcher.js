@@ -16,14 +16,14 @@ prototype.redisClientInit = function(){
         console.log('redis client had subscribed');
     });
     self.subscribeClient.subscribe('customer server message');
-    self.subscribeClient.on('message', self.handleMessage);
+    self.subscribeClient.on('message', self.handleMessage.bind(self));
 }
 
 prototype.handleMessage = function(channel, message){
     //TODO
     var msg = JSON.parse(message);
     var csId = msg.csId;
-    var cs = CustomerServerDispatcher.getCustomerServerById(csId);
+    var cs = this.getCustomerServerById(csId);
     if(cs){
         cs.emit('message', msg);
     }
