@@ -68,15 +68,15 @@ prototype.getLightLoadCustomerServerId = function(){
             var key, load = 100000;
 
             for(k in csLoad){
-                if(csLoad[k] <= load){
+                console.log(k);
+                console.log(parseInt(csLoad[k]) <= load)
+                if(parseInt(csLoad[k]) <= load){
                     key = k;
                 }
             }
             return key;
         });
 }
-
-var getLightLoadCustomerServerIdAsync = Promise.promisify(prototype.getLightLoadCustomerServerId);
 
 prototype.dispatch = function(user, message, csId){
     var self = this;
@@ -89,7 +89,7 @@ prototype.dispatch = function(user, message, csId){
                     console.log('has session');
                     return self.publishMessage(csId, user, message);
                 }
-                getLightLoadCustomerServerIdAsync()
+                self.getLightLoadCustomerServerId()
                     .then(function(csId){
                         console.log('0000000')
                         console.log(csId);
