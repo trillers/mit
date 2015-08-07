@@ -21,8 +21,11 @@ prototype.redisClientInit = function(){
 
 prototype.handleMessage = function(channel, message){
     //TODO
+    console.log(message);
+    console.log('=========================================');
     var msg = JSON.parse(message);
     var csId = msg.csId;
+    console.log(msg);
     var cs = this.getCustomerServerById(csId);
     if(cs){
         cs.emit('message', msg);
@@ -30,6 +33,8 @@ prototype.handleMessage = function(channel, message){
 };
 
 prototype.publishMessage = function(csId, user, msg){
+    console.log('------------------------------------------')
+    console.log(msg);
     msg.csId = csId;
     msg.customer = user;
     this.publishClient.publish('customer server message', JSON.stringify(msg));

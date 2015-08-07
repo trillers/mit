@@ -162,8 +162,8 @@ var CustomerServer = {
         redis.hincrby(key, id, num, function(err, result){
             cbUtil.logCallback(
                 err,
-                'Fail to modify customer server by id: ' + id + ': ' + err,
-                'Succeed to save customer server by id: ' + id);
+                'Fail to modify customer server load by id: ' + id + ': ' + err,
+                'Succeed to modify customer server load by id: ' + id);
             cbUtil.handleSingleValue(callback, err, result);
         });
     },
