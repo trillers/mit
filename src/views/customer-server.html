@@ -42,6 +42,7 @@
                     });
                     $('#customerList').append(li);
                     var chatPanel = $('<div class="chat"></div>');
+                    chatPanel.attr('id', openId + 'chat');
                     chatPanel.hide();
                     chatPanel.append($('<span>').text(data.Content));
                     $('#sessionList').append(chatPanel);
