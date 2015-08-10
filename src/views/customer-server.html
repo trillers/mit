@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="../../web/js/lib/jquery.min.js"></script>
     <script type="text/javascript">
-        window.onload = function(){
+        $(function(){
             window.__user = {{JSON.stringify(__page.user)}};
             var socket = io('http://bot.bao.nong600.com');
             socket.on('connect', function(){
@@ -13,36 +14,67 @@
             });
             socket.on('message', function (data) {
                 console.log(data);
-                var li = document.createElement('li');
-                li.setAttribute('openId', data.user.wx_openid);
-                li.innerHTML = '<img width="100px" src='+ data.user.wx_headimgurl+'>' + '<p>'+ data.user.wx_nickname +'</p>'
-                var customerList = document.getElementById('customerList').appendChild(li);
-                li.onclick = function(){
-                    document.getElementById('openId').value = this.getAttribute('openId');
+                var customer = data.customer;
+                var openId = customer.wx_openid;
+                var li = $('#' + openId);
+                if(li.length){
+                    var msg = $('<span>').text(data.Content);
+                    msg.append($('</br>'));
+                    $('#' + openId + 'chat').append(msg);
+                    var chatPanel = $('#' + openId + 'chat:visible');
+                    if(!chatPanel.length){
+                        var msgNum = li.find('i');
+                        if(msgNum.length){
+                            var num = parseInt(msgNum.text());
+                            msgNum.text(num + 1);
+                        }else{
+                            msgNum = $('<i class="msgNum" style="width:50px; height:50px; background-color: red">1</i>')
+                            msgNum.insertBefore(li.find('img'));
+                        }
+                    }
+                } else {
+                    li = $('<li></li>').attr('id', openId);
+                    li.append($('<i class="msgNum" style="width:50px; height:50px; background-color: red">1</i><img width="100px" src='+ customer.wx_headimgurl+'>' + '<p>'+ customer.wx_nickname +'</p>'));
+                    li.click(function(){
+                        $(this).find('.msgNum').remove();
+                        $('.chat').hide();
+                        $('#' + openId + 'chat').show();
+                        $('#openId').val($(this).attr('id'));
+                    });
+                    $('#customerList').append(li);
+                    var chatPanel = $('<div class="chat"></div>');
+                    chatPanel.attr('id', openId + 'chat');
+                    chatPanel.hide();
+                    chatPanel.append($('<span>').text(data.Content).append($('</br>')));
+                    $('#sessionList').append(chatPanel);
+
                 }
-                var msg = document.createElement('span');
-                console.log(msg);
-                console.log(data.msg.Content)
-                msg.innerHTML = data.msg.Content;
-                var msgList = document.getElementById('msgList');
-                msgList.appendChild(msg);
+
             });
-            document.getElementById('send').onclick = function(){
-                var msg = document.getElementById('msg').value;
-                var openId = document.getElementById('openId').value;
+            $('#send').click(function(){
+                var msg = $('#msg').val();
+                var chatPanel = $('.chat:visible');
+                var msgObj = $('<span style="fload: right">').text(msg);
+                msgObj.append($('</br>'));
+                chatPanel.append(msgObj);
+                var openId = $('#openId').val();
                 socket.emit('message', {msg: msg, openId: openId});
-            }
-        }
+            });
+        });
     </script>
 </head>
 <body>
-    <ul id="customerList">
+    <ul id="customerList" style="fload: left; position: absolute; background-color: yellow; width: 300px; height: 600px">
 
     </ul>
-    <div id = "msgList">
+    <div id="sessionPanel" style="margin-left: 400px; width: 500px; height: 600px; background-color:#80148b">
+        <div id="sessionList">
 
+        </div>
+        <div>
+            <input id = 'msg' type="text"/><input type="button" value="Send" id="send"/>
+        </div>
+        <input id = 'openId' type="hidden">
     </div>
-    <input id = 'msg' type="text"/><input type="button" value="Send" id="send"/>
-    <input id = 'openId' type="hidden">
 </body>
 </html>

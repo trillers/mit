@@ -13,6 +13,9 @@ io.on('connection', socketConnected);
 function socketConnected(socket){
     socket.on('message', messageHandler);
     socket.on('saveSocket', saveSocketHandler);
+    socket.on('disconnect', function(){
+        disconnectHandler(socket);
+    });
 }
 function messageHandler(data){
     var openId = data.openId;
@@ -23,9 +26,14 @@ function messageHandler(data){
 }
 
 function saveSocketHandler(data){
+    console.log('save socket');
     var userId = data;
     var socket = this;
     CSDispatcher.registryCustomerServer(userId, socket);
+}
+
+function disconnectHandler(socket){
+    console.log('got disconnect');
 }
 module.exports = null;
 
